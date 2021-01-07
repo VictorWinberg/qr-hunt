@@ -1,0 +1,14 @@
+name: Approve on Label
+on:
+  pull_request:
+    types: [labeled]
+
+jobs:
+  approve-on-label:
+    name: Approve on Label
+    runs-on: ubuntu-latest
+    steps:
+      - uses: hmarr/auto-approve-action@v2.0.0
+        if: github.event.action == 'labeled' && github.event.label.name == 'Approved'
+        with:
+          github-token: "${{ secrets.GITHUB_TOKEN }}"

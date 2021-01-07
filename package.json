@@ -1,0 +1,32 @@
+{
+  "name": "qr-hunt",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "postinstall": "npm-run-all -p install-client install-server",
+    "install-client": "cd client && npm install",
+    "install-server": "cd server && npm install",
+    "start": "npm-run-all -p start-server start-client",
+    "start-client": "cd client && npm run serve",
+    "start-server": "cd server && npm start",
+    "build": "npm-run-all -s build-client",
+    "build-client": "cd client && npm run build",
+    "test": "npm-run-all -s test-client",
+    "test-client": "cd client && npm test",
+    "test-server": "cd server && npm test",
+    "lint": "npm-run-all -s lint-client",
+    "lint-client": "cd client && npm run lint"
+  },
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "npm-run-all": "4.1.5"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VictorWinberg/qr-hunt.git"
+  },
+  "author": "VictorWinberg, AnnieLeonia",
+  "license": "ISC"
+}

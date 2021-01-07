@@ -1,0 +1,76 @@
+name: Build
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    name: Test and Build
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install and cache dependencies
+        uses: cypress-io/github-action@v2
+        with:
+          runTests: false
+
+      - name: Build
+        run: npm run build
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Test
+        run: npm test
+
+      - name: Upload coverage to Codecov
+        run: bash <(curl -s https://codecov.io/bash)
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: dist
+          path: "*/dist"
+  deploy:
+    needs: build
+
+    name: Deploy to Server
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'push' }}
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: "0"
+          ref: "master"
+      - uses: actions/download-artifact@v2
+        with:
+          name: dist
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          name: id_rsa # optional
+          known_hosts: ${{ secrets.KNOWN_HOSTS }}
+      - run: |
+          git remote add server git@zolly.ml:repos/qr-hunt.git
+          git config --global user.email "actions@github.com"
+          git config --global user.name "Github Actions"
+          git add */dist -f
+          git commit -m "Build files"
+          git push -u server master -f
