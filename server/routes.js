@@ -1,6 +1,7 @@
 const path = require('path');
+const { v4: uuidv4 } = require('uuid');
 
-module.exports = (app, passport, db) => {
+module.exports = (app, passport, { User, QRCode }) => {
     // route middleware to make sure
     const isLoggedIn = (req, res, next) => {
         // if user is authenticated in the session, carry on
@@ -39,5 +40,19 @@ module.exports = (app, passport, db) => {
 
     app.get('/__/user', (req, res) => {
         res.send(req.user || {});
+    });
+
+    app.get('/__/qrcodes', (_, res) => {
+        QRCode.getAll((err, qrcodes) => {
+            if (err) return res.status(400).send(err);
+            return res.send(qrcodes);
+        });
+    });
+
+    app.post('/__/qrcodes', (_, res) => {
+        QRCode.create({ uuid: uuidv4() }, (err, qrcode) => {
+            if (err) return res.status(400).send(err);
+            return res.send(qrcode);
+        });
     });
 };
