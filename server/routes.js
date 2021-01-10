@@ -1,7 +1,7 @@
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 
-module.exports = (app, passport, { User, QRCode }) => {
+module.exports = (app, passport, { QRCode, Geocache }) => {
     // route middleware to make sure
     const isLoggedIn = (req, res, next) => {
         // if user is authenticated in the session, carry on
@@ -53,6 +53,20 @@ module.exports = (app, passport, { User, QRCode }) => {
         QRCode.create({ uuid: uuidv4() }, (err, qrcode) => {
             if (err) return res.status(400).send(err);
             return res.send(qrcode);
+        });
+    });
+
+    app.get('/__/geocaches', (_, res) => {
+        Geocache.getAll((err, geocaches) => {
+            if (err) return res.status(400).send(err);
+            return res.send(geocaches);
+        });
+    });
+
+    app.post('/__/geocaches', (req, res) => {
+        Geocache.create(req.body, (err, geocache) => {
+            if (err) return res.status(400).send(err);
+            return res.send(geocache);
         });
     });
 };

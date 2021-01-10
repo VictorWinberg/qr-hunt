@@ -22,9 +22,9 @@ CREATE TABLE qrcodes (
 DROP TABLE IF EXISTS geocaches CASCADE;
 CREATE TABLE geocaches (
   id        SERIAL        NOT NULL,
-  title     VARCHAR(50),
-  lat       DECIMAL,
-  lng       DECIMAL,
+  title     VARCHAR(50)   NOT NULL,
+  lat       DECIMAL       NOT NULL,
+  lng       DECIMAL       NOT NULL,
   note      VARCHAR(255),
   hint      VARCHAR(255),
 

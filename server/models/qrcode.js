@@ -5,13 +5,13 @@ module.exports = client => ({
         client
             .query(query, [uuid])
             .then(({ rows }) => done(null, rows[0] || null))
-            .catch(err => done(err));
+            .catch(({ severity, message }) => done({ query, severity, message }));
     },
 
     getAll(done) {
         client
             .query('SELECT * FROM qrcodes')
             .then(({ rows }) => done(null, rows || []))
-            .catch(err => done(err));
+            .catch(({ severity, message }) => done({ query, severity, message }));
     }
 });

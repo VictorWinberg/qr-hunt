@@ -42,11 +42,12 @@ client.connect();
 // load models
 const User = require('./models/user')(client);
 const QRCode = require('./models/qrcode')(client);
+const Geocache = require('./models/geocache')(client);
 
 // authentication
 require('./passport')(passport, User);
 
 // routes
-require('./routes.js')(app, passport, { User, QRCode });
+require('./routes.js')(app, passport, { QRCode, Geocache });
 
 app.listen(PORT || 3000, () => console.log(`App running on port ${PORT || 3000}!`));
