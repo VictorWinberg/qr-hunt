@@ -9,7 +9,7 @@ const passport = require("passport");
 
 dotenv.config({ path: path.resolve(__dirname, "..", ".env") });
 
-const PORT = process.env.PORT || 3000;
+const { PORT, DATABASE_URL, SESSION_SECRET_KEY1, SESSION_SECRET_KEY2 } = process.env;
 
 const app = express();
 
@@ -18,16 +18,16 @@ app.use(cookieParser()); // read cookies (needed for auth)
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(
-  session({
-    name: "session",
-    keys: [process.env.SESSION_SECRET_KEY1, process.env.SESSION_SECRET_KEY2],
-    // Cookie Options
-    httpOnly: true,
-    resave: false,
-    rolling: true,
-    saveUninitialized: false,
-    maxAge: 30 * 24 * 60 * 60 * 1000, // one month
-  })
+    session({
+        name: "session",
+        keys: [SESSION_SECRET_KEY1, SESSION_SECRET_KEY2],
+        // Cookie Options
+        httpOnly: true,
+        resave: false,
+        rolling: true,
+        saveUninitialized: false,
+        maxAge: 30 * 24 * 60 * 60 * 1000, // one month
+    })
 );
 app.use(passport.initialize());
 app.use(passport.session());
@@ -36,16 +36,17 @@ app.use(passport.session());
 app.use(express.static(path.resolve(__dirname, "..", "client", "dist")));
 
 // connect to our database
-const client = new pg.Client(process.env.DATABASE_URL);
+const client = new pg.Client(DATABASE_URL);
 client.connect();
 
 // load models
-// TODO: Add models
+const User = require('./models/user')(client);
+const Geocache = require('./models/geocache')(client);
 
 // authentication
-// TODO: Add authentication
+require('./passport')(passport, User);
 
 // routes
-// TODO: Add routes
+require('./routes.js')(app, passport, { User, Geocache });
 
-app.listen(PORT, () => console.log(`App running on port ${PORT}!`));
+app.listen(PORT || 3000, () => console.log(`App running on port ${PORT || 3000}!`));

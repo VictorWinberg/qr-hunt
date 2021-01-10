@@ -1,10 +1,10 @@
 --Table schemas
-DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS users CASCADE;
 CREATE TABLE users (
   id        SERIAL        NOT NULL,
   name      VARCHAR(255)  NOT NULL,
   email     VARCHAR(255)  NOT NULL UNIQUE,
-  photo     VARCHAR(255)  NOT NULL,
+  photo     VARCHAR(255),
 
   PRIMARY KEY (id)
 );
@@ -12,7 +12,7 @@ CREATE TABLE users (
 DROP TABLE IF EXISTS geocaches CASCADE;
 CREATE TABLE geocaches (
   id        SERIAL        NOT NULL,
-  qrcode    VARCHAR(36)  NOT NULL,
+  qrcode    VARCHAR(36)   NOT NULL,
   title     VARCHAR(50),
   lat       DECIMAL,
   lng       DECIMAL,
@@ -25,8 +25,8 @@ CREATE TABLE geocaches (
   PRIMARY KEY(id)
 );
 
-DROP TABLE IF EXISTS geocacheCollected CASCADE;
-CREATE TABLE geocacheCollected (
+DROP TABLE IF EXISTS geocachesCollected CASCADE;
+CREATE TABLE geocachesCollected (
   id        SERIAL        NOT NULL,
   score     INT           NOT NULL,
   comment   VARCHAR(255),
