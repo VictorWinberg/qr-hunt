@@ -1,16 +1,9 @@
-const valid = key => ['score', 'comment', 'user_id', 'geocache_id'].includes(key);
-
-const entries = geocache => {
-    const keys = Object.keys(geocache).filter(valid);
-    const values = keys.map(key => geocache[key]);
-    const indices = keys.map((_, i) => `$${i + 1}`);
-    const keyIndices = keys.map((key, i) => `${key} = $${i + 1}`);
-    return { keys, values, indices, keyIndices };
-};
+const valid = ['score', 'comment', 'user_id', 'geocache_id'];
+const keyValuePairs = require('./utils').keyValuePairs(valid)
 
 module.exports = client => ({
     create(collectedGeocache, done) {
-        const { keys, values, indices } = entries(collectedGeocache);
+        const { keys, values, indices } = keyValuePairs(collectedGeocache);
         const query = `INSERT INTO geocaches_collected ( ${keys} ) VALUES ( ${indices} ) RETURNING *`;
 
         client
@@ -20,7 +13,7 @@ module.exports = client => ({
     },
 
     update(id, collectedGeocache, done) {
-        const { keyIndices, values } = entries(collectedGeocache);
+        const { keyIndices, values } = keyValuePairs(collectedGeocache);
         const query = `UPDATE geocaches_collected SET ${keyIndices} WHERE id = ${id} RETURNING *`;
 
         client
