@@ -47,6 +47,7 @@ const isLoggedIn = (req, res, next) => req.isAuthenticated() ? next() : res.send
 const props = { app, passport, pg, isLoggedIn }
 require('./routes/auth')(props);
 require('./routes/geocaches')(props);
+require('./routes/geocachesCollected')(props);
 require('./routes/qrcodes')(props);
 require('./routes/users')(props);
 
