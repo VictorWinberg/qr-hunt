@@ -12,6 +12,14 @@
       <video id="qrscan"></video>
     </div>
     <button @click="qrScan()">QR SCAN</button>
+    <br />
+    <br />
+    <!-- dedugging QR Code -->
+    <div>
+        <label for="fname">WRITE QR-CODE: </label>
+        <input v-model="qrCodeTextField" type="text" id="fname" name="fname" />
+        <button @click="qrRead()">QR READ</button>
+    </div>
     <!-- result of QR Scanner -->
     <h3>QR Code: <br />{{ qrCode }}</h3>
   </div>
@@ -28,6 +36,7 @@ QRScanner.WORKER_PATH = QrScannerWorkerPath;
 
 interface Data {
   qrCode: string;
+  qrCodeTextField: string,
   qrScanner?: QRScanner;
   qrTimeout: number;
   scanning: boolean;
@@ -38,6 +47,7 @@ export default Vue.extend({
   data(): Data {
     return {
       qrCode: "",
+      qrCodeTextField: "",
       qrScanner: undefined,
       qrTimeout: -1,
       scanning: false
@@ -67,8 +77,12 @@ export default Vue.extend({
     qrStop() {
       this.qrScanner && this.qrScanner.stop();
       this.scanning = false;
-    }
-  }
+    },
+    qrRead() {
+      this.qrCode = this.qrCodeTextField;
+      this.qrCodeTextField = "";
+    },
+  },
 });
 </script>
 
