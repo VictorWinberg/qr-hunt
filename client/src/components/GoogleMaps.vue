@@ -27,7 +27,7 @@
       <gmap-marker
         v-for="(marker, index) in markers"
         :key="index"
-        :position="marker.pos"
+        :position="{lat: parseInt(marker.lat), lng: parseInt(marker.lng)}"
         clickable
         @click="() => handleMarkerClick(marker, index)"
       />
@@ -56,9 +56,7 @@ export default Vue.extend({
       coords: { lat: 0, lng: 0 },
       user: { text: "<strong>User</strong>", pos: { lat: 0, lng: 0 } },
       markerSelected: -1,
-      markers: [
-        { text: "Lorem Ipsum", pos: { lat: 60.2064766, lng: 18.7301047 } }
-      ]
+      markers: [],
     };
   },
   watch: {
@@ -70,6 +68,7 @@ export default Vue.extend({
     if (localStorage.coords) {
       this.coords = JSON.parse(localStorage.coords);
     }
+    this.fetchGeocaches();
   },
   mounted() {
     this.$refs.mapRef.$mapPromise.then(map => (this.map = map));
@@ -96,6 +95,10 @@ export default Vue.extend({
       if (!this.map) return;
       const center = this.map.getCenter();
       this.coords = { lat: center.lat(), lng: center.lng() };
+    },
+    async fetchGeocaches() {
+      const response = await fetch("/api/geocaches");
+      this.markers = await response.json();
     }
   }
 });
