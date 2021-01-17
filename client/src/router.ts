@@ -10,18 +10,18 @@ const defaultRoutes: RouteConfig[] = [
   {
     path: "/",
     name: "Home",
-    component: Home,
+    component: Home
   },
   {
     path: "*",
-    component: NotFound,
-  },
+    component: NotFound
+  }
 ];
 
 const router = new VueRouter({
   mode: "history",
   base: process.env.BASE_URL,
-  routes: defaultRoutes,
+  routes: defaultRoutes
 });
 
 export default router;
