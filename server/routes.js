@@ -69,4 +69,11 @@ module.exports = (app, passport, { QRCode, Geocache }) => {
             return res.send(geocache);
         });
     });
+
+    app.put('/__/geocaches/:id', (req, res) => {
+        Geocache.update(req.params.id, req.body, (err, geocache) => {
+            if (err) return res.status(400).send(err);
+            return res.send(geocache);
+        });
+    });
 };
