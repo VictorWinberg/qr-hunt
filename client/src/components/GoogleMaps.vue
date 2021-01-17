@@ -2,24 +2,20 @@
   <div>
     Google Maps
     <br />
-    <h3>{{ coords }}</h3>
-    <gmap-map
-      ref="mapRef"
-      :center="coords"
-      :zoom="10"
-      :style="{ width: '500px', height: '500px', margin: 'auto' }"
-      @dragend="handleDrag"
-    >
+    <b>Map {{ mapCoords }}</b>
+    <br />
+    <b>User {{ user.coords }}</b>
+    <gmap-map ref="mapRef" :center="mapCoords" :zoom="10" @dragend="handleDrag">
       <gmap-info-window
         :options="infoWindow.options"
-        :position="infoWindow.pos"
+        :position="infoWindow.coords"
         :opened="infoWindow.open"
         @closeclick="infoWindow.open = false"
       />
 
       <gmap-marker
         label="User"
-        :position="user.pos"
+        :position="user.coords"
         clickable
         @click="() => handleMarkerClick(user, -1)"
       />
@@ -27,7 +23,7 @@
       <gmap-marker
         v-for="(marker, index) in markers"
         :key="index"
-        :position="{lat: parseInt(marker.lat), lng: parseInt(marker.lng)}"
+        :position="{ lat: parseInt(marker.lat), lng: parseInt(marker.lng) }"
         clickable
         @click="() => handleMarkerClick(marker, index)"
       />
@@ -43,7 +39,7 @@ export default Vue.extend({
     return {
       map: null,
       infoWindow: {
-        pos: null,
+        coords: null,
         open: false,
         options: {
           content: "",
@@ -53,35 +49,31 @@ export default Vue.extend({
           }
         }
       },
-      coords: { lat: 0, lng: 0 },
-      user: { text: "<strong>User</strong>", pos: { lat: 0, lng: 0 } },
+      mapCoords: { lat: 0, lng: 0 },
+      user: { text: "<strong>User</strong>", coords: { lat: 0, lng: 0 } },
       markerSelected: -1,
-      markers: [],
+      markers: []
     };
   },
   watch: {
-    coords(newCoords) {
-      localStorage.coords = JSON.stringify(newCoords);
+    mapCoords(newCoords) {
+      localStorage.mapCoords = JSON.stringify(newCoords);
     }
   },
   created() {
-    if (localStorage.coords) {
-      this.coords = JSON.parse(localStorage.coords);
+    if (localStorage.mapCoords) {
+      this.mapCoords = JSON.parse(localStorage.mapCoords);
     }
     this.fetchGeocaches();
   },
   mounted() {
     this.$refs.mapRef.$mapPromise.then(map => (this.map = map));
-
-    navigator.geolocation.getCurrentPosition(({ coords }) => {
-      this.user.pos = { lat: coords.latitude, lng: coords.longitude };
-      this.coords = this.user.pos;
-    });
+    this.watchCurrentPosition();
   },
   methods: {
-    handleMarkerClick({ pos, text }, index) {
-      this.coords = pos;
-      this.infoWindow.pos = pos;
+    handleMarkerClick({ coords, text }, index) {
+      this.map.panTo(new google.maps.LatLng(coords.lat, coords.lng));
+      this.infoWindow.coords = coords;
       this.infoWindow.options.content = text;
 
       if (this.markerSelected === index) {
@@ -94,14 +86,36 @@ export default Vue.extend({
     handleDrag() {
       if (!this.map) return;
       const center = this.map.getCenter();
-      this.coords = { lat: center.lat(), lng: center.lng() };
+      this.mapCoords = { lat: center.lat(), lng: center.lng() };
     },
     async fetchGeocaches() {
       const response = await fetch("/api/geocaches");
       this.markers = await response.json();
+    },
+    watchCurrentPosition() {
+      const watchOptions = {
+        timeout: 60 * 60 * 1000,
+        maxAge: 0,
+        enableHighAccuracy: true
+      };
+
+      navigator.geolocation.getCurrentPosition(this.setCurrentPosition);
+      navigator.geolocation.watchPosition(
+        this.setCurrentPosition,
+        console.error,
+        watchOptions
+      );
+    },
+    setCurrentPosition({ coords }) {
+      this.user.coords = { lat: coords.latitude, lng: coords.longitude };
     }
   }
 });
 </script>
 
-<style></style>
+<style lang="scss">
+.vue-map-container {
+  width: 100vw;
+  height: 50vh;
+}
+</style>
