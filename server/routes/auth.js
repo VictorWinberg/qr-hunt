@@ -5,7 +5,7 @@ module.exports = ({ app, passport }) => {
     return `${protocol}://${host}/__/auth/google/callback`;
   };
 
-  app.get("/__/auth/google", (req, res, next) => {
+  app.get("/auth/google", (req, res, next) => {
     passport.authenticate("google", {
       scope: ["profile", "email"],
       callbackURL: callback(req),
@@ -13,14 +13,14 @@ module.exports = ({ app, passport }) => {
   });
 
   // the callback after google has authenticated the user
-  app.get("/__/auth/google/callback", (req, res, next) => {
+  app.get("/auth/google/callback", (req, res, next) => {
     passport.authenticate("google", {
       successRedirect: "/",
       callbackURL: callback(req),
     })(req, res, next);
   });
 
-  app.get("/__/logout", (req, res) => {
+  app.get("/auth/logout", (req, res) => {
     req.logout();
     req.session = null;
     res.clearCookie("connect.sid");
