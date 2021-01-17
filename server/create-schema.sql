@@ -15,11 +15,11 @@ DROP TABLE IF EXISTS qrcodes CASCADE;
 CREATE TABLE qrcodes (
   uuid      VARCHAR(36)  NOT NULL,
 
-  ownerId   INT,
+  owner_id   INT,
 
   created_at TIMESTAMP DEFAULT NOW(),
 
-  FOREIGN KEY(ownerId) REFERENCES users(id) ON DELETE SET NULL,
+  FOREIGN KEY(owner_id) REFERENCES users(id) ON DELETE SET NULL,
   PRIMARY KEY (uuid)
 );
 
@@ -32,13 +32,13 @@ CREATE TABLE geocaches (
   note      VARCHAR(255),
   hint      VARCHAR(255),
 
-  qrcode     VARCHAR(36),
-  assignerId INT,
+  qrcode     VARCHAR(36)  UNIQUE,
+  assigner_id INT,
 
   created_at TIMESTAMP DEFAULT NOW(),
 
   FOREIGN KEY(qrcode) REFERENCES qrcodes(uuid) ON DELETE SET NULL,
-  FOREIGN KEY(assignerId) REFERENCES users(id) ON DELETE SET NULL,
+  FOREIGN KEY(assigner_id) REFERENCES users(id) ON DELETE SET NULL,
   PRIMARY KEY(id)
 );
 
@@ -48,12 +48,13 @@ CREATE TABLE geocaches_collected (
   score     INT           NOT NULL,
   comment   VARCHAR(255),
 
-  userId     INT,
-  geocacheId INT,
+  user_id     INT,
+  geocache_id INT,
 
   created_at TIMESTAMP DEFAULT NOW(),
 
-  FOREIGN KEY(userId) REFERENCES users(id) ON DELETE SET NULL,
-  FOREIGN KEY(geocacheId) REFERENCES geocaches(id) ON DELETE SET NULL,
+  FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE SET NULL,
+  FOREIGN KEY(geocache_id) REFERENCES geocaches(id) ON DELETE SET NULL,
+  UNIQUE (user_id, geocache_id),
   PRIMARY KEY(id)
 );
