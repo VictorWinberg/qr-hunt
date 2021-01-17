@@ -12,4 +12,12 @@ module.exports = ({ app, pg }) => {
       return res.send(user);
     });
   });
+
+  app.delete('/__/users/:id', (req, res) => {
+    User.delete(req.params.id, (err, user) => {
+      if (err) return res.status(400).send(err);
+      if (!user) return res.sendStatus(404);
+      return res.send(user);
+    });
+  });
 };
