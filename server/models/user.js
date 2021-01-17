@@ -26,5 +26,12 @@ module.exports = client => ({
             .query('SELECT * FROM users')
             .then(({ rows }) => done(null, rows || []))
             .catch(({ severity, message }) => done({ query, severity, message }));
-    }
+    },
+    
+    delete(id, done) {
+        client
+            .query('DELETE FROM users WHERE id = $1 RETURNING *', [id])
+            .then(({ rows }) => done(null, rows[0] || null))
+            .catch(({ severity, message }) => done({ query, severity, message }));
+    },
 });
