@@ -20,4 +20,11 @@ module.exports = client => ({
             .then(({ rows }) => done(null, rows[0] || null))
             .catch(({ severity, message }) => done({ query, severity, message }));
     },
+
+    getAll(done) {
+        client
+            .query('SELECT * FROM users')
+            .then(({ rows }) => done(null, rows || []))
+            .catch(({ severity, message }) => done({ query, severity, message }));
+    }
 });
