@@ -2,7 +2,7 @@ module.exports = ({ app, passport }) => {
   const callback = (req) => {
     const host = req.get("host");
     const protocol = req.headers["x-forwarded-proto"] || req.protocol;
-    return `${protocol}://${host}/__/auth/google/callback`;
+    return `${protocol}://${host}/auth/google/callback`;
   };
 
   app.get("/auth/google", (req, res, next) => {

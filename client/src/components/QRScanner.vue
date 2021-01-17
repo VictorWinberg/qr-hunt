@@ -78,8 +78,19 @@ export default Vue.extend({
       this.qrScanner && this.qrScanner.stop();
       this.scanning = false;
     },
-    qrRead() {
+    async qrRead() {
       this.qrCode = this.qrCodeTextField;
+      const data = { comment: "Lovely!", score: 5, qrcode: this.qrCode } // eslint-disable-line
+      const response = await fetch("/api/geocaches_collected",
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+      // TODO: const result = await response.json();
+      
       this.qrCodeTextField = "";
     },
   },
