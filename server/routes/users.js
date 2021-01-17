@@ -20,4 +20,11 @@ module.exports = ({ app, pg }) => {
       return res.send(user);
     });
   });
+
+  app.get("/api/users", (_, res) => {
+    User.getAll((err, users) => {
+      if (err) return res.status(400).send(err);
+      return res.send(users);
+    });
+  });
 };
