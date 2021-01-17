@@ -102,6 +102,7 @@ export default Vue.extend({
       navigator.geolocation.getCurrentPosition(this.setCurrentPosition);
       navigator.geolocation.watchPosition(
         this.setCurrentPosition,
+        // eslint-disable-next-line no-console
         console.error,
         watchOptions
       );
