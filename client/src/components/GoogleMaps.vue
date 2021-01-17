@@ -5,7 +5,13 @@
     <b>Map {{ mapCoords }}</b>
     <br />
     <b>User {{ user.coords }}</b>
-    <gmap-map ref="mapRef" :center="mapCoords" :zoom="10" @dragend="handleDrag">
+    <gmap-map
+      ref="mapRef"
+      :center="mapCoords"
+      :zoom="mapZoom"
+      @dragend="handleDrag"
+      @zoom_changed="handleZoom"
+    >
       <gmap-info-window
         :options="infoWindow.options"
         :position="infoWindow.coords"
@@ -14,7 +20,7 @@
       />
 
       <gmap-marker
-        label="User"
+        label="Me"
         :position="user.coords"
         clickable
         @click="() => handleMarkerClick(user, -1)"
@@ -50,7 +56,11 @@ export default Vue.extend({
         }
       },
       mapCoords: { lat: 0, lng: 0 },
-      user: { text: "<strong>User</strong>", coords: { lat: 0, lng: 0 } },
+      mapZoom: 15,
+      user: {
+        text: "<strong>Hello I'm a info box</strong>",
+        coords: { lat: 0, lng: 0 }
+      },
       markerSelected: -1,
       markers: []
     };
@@ -58,16 +68,22 @@ export default Vue.extend({
   watch: {
     mapCoords(newCoords) {
       localStorage.mapCoords = JSON.stringify(newCoords);
+    },
+    mapZoom(newZoom) {
+      localStorage.mapZoom = newZoom;
     }
   },
   created() {
     if (localStorage.mapCoords) {
       this.mapCoords = JSON.parse(localStorage.mapCoords);
     }
+    if (localStorage.mapZoom) {
+      this.mapZoom = Number(localStorage.mapZoom);
+    }
     this.fetchGeocaches();
   },
-  mounted() {
-    this.$refs.mapRef.$mapPromise.then(map => (this.map = map));
+  async mounted() {
+    this.map = await this.$refs.mapRef.$mapPromise;
     this.watchCurrentPosition();
   },
   methods: {
@@ -88,6 +104,9 @@ export default Vue.extend({
       const center = this.map.getCenter();
       this.mapCoords = { lat: center.lat(), lng: center.lng() };
     },
+    handleZoom(zoom) {
+      this.mapZoom = zoom;
+    },
     async fetchGeocaches() {
       const response = await fetch("/api/geocaches");
       this.markers = await response.json();
@@ -99,7 +118,12 @@ export default Vue.extend({
         enableHighAccuracy: true
       };
 
-      navigator.geolocation.getCurrentPosition(this.setCurrentPosition);
+      navigator.geolocation.getCurrentPosition(({ coords }) => {
+        this.map.panTo(
+          new google.maps.LatLng(coords.latitude, coords.longitude)
+        );
+        this.setCurrentPosition({ coords });
+      });
       navigator.geolocation.watchPosition(
         this.setCurrentPosition,
         // eslint-disable-next-line no-console

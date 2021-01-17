@@ -16,9 +16,9 @@
     <br />
     <!-- dedugging QR Code -->
     <div>
-        <label for="fname">WRITE QR-CODE: </label>
-        <input v-model="qrCodeTextField" type="text" id="fname" name="fname" />
-        <button @click="qrRead()">QR READ</button>
+      <label for="fname">WRITE QR-CODE: </label>
+      <input id="fname" v-model="qrCodeTextField" type="text" name="fname" />
+      <button @click="qrRead()">QR READ</button>
     </div>
     <!-- result of QR Scanner -->
     <h3>QR Code: <br />{{ qrCode }}</h3>
@@ -36,7 +36,7 @@ QRScanner.WORKER_PATH = QrScannerWorkerPath;
 
 interface Data {
   qrCode: string;
-  qrCodeTextField: string,
+  qrCodeTextField: string;
   qrScanner?: QRScanner;
   qrTimeout: number;
   scanning: boolean;
@@ -80,20 +80,19 @@ export default Vue.extend({
     },
     async qrRead() {
       this.qrCode = this.qrCodeTextField;
-      const data = { comment: "Lovely!", score: 5, qrcode: this.qrCode } // eslint-disable-line
-      const response = await fetch("/api/geocaches_collected",
-      {
-        method: 'POST',
+      const data = { comment: "Lovely!", score: 5, qrcode: this.qrCode }; // eslint-disable-line
+      const response = await fetch("/api/geocaches_collected", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json"
         },
         body: JSON.stringify(data)
       });
       // TODO: const result = await response.json();
-      
+
       this.qrCodeTextField = "";
-    },
-  },
+    }
+  }
 });
 </script>
 
