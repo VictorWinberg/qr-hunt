@@ -6,6 +6,8 @@ CREATE TABLE users (
   email     VARCHAR(255)  NOT NULL UNIQUE,
   photo     VARCHAR(255),
 
+  created_at TIMESTAMP DEFAULT NOW(),
+
   PRIMARY KEY (id)
 );
 
@@ -14,6 +16,8 @@ CREATE TABLE qrcodes (
   uuid      VARCHAR(36)  NOT NULL,
 
   ownerId   INT,
+
+  created_at TIMESTAMP DEFAULT NOW(),
 
   FOREIGN KEY(ownerId) REFERENCES users(id) ON DELETE SET NULL,
   PRIMARY KEY (uuid)
@@ -31,6 +35,8 @@ CREATE TABLE geocaches (
   qrcode     VARCHAR(36),
   assignerId INT,
 
+  created_at TIMESTAMP DEFAULT NOW(),
+
   FOREIGN KEY(qrcode) REFERENCES qrcodes(uuid) ON DELETE SET NULL,
   FOREIGN KEY(assignerId) REFERENCES users(id) ON DELETE SET NULL,
   PRIMARY KEY(id)
@@ -44,6 +50,8 @@ CREATE TABLE geocaches_collected (
 
   userId     INT,
   geocacheId INT,
+
+  created_at TIMESTAMP DEFAULT NOW(),
 
   FOREIGN KEY(userId) REFERENCES users(id) ON DELETE SET NULL,
   FOREIGN KEY(geocacheId) REFERENCES geocaches(id) ON DELETE SET NULL,
