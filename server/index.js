@@ -4,7 +4,7 @@ const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const dotenv = require("dotenv");
 const path = require("path");
-const pg = require("pg");
+const { Client: PGClient } = require("pg");
 const passport = require("passport");
 
 dotenv.config({ path: path.resolve(__dirname, "..", ".env") });
@@ -36,18 +36,18 @@ app.use(passport.session());
 app.use(express.static(path.resolve(__dirname, "..", "client", "dist")));
 
 // connect to our database
-const client = new pg.Client(DATABASE_URL);
-client.connect();
-
-// load models
-const User = require('./models/user')(client);
-const QRCode = require('./models/qrcode')(client);
-const Geocache = require('./models/geocache')(client);
+const pg = new PGClient(DATABASE_URL);
+pg.connect();
 
 // authentication
-require('./passport')(passport, User);
+require('./passport')(passport, pg);
 
 // routes
-require('./routes.js')(app, passport, { QRCode, Geocache });
+const isLoggedIn = (req, res, next) => req.isAuthenticated() ? next() : res.sendStatus(401);
+const props = { app, passport, pg, isLoggedIn }
+require('./routes/auth')(props);
+require('./routes/geocaches')(props);
+require('./routes/qrcodes')(props);
+require('./routes/users')(props);
 
 app.listen(PORT || 3000, () => console.log(`App running on port ${PORT || 3000}!`));

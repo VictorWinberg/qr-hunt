@@ -1,10 +1,12 @@
-const GoogleStrategy = require("passport-google-oauth").OAuth2Strategy;
-
 const { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } = process.env;
+
+const GoogleStrategy = require("passport-google-oauth").OAuth2Strategy;
 
 const get = (p, o) => p.reduce((xs, x) => (xs && xs[x] ? xs[x] : null), o);
 
-module.exports = (passport, User) => {
+module.exports = (passport, pg) => {
+    const User = require('./models/user')(pg);
+
     // used to serialize the user for the session
     passport.serializeUser((user, done) => done(null, user.id));
 
