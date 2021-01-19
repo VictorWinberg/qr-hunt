@@ -19,7 +19,7 @@ CREATE TABLE qrcodes (
 
   created_at TIMESTAMP DEFAULT NOW(),
 
-  FOREIGN KEY(owner_id) REFERENCES users(id) ON DELETE SET NULL,
+  FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE SET NULL,
   PRIMARY KEY (uuid)
 );
 
@@ -37,9 +37,9 @@ CREATE TABLE geocaches (
 
   created_at TIMESTAMP DEFAULT NOW(),
 
-  FOREIGN KEY(qrcode) REFERENCES qrcodes(uuid) ON DELETE SET NULL,
-  FOREIGN KEY(assigner_id) REFERENCES users(id) ON DELETE SET NULL,
-  PRIMARY KEY(id)
+  FOREIGN KEY (qrcode) REFERENCES qrcodes(uuid) ON DELETE SET NULL,
+  FOREIGN KEY (assigner_id) REFERENCES users(id) ON DELETE SET NULL,
+  PRIMARY KEY (id)
 );
 
 DROP TABLE IF EXISTS geocaches_collected CASCADE;
@@ -53,8 +53,31 @@ CREATE TABLE geocaches_collected (
 
   created_at TIMESTAMP DEFAULT NOW(),
 
-  FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE SET NULL,
-  FOREIGN KEY(geocache_id) REFERENCES geocaches(id) ON DELETE SET NULL,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL,
+  FOREIGN KEY (geocache_id) REFERENCES geocaches(id) ON DELETE SET NULL,
   UNIQUE (user_id, geocache_id),
-  PRIMARY KEY(id)
+  PRIMARY KEY (id)
+);
+
+DROP TABLE IF EXISTS achievements CASCADE;
+CREATE TABLE achievements (
+  name      VARCHAR(36)   NOT NULL,
+  title     VARCHAR(50)   NOT NULL,
+  score     INT,
+  level     INT,
+
+  created_at TIMESTAMP DEFAULT NOW(),
+
+  PRIMARY KEY (name)
+);
+
+DROP TABLE IF EXISTS user_achievements CASCADE;
+CREATE TABLE user_achievements (
+  user_id          INT,
+  achievement_name VARCHAR(36),
+
+  created_at TIMESTAMP DEFAULT NOW(),
+
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  PRIMARY KEY (user_id, achievement_name)
 );

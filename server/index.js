@@ -7,6 +7,8 @@ const path = require("path");
 const { Client: PGClient } = require("pg");
 const passport = require("passport");
 
+const achievements = require("./achievements");
+
 dotenv.config({ path: path.resolve(__dirname, "..", ".env") });
 
 const { PORT, DATABASE_URL, SESSION_SECRET_KEY1, SESSION_SECRET_KEY2 } = process.env;
@@ -42,9 +44,14 @@ pg.connect();
 // authentication
 require('./passport')(passport, pg);
 
-// routes
+// helpers
 const isLoggedIn = (req, res, next) => req.isAuthenticated() ? next() : res.sendStatus(401);
 const props = { app, passport, pg, isLoggedIn }
+
+// achievements
+app.use(achievements(props));
+
+// routes
 require('./routes/auth')(props);
 require('./routes/geocaches')(props);
 require('./routes/geocachesCollected')(props);
