@@ -11,4 +11,8 @@ jobs:
       - uses: hmarr/auto-approve-action@v2.0.0
         if: github.event.action == 'labeled' && github.event.label.name == 'Approved'
         with:
-          github-token: "${{ secrets.GITHUB_TOKEN }}"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions-ecosystem/action-remove-labels@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          labels: Approved
