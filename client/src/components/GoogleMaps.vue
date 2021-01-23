@@ -29,7 +29,7 @@
       <gmap-marker
         v-for="(marker, index) in markers"
         :key="index"
-        :position="{ lat: parseInt(marker.lat), lng: parseInt(marker.lng) }"
+        :position="{ lat: Number(marker.lat), lng: Number(marker.lng) }"
         clickable
         @click="() => handleMarkerClick(marker, index)"
       />
