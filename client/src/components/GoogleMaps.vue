@@ -33,16 +33,21 @@
         clickable
         @click="() => handleMarkerClick(marker, index)"
       />
+      <div id="center-button" @click="centerMapToUser()">
+        <img alt="My Location" class="my-location-icon" :src="myLocationIcon"/>
+      </div>
     </gmap-map>
   </div>
 </template>
 
 <script>
 import Vue from "vue";
+import myLocationIcon from "./../assets/my-location.png";
 
 export default Vue.extend({
   data() {
     return {
+      myLocationIcon,
       map: null,
       infoWindow: {
         coords: null,
@@ -85,8 +90,19 @@ export default Vue.extend({
   async mounted() {
     this.map = await this.$refs.mapRef.$mapPromise;
     this.watchCurrentPosition();
+    this.createElements();
   },
   methods: {
+    async fetchGeocaches() {
+      const response = await fetch("/api/geocaches");
+      this.markers = await response.json();
+    },
+    createElements(){
+      /** Create button for centering position at user */
+      const centerControlDiv = document.getElementById("center-button");
+      this.map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(centerControlDiv);
+      this.centerMapToUser();
+    },
     handleMarkerClick({ coords, text }, index) {
       this.map.panTo(new google.maps.LatLng(coords.lat, coords.lng));
       this.infoWindow.coords = coords;
@@ -106,10 +122,6 @@ export default Vue.extend({
     },
     handleZoom(zoom) {
       this.mapZoom = zoom;
-    },
-    async fetchGeocaches() {
-      const response = await fetch("/api/geocaches");
-      this.markers = await response.json();
     },
     watchCurrentPosition() {
       const watchOptions = {
@@ -133,7 +145,10 @@ export default Vue.extend({
     },
     setCurrentPosition({ coords }) {
       this.user.coords = { lat: coords.latitude, lng: coords.longitude };
-    }
+    },
+    centerMapToUser() {
+      this.map.panTo(new google.maps.LatLng(this.user.coords));
+    },
   }
 });
 </script>
@@ -142,5 +157,22 @@ export default Vue.extend({
 .vue-map-container {
   width: 100vw;
   height: 50vh;
+}
+
+#center-button {
+  cursor: pointer;
+  background-color: rgb(255, 255, 255);
+  box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 4px -1px;
+  border-radius: 2px;
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .my-location-icon {
+    width: 70%;
+  }
 }
 </style>
