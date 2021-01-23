@@ -30,7 +30,6 @@ import Vue from "vue";
 import QRCode from "qrcode";
 import QRScanner from "qr-scanner";
 
-// eslint-disable-next-line import/no-webpack-loader-syntax
 import QrScannerWorkerPath from "!!file-loader!../../node_modules/qr-scanner/qr-scanner-worker.min.js";
 QRScanner.WORKER_PATH = QrScannerWorkerPath;
 
