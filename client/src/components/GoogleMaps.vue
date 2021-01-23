@@ -4,7 +4,7 @@
     <br />
     <b>Map {{ mapCoords }}</b>
     <br />
-    <b>User {{ user.coords }}</b>
+    <b>User {{ userCoords }}</b>
     <gmap-map
       ref="mapRef"
       :center="mapCoords"
@@ -21,9 +21,9 @@
 
       <gmap-marker
         label="Me"
-        :position="user.coords"
+        :position="userCoords"
         clickable
-        @click="() => handleMarkerClick(user, -1)"
+        @click="() => handleMarkerClick(userCoords, -1)"
       />
 
       <gmap-marker
@@ -33,16 +33,22 @@
         clickable
         @click="() => handleMarkerClick(marker, index)"
       />
+      <div id="center-button" @click="centerMapToUser()">
+        <img alt="My Location" class="my-location-icon" :src="myLocationIcon" />
+      </div>
     </gmap-map>
   </div>
 </template>
 
 <script>
 import Vue from "vue";
+import myLocationIcon from "./../assets/my-location.png";
 
 export default Vue.extend({
   data() {
+    const { mapCoords, mapZoom, userCoords } = localStorage;
     return {
+      myLocationIcon,
       map: null,
       infoWindow: {
         coords: null,
@@ -55,12 +61,9 @@ export default Vue.extend({
           }
         }
       },
-      mapCoords: { lat: 0, lng: 0 },
-      mapZoom: 15,
-      user: {
-        text: "<strong>Hello I'm a info box</strong>",
-        coords: { lat: 0, lng: 0 }
-      },
+      mapCoords: mapCoords ? JSON.parse(mapCoords) : { lat: 0, lng: 0 },
+      mapZoom: mapZoom ? Number(mapZoom) : 15,
+      userCoords: userCoords ? JSON.parse(userCoords) : { lat: 0, lng: 0 },
       markerSelected: -1,
       markers: []
     };
@@ -71,25 +74,33 @@ export default Vue.extend({
     },
     mapZoom(newZoom) {
       localStorage.mapZoom = newZoom;
+    },
+    userCoords(newCoords) {
+      localStorage.userCoords = JSON.stringify(newCoords);
     }
   },
   created() {
-    if (localStorage.mapCoords) {
-      this.mapCoords = JSON.parse(localStorage.mapCoords);
-    }
-    if (localStorage.mapZoom) {
-      this.mapZoom = Number(localStorage.mapZoom);
-    }
     this.fetchGeocaches();
   },
   async mounted() {
     this.map = await this.$refs.mapRef.$mapPromise;
     this.watchCurrentPosition();
+    this.createMapElements();
   },
   methods: {
-    handleMarkerClick({ coords, text }, index) {
-      this.map.panTo(new google.maps.LatLng(coords.lat, coords.lng));
-      this.infoWindow.coords = coords;
+    async fetchGeocaches() {
+      const response = await fetch("/api/geocaches");
+      this.markers = await response.json();
+    },
+    createMapElements() {
+      /** Create button for centering position at user */
+      const centerControlDiv = document.getElementById("center-button");
+      const { RIGHT_BOTTOM } = google.maps.ControlPosition;
+      this.map.controls[RIGHT_BOTTOM].push(centerControlDiv);
+    },
+    handleMarkerClick({ lat, lng, text }, index) {
+      this.map.panTo(new google.maps.LatLng(lat, lng));
+      this.infoWindow.coords = { lat: Number(lat), lng: Number(lng) };
       this.infoWindow.options.content = text;
 
       if (this.markerSelected === index) {
@@ -106,10 +117,6 @@ export default Vue.extend({
     },
     handleZoom(zoom) {
       this.mapZoom = zoom;
-    },
-    async fetchGeocaches() {
-      const response = await fetch("/api/geocaches");
-      this.markers = await response.json();
     },
     watchCurrentPosition() {
       const watchOptions = {
@@ -132,7 +139,10 @@ export default Vue.extend({
       );
     },
     setCurrentPosition({ coords }) {
-      this.user.coords = { lat: coords.latitude, lng: coords.longitude };
+      this.userCoords = { lat: coords.latitude, lng: coords.longitude };
+    },
+    centerMapToUser() {
+      this.map.panTo(new google.maps.LatLng(this.userCoords));
     }
   }
 });
@@ -142,5 +152,22 @@ export default Vue.extend({
 .vue-map-container {
   width: 100vw;
   height: 50vh;
+}
+
+#center-button {
+  cursor: pointer;
+  background-color: rgb(255, 255, 255);
+  box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 4px -1px;
+  border-radius: 2px;
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .my-location-icon {
+    width: 70%;
+  }
 }
 </style>
