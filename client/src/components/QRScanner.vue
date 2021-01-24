@@ -30,6 +30,7 @@ import Vue from "vue";
 import QRCode from "qrcode";
 import QRScanner from "qr-scanner";
 
+// eslint-disable-next-line no-undef
 QRScanner.WORKER_PATH = QrScannerWorkerPath;
 
 interface Data {

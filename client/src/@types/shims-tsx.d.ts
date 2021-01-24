@@ -2,6 +2,8 @@
 import Vue, { VNode } from "vue";
 
 declare global {
+  const QrScannerWorkerPath: any;
+  const google: any;
   namespace JSX {
     // eslint-disable-next-line @typescript-eslint/no-empty-interface
     interface Element extends VNode {}
