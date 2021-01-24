@@ -23,14 +23,15 @@ CREATE TABLE qrcodes (
   PRIMARY KEY (uuid)
 );
 
-DROP TABLE IF EXISTS geocaches CASCADE;
-CREATE TABLE geocaches (
+DROP TABLE IF EXISTS qrspots CASCADE;
+CREATE TABLE qrspots (
   id        SERIAL        NOT NULL,
   title     VARCHAR(50)   NOT NULL,
   lat       DECIMAL       NOT NULL,
   lng       DECIMAL       NOT NULL,
   note      VARCHAR(255),
   hint      VARCHAR(255),
+  score     INT,
 
   qrcode     VARCHAR(36)  UNIQUE,
   assigner_id INT,
@@ -42,20 +43,20 @@ CREATE TABLE geocaches (
   PRIMARY KEY (id)
 );
 
-DROP TABLE IF EXISTS geocaches_collected CASCADE;
-CREATE TABLE geocaches_collected (
+DROP TABLE IF EXISTS qrshards CASCADE;
+CREATE TABLE qrshards (
   id        SERIAL        NOT NULL,
-  score     INT           NOT NULL,
+  rating    INT           NOT NULL,
   comment   VARCHAR(255),
 
   user_id     INT,
-  geocache_id INT,
+  qrspot_id INT,
 
   created_at TIMESTAMP DEFAULT NOW(),
 
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL,
-  FOREIGN KEY (geocache_id) REFERENCES geocaches(id) ON DELETE SET NULL,
-  UNIQUE (user_id, geocache_id),
+  FOREIGN KEY (qrspot_id) REFERENCES qrspots(id) ON DELETE SET NULL,
+  UNIQUE (user_id, qrspot_id),
   PRIMARY KEY (id)
 );
 

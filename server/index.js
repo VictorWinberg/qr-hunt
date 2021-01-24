@@ -64,8 +64,8 @@ app.use(achievements(props));
 
 // routes
 require("./routes/auth")(props);
-require("./routes/geocaches")(props);
-require("./routes/geocachesCollected")(props);
+require("./routes/qrspots")(props);
+require("./routes/qrshards")(props);
 require("./routes/qrcodes")(props);
 require("./routes/users")(props);
 

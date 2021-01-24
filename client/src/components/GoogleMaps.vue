@@ -80,7 +80,7 @@ export default Vue.extend({
     }
   },
   created() {
-    this.fetchGeocaches();
+    this.fetchQRSpots();
   },
   async mounted() {
     this.map = await this.$refs.mapRef.$mapPromise;
@@ -88,8 +88,8 @@ export default Vue.extend({
     this.createMapElements();
   },
   methods: {
-    async fetchGeocaches() {
-      const response = await fetch("/api/geocaches");
+    async fetchQRSpots() {
+      const response = await fetch("/api/qrspots");
       this.markers = await response.json();
     },
     createMapElements() {

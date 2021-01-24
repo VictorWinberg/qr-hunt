@@ -81,7 +81,7 @@ export default Vue.extend({
     async qrRead() {
       this.qrCode = this.qrCodeTextField;
       const data = { comment: "Lovely!", score: 5, qrcode: this.qrCode }; // eslint-disable-line
-      const response = await fetch("/api/geocaches_collected", {
+      const response = await fetch("/api/qrshards", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
