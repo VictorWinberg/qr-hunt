@@ -67,6 +67,7 @@ require("./routes/auth")(props);
 require("./routes/qrspots")(props);
 require("./routes/qrshards")(props);
 require("./routes/qrcodes")(props);
+require("./routes/scan")(props);
 require("./routes/users")(props);
 
 app.listen(PORT || 3000, () =>
