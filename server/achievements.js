@@ -20,7 +20,9 @@ module.exports = ({ pg }) => async (req, res, next) => {
     }
   };
 
-  if (req.user && req.url === "/api/achievements") {
+  if (req.url === "/api/achievements") {
+    if (!req.isAuthenticated()) res.sendStatus(401);
+
     const achievements = await db(
       `SELECT achievement_name as name, title, score, level, user_achievements.created_at
        FROM user_achievements
