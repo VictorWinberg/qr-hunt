@@ -1,24 +1,21 @@
-module.exports = ({ app, pg, isLoggedIn }) => {
-  const Geocache = require("../models/geocache")(pg);
+module.exports = ({ app, db, isLoggedIn }) => {
+  const Geocache = require("../models/geocache")(db);
 
-  app.get("/api/geocaches", (_, res) => {
-    Geocache.getAll((err, geocaches) => {
-      if (err) return res.status(400).send(err);
-      return res.send(geocaches);
-    });
+  app.get("/api/geocaches", async (_, res) => {
+    const { geocaches, err } = await Geocache.getAll();
+    if (err) return res.status(400).send(err);
+    return res.send(geocaches);
   });
 
-  app.post("/api/geocaches", isLoggedIn, (req, res) => {
-    Geocache.create(req.body, (err, geocache) => {
-      if (err) return res.status(400).send(err);
-      return res.send(geocache);
-    });
+  app.post("/api/geocaches", isLoggedIn, async (req, res) => {
+    const { geocache, err } = await Geocache.create(req.body);
+    if (err) return res.status(400).send(err);
+    return res.send(geocache);
   });
 
-  app.put("/api/geocaches/:id", isLoggedIn, (req, res) => {
-    Geocache.update(req.params.id, req.body, (err, geocache) => {
-      if (err) return res.status(400).send(err);
-      return res.send(geocache);
-    });
+  app.put("/api/geocaches/:id", isLoggedIn, async (req, res) => {
+    const { geocache, err } = await Geocache.update(req.params.id, req.body);
+    if (err) return res.status(400).send(err);
+    return res.send(geocache);
   });
 };

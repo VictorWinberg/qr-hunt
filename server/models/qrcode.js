@@ -1,17 +1,19 @@
-module.exports = client => ({
-    create({ uuid }, done) {
-        const query = 'INSERT INTO qrcodes (uuid) VALUES ($1) RETURNING *';
+module.exports = (db) => ({
+  create: async ({ uuid }) => {
+    const sql = "INSERT INTO qrcodes (uuid) VALUES ($1) RETURNING *";
+    const { rows, err } = await db.query(sql, [uuid]);
+    return { qrcode: rows[0], err };
+  },
 
-        client
-            .query(query, [uuid])
-            .then(({ rows }) => done(null, rows[0] || null))
-            .catch(({ severity, message }) => done({ query, severity, message }));
-    },
+  getAll: async () => {
+    const sql = "SELECT * FROM qrcodes";
+    const { rows, err } = await db.query(sql);
+    return { qrcodes: rows, err };
+  },
 
-    getAll(done) {
-        client
-            .query('SELECT * FROM qrcodes')
-            .then(({ rows }) => done(null, rows || []))
-            .catch(({ severity, message }) => done({ query, severity, message }));
-    }
+  getByUUID: async (uuid) => {
+    const sql = "SELECT * FROM qrcodes WHERE uuid = $1";
+    const { rows, err } = await db.query(sql, [uuid]);
+    return { qrcode: rows[0], err };
+  },
 });

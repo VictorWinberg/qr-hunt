@@ -1,37 +1,33 @@
-module.exports = client => ({
-    create({ name, email, photo }, done) {
-        const query = 'INSERT INTO users (name, email, photo) VALUES ($1, $2, $3) RETURNING *';
-        client
-            .query(query, [name, email, photo])
-            .then(({ rows }) => done(null, rows[0] || null))
-            .catch(({ severity, message }) => done({ query, severity, message }));
-    },
+module.exports = (db) => ({
+  create: async ({ name, email, photo }) => {
+    const sql = `
+        INSERT INTO users (name, email, photo)
+        VALUES ($1, $2, $3) RETURNING *`;
+    const { rows, err } = await db.query(sql, [name, email, photo]);
+    return { user: rows[0], err };
+  },
 
-    getById(userId, done) {
-        client
-            .query('SELECT * FROM users WHERE id = $1', [userId])
-            .then(({ rows }) => done(null, rows[0] || null))
-            .catch(({ severity, message }) => done({ query, severity, message }));
-    },
+  getById: async (userId) => {
+    const sql = "SELECT * FROM users WHERE id = $1";
+    const { rows, err } = await db.query(sql, [userId]);
+    return { user: rows[0], err };
+  },
 
-    getByEmail(email, done) {
-        client
-            .query('SELECT * FROM users WHERE email = $1', [email])
-            .then(({ rows }) => done(null, rows[0] || null))
-            .catch(({ severity, message }) => done({ query, severity, message }));
-    },
+  getByEmail: async (email) => {
+    const sql = "SELECT * FROM users WHERE email = $1";
+    const { rows, err } = await db.query(sql, [email]);
+    return { user: rows[0], err };
+  },
 
-    getAll(done) {
-        client
-            .query('SELECT * FROM users')
-            .then(({ rows }) => done(null, rows || []))
-            .catch(({ severity, message }) => done({ query, severity, message }));
-    },
-    
-    delete(id, done) {
-        client
-            .query('DELETE FROM users WHERE id = $1 RETURNING *', [id])
-            .then(({ rows }) => done(null, rows[0] || null))
-            .catch(({ severity, message }) => done({ query, severity, message }));
-    },
+  getAll: async () => {
+    const sql = "SELECT * FROM users";
+    const { rows, err } = await db.query(sql);
+    return { users: rows, err };
+  },
+
+  delete: async (id) => {
+    const sql = "DELETE FROM users WHERE id = $1 RETURNING *";
+    const { rows, err } = await db.query(sql, [id]);
+    return { user: rows[0], err };
+  },
 });

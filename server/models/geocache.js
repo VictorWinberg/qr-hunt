@@ -1,31 +1,32 @@
-const valid = ['title', 'lat', 'lng', 'note', 'hint', 'qrcode', 'assigner_id'];
-const keyValuePairs = require('./utils').keyValuePairs(valid)
+const valid = ["title", "lat", "lng", "note", "hint", "qrcode", "assigner_id"];
+const keyValuePairs = require("../utils").keyValuePairs(valid);
 
-module.exports = client => ({
-    create(geocache, done) {
-        const { keys, values, indices } = keyValuePairs(geocache);
-        const query = `INSERT INTO geocaches ( ${keys} ) VALUES ( ${indices} ) RETURNING *`;
+module.exports = (db) => ({
+  create: async (geocache) => {
+    const { keys, values, indices } = keyValuePairs(geocache);
+    const sql = `INSERT INTO geocaches ( ${keys} ) VALUES ( ${indices} ) RETURNING *`;
 
-        client
-            .query(query, values)
-            .then(({ rows }) => done(null, rows[0] || null))
-            .catch(({ severity, message }) => done({ query, severity, message }));
-    },
+    const { rows, err } = await db.query(sql, values);
+    return { geocache: rows[0], err };
+  },
 
-    update(id, geocache, done) {
-        const { keyIndices, values } = keyValuePairs(geocache);
-        const query = `UPDATE geocaches SET ${keyIndices} WHERE id = ${id} RETURNING *`;
+  update: async (id, geocache) => {
+    const { keyIndices, values } = keyValuePairs(geocache);
+    const sql = `UPDATE geocaches SET ${keyIndices} WHERE id = ${id} RETURNING *`;
 
-        client
-            .query(query, values)
-            .then(({ rows }) => done(null, rows[0] || null))
-            .catch(({ severity, message }) => done({ query, severity, message }));
-    },
+    const { rows, err } = await db.query(sql, values);
+    return { geocache: rows[0], err };
+  },
 
-    getAll(done) {
-        client
-            .query('SELECT * FROM geocaches')
-            .then(({ rows }) => done(null, rows || []))
-            .catch(({ severity, message }) => done({ query, severity, message }));
-    }
+  getAll: async () => {
+    const sql = "SELECT * FROM geocaches";
+    const { rows, err } = await db.query(sql);
+    return { geocaches: rows, err };
+  },
+
+  getByQRCode: async (qrcode) => {
+    const sql = "SELECT * FROM geocaches WHERE qrcode = $1";
+    const { rows, err } = await db.query(sql, [qrcode]);
+    return { geocache: rows[0], err };
+  },
 });
