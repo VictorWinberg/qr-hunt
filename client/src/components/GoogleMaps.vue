@@ -5,28 +5,29 @@
     <b>Map {{ mapCoords }}</b>
     <br />
     <b>User {{ userCoords }}</b>
-    <gmap-map
+    <GmapMap
       ref="mapRef"
       :center="mapCoords"
       :zoom="mapZoom"
+      :options="{gestureHandling: 'greedy'}"
       @dragend="handleDrag"
       @zoom_changed="handleZoom"
     >
-      <gmap-info-window
+      <GmapInfoWindow
         :options="infoWindow.options"
         :position="infoWindow.coords"
         :opened="infoWindow.open"
         @closeclick="infoWindow.open = false"
       />
 
-      <gmap-marker
+      <GmapMarker
         label="Me"
         :position="userCoords"
         clickable
         @click="() => handleMarkerClick(userCoords, -1)"
       />
 
-      <gmap-marker
+      <GmapMarker
         v-for="(marker, index) in markers"
         :key="index"
         :position="{ lat: Number(marker.lat), lng: Number(marker.lng) }"
@@ -36,7 +37,7 @@
       <div id="center-button" @click="centerMapToUser()">
         <img alt="My Location" class="my-location-icon" :src="myLocationIcon" />
       </div>
-    </gmap-map>
+    </GmapMap>
   </div>
 </template>
 
