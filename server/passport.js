@@ -13,6 +13,8 @@ module.exports = (passport, db) => {
   // used to deserialize the user
   passport.deserializeUser(async (id, done) => {
     const { user, err } = await User.getById(id);
+    if (err) return done(err);
+    if (!user) return done(null, false, { message: "User not found" });
     return done(err, user);
   });
 
