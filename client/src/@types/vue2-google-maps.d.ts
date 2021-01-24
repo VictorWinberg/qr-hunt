@@ -3,3 +3,9 @@ declare module "vue2-google-maps" {
   export const install: PluginFunction<{}>;
   /// <reference types="@types/googlemaps" />
 }
+
+declare global {
+  namespace JSX {
+    const google: any;
+  }
+}
