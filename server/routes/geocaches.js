@@ -8,14 +8,14 @@ module.exports = ({ app, pg, isLoggedIn }) => {
     });
   });
 
-  app.post("/api/geocaches", (req, res) => {
+  app.post("/api/geocaches", isLoggedIn, (req, res) => {
     Geocache.create(req.body, (err, geocache) => {
       if (err) return res.status(400).send(err);
       return res.send(geocache);
     });
   });
 
-  app.put("/api/geocaches/:id", (req, res) => {
+  app.put("/api/geocaches/:id", isLoggedIn, (req, res) => {
     Geocache.update(req.params.id, req.body, (err, geocache) => {
       if (err) return res.status(400).send(err);
       return res.send(geocache);

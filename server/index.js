@@ -45,8 +45,13 @@ pg.connect();
 require('./passport')(passport, pg);
 
 // helpers
-const isLoggedIn = (req, res, next) => req.isAuthenticated() ? next() : res.sendStatus(401);
-const props = { app, passport, pg, isLoggedIn }
+const isLoggedIn = (req, res, next) => {
+  if (!req.isAuthenticated() && NODE_ENV === "production") {
+    return res.sendStatus(401);
+  }
+  return next();
+};
+const props = { app, passport, pg, isLoggedIn };
 
 // achievements
 app.use(achievements(props));

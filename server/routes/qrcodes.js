@@ -3,14 +3,14 @@ const { v4: uuidv4 } = require("uuid");
 module.exports = ({ app, pg, isLoggedIn }) => {
   const QRCode = require("../models/qrcode")(pg);
 
-  app.get("/api/qrcodes", (_, res) => {
+  app.get("/api/qrcodes", isLoggedIn, (_, res) => {
     QRCode.getAll((err, qrcodes) => {
       if (err) return res.status(400).send(err);
       return res.send(qrcodes);
     });
   });
 
-  app.post("/api/qrcodes", (_, res) => {
+  app.post("/api/qrcodes", isLoggedIn, (_, res) => {
     QRCode.create({ uuid: uuidv4() }, (err, qrcode) => {
       if (err) return res.status(400).send(err);
       return res.send(qrcode);
