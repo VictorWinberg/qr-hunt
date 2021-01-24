@@ -30,7 +30,6 @@ import Vue from "vue";
 import QRCode from "qrcode";
 import QRScanner from "qr-scanner";
 
-import QrScannerWorkerPath from "!!file-loader!../../node_modules/qr-scanner/qr-scanner-worker.min.js";
 QRScanner.WORKER_PATH = QrScannerWorkerPath;
 
 interface Data {
@@ -79,14 +78,14 @@ export default Vue.extend({
     },
     async qrRead() {
       this.qrCode = this.qrCodeTextField;
-      const data = { comment: "Lovely!", score: 5, qrcode: this.qrCode }; // eslint-disable-line
-      const response = await fetch("/api/geocaches_collected", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(data)
-      });
+      // const data = { comment: "Lovely!", score: 5, qrcode: this.qrCode }; // eslint-disable-line
+      // const response = await fetch("/api/geocaches_collected", {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json"
+      //   },
+      //   body: JSON.stringify(data)
+      // });
       // TODO: const result = await response.json();
 
       this.qrCodeTextField = "";
