@@ -16,19 +16,17 @@ module.exports = {
     "no-debugger": process.env.NODE_ENV === "production" ? "error" : "off"
   },
   parserOptions: {
-    parser: "@typescript-eslint/parser",
-    project: "./tsconfig.json",
-    tsconfigRootDir: __dirname
+    ecmaVersion: 2020
   },
-  overrides: [
-    {
-      files: [
-        "**/__tests__/*.{j,t}s?(x)",
-        "**/tests/unit/**/*.spec.{j,t}s?(x)"
-      ],
-      env: {
-        jest: true
-      }
-    }
-  ]
+  // overrides: [
+  //   {
+  //     files: [
+  //       "**/__tests__/*.{j,t}s?(x)",
+  //       "**/tests/unit/**/*.spec.{j,t}s?(x)"
+  //     ],
+  //     env: {
+  //       jest: true
+  //     }
+  //   }
+  // ]
 };
