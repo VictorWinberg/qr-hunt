@@ -1,4 +1,4 @@
-module.exports = ({ app, pg, db, isLoggedIn }) => {
+module.exports = ({ app, db, isLoggedIn }) => {
   const QRCode = require("../models/qrcode")(db);
   const QRSpot = require("../models/qrspot")(db);
   const QRShard = require("../models/qrshard")(db);
@@ -6,18 +6,20 @@ module.exports = ({ app, pg, db, isLoggedIn }) => {
   app.get("/api/scan/:id", isLoggedIn, async (req, res) => {
     const { params, user = {} } = req;
 
-    const { qrcode, err: codeErr } = await QRCode.getByUUID(params.id);
-    if (codeErr) return res.status(400).send(codeErr);
+    const results = await Promise.all([
+      QRCode.getByUUID(params.id),
+      QRSpot.getByQRCode(params.id),
+      QRShard.getByQRCode(user.id, params.id),
+    ]);
 
-    const { qrspot, err: spotErr } = await QRSpot.getByQRCode(params.id);
-    if (spotErr) return res.status(400).send(spotErr);
+    const { err } = results.find(({ err }) => Boolean(err)) || {};
+    if (err) return res.status(400).send(err);
 
-    const { qrshard, err: shardErr } = await QRShard.getByQRCode(
-      user.id,
-      params.id
-    );
-    if (shardErr) return res.status(400).send(shardErr);
-
-    return res.send({ qrcode: qrcode, qrspot: qrspot, qrshard: qrshard });
+    const [{ qrcode }, { qrspot }, { qrshard }] = results;
+    return res.send({
+      qrcode: qrcode || false,
+      qrspot: qrspot || false,
+      qrshard: qrshard || false,
+    });
   });
 };
