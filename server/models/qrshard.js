@@ -34,6 +34,7 @@ module.exports = (db) => ({
   getByQRCode: async (userId, qrcode) => {
     const sql = `
         SELECT * FROM qrshards
+        JOIN qrspots ON qrshards.qrspot_id = qrspots.id
         WHERE user_id = $1 AND qrcode = $2`;
 
     const { rows, err } = await db.query(sql, [userId, qrcode]);

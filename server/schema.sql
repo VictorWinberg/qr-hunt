@@ -33,7 +33,7 @@ CREATE TABLE qrspots (
   hint      VARCHAR(255),
   score     INT,
 
-  qrcode     VARCHAR(36)  UNIQUE,
+  qrcode      VARCHAR(36)  UNIQUE,
   assigner_id INT,
 
   created_at TIMESTAMP DEFAULT NOW(),
@@ -49,7 +49,7 @@ CREATE TABLE qrshards (
   rating    INT           NOT NULL,
   comment   VARCHAR(255),
 
-  user_id     INT,
+  user_id   INT,
   qrspot_id INT,
 
   created_at TIMESTAMP DEFAULT NOW(),
