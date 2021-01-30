@@ -10,6 +10,7 @@
       :center="mapCoords"
       :zoom="mapZoom"
       :options="{gestureHandling: 'greedy'}"
+      @click="mapClick"
       @dragend="handleDrag"
       @zoom_changed="handleZoom"
     >
@@ -37,19 +38,41 @@
       <div id="center-button" @click="centerMapToUser()">
         <img alt="My Location" class="my-location-icon" :src="myLocationIcon" />
       </div>
+      <div id="geocache-info">
+        <transition name="fade">
+          <div v-if="isMarkerSelected" class="geocache-info-container">
+            <div class="geocacho-info-title">{{currentMarkerTitle}}</div>
+            <div class="geocache-info-details">
+              <div class="geocache-info-details-distance">
+                <img alt="My Location" class="distance-icon" :src="distanceIcon" />
+                {{distanceToMarker()}}
+              </div>
+              <div class="geocache-info-details-raiting">
+                <img alt="Star" class="star-icon" :src="starIcon" />
+                {{currentMarkerRating}}
+              </div>
+            </div>
+          </div>
+        </transition>
+      </div>
     </GmapMap>
   </div>
 </template>
 
 <script>
 import Vue from "vue";
+import distanceIcon from "./../assets/distance.png"
 import myLocationIcon from "./../assets/my-location.png";
+import starIcon from "./../assets/star.png"
+
 
 export default Vue.extend({
   data() {
     const { mapCoords, mapZoom, userCoords } = localStorage;
     return {
+      distanceIcon,
       myLocationIcon,
+      starIcon,
       map: null,
       infoWindow: {
         coords: null,
@@ -68,6 +91,20 @@ export default Vue.extend({
       markerSelected: -1,
       markers: []
     };
+  },
+  computed: {
+    isMarkerSelected() {
+      return this.markerSelected !== -1
+    },
+    currentMarker(){
+      return this.markers[this.markerSelected] || null;
+    },
+    currentMarkerTitle() {
+      return this.currentMarker?.title || '';
+    },
+    currentMarkerRating(){
+      return this.currentMarker?.rating || 'N/A';
+    }
   },
   watch: {
     mapCoords(newCoords) {
@@ -93,23 +130,23 @@ export default Vue.extend({
       const response = await fetch("/api/qrspots");
       this.markers = await response.json();
     },
+    mapClick(){
+      this.markerSelected = -1
+    },
     createMapElements() {
       /** Create button for centering position at user */
       const centerControlDiv = document.getElementById("center-button");
       const { RIGHT_BOTTOM } = google.maps.ControlPosition;
       this.map.controls[RIGHT_BOTTOM].push(centerControlDiv);
-    },
-    handleMarkerClick({ lat, lng, text }, index) {
-      this.map.panTo(new google.maps.LatLng(lat, lng));
-      this.infoWindow.coords = { lat: Number(lat), lng: Number(lng) };
-      this.infoWindow.options.content = text;
 
-      if (this.markerSelected === index) {
-        this.infoWindow.open = !this.infoWindow.open;
-      } else {
-        this.infoWindow.open = true;
-        this.markerSelected = index;
-      }
+      /** Create information box */
+      const informationBoxDiv = document.getElementById("geocache-info");
+      const { BOTTOM } = google.maps.ControlPosition;
+      this.map.controls[BOTTOM].push(informationBoxDiv);
+    },
+    handleMarkerClick({ lat, lng }, index) {
+      this.map.panTo(new google.maps.LatLng(lat, lng));
+      this.markerSelected = index;
     },
     handleDrag() {
       if (!this.map) return;
@@ -144,6 +181,24 @@ export default Vue.extend({
     },
     centerMapToUser() {
       this.map.panTo(new google.maps.LatLng(this.userCoords));
+    },
+    distanceToMarker(){
+      const d = this.calculateDistance(this.userCoords, this.currentMarker);
+      return d < 1000 ? d.toFixed(1) + ' meter' : (d/1000).toFixed(1) + ' km';
+    },
+    calculateDistance({lat : lat1, lng: lng1}, {lat: lat2, lng : lng2 }){
+      const R = 6371e3;
+      const φ1 = lat1 * Math.PI/180;
+      const φ2 = lat2 * Math.PI/180;
+      const Δφ = (lat2-lat1) * Math.PI/180;
+      const Δλ = (lng2-lng1) * Math.PI/180;
+
+      const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+        Math.cos(φ1) * Math.cos(φ2) *
+        Math.sin(Δλ/2) * Math.sin(Δλ/2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      const d = R * c;
+      return d;
     }
   }
 });
@@ -157,8 +212,8 @@ export default Vue.extend({
 
 #center-button {
   cursor: pointer;
-  background-color: rgb(255, 255, 255);
-  box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 4px -1px;
+  background-color: $white;
+  box-shadow: $shadow-color;
   border-radius: 2px;
   width: 40px;
   height: 40px;
@@ -169,6 +224,46 @@ export default Vue.extend({
 
   .my-location-icon {
     width: 70%;
+  }
+}
+
+#geocache-info {
+  width: 100%;
+
+  .geocache-info-container {
+    background-color: $white;
+    box-shadow: $shadow-color;
+    border-radius: 2px;
+    height: 81px;
+    margin: 0px 60px 24px 10px;
+
+    .geocacho-info-title {
+      padding: 10px;
+      font-size: 22px;
+    }
+    .geocache-info-details {
+      font-size: 14px;
+      display: flex;
+      justify-content: center;
+      max-width: 500px;
+      margin: 0 auto;
+
+      .geocache-info-details-distance {
+        padding: 0 10px;
+
+        .distance-icon {
+          height: 14px;
+        }
+
+      }
+      .geocache-info-details-raiting {
+        padding: 0 10px;
+
+        .star-icon {
+          height: 14px;
+        }
+      }
+    }
   }
 }
 </style>
