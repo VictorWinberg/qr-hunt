@@ -152,14 +152,4 @@ export default Vue.extend({
   width: auto;
   height: auto;
 }
-
-@keyframes scanning {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(100vh) translateY(-66px);
-  }
-}
 </style>
