@@ -6,7 +6,7 @@
   </div>
 </template>
 
-<script lang="ts">
+<script>
 import Vue from "vue";
 import GoogleMaps from "./GoogleMaps.vue";
 import QrScanner from "./QRScanner.vue";
