@@ -13,9 +13,8 @@ import QrScanner from "./QRScanner.vue";
 
 export default Vue.extend({
   name: "Home",
-  components: { GoogleMaps, QrScanner },
+  components: { GoogleMaps, QrScanner }
 });
 </script>
 
-<style lang="scss">
-</style>
+<style lang="scss"></style>

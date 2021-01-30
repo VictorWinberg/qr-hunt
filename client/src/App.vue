@@ -1,14 +1,23 @@
 <template>
   <div id="app">
-    <router-view />
+    <transition name="fade">
+      <router-view />
+    </transition>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
+import { doFetch } from "./utils";
 
 export default Vue.extend({
-  name: "App"
+  name: "App",
+  async created() {
+    const { res, err } = await doFetch("/auth/user");
+    if (!res.isAuthenticated || err) {
+      this.$router.push("login");
+    }
+  }
 });
 </script>
 
