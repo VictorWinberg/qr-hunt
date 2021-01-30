@@ -12,6 +12,7 @@ const isLoggedIn = (req, res, next) => {
   }
   return next();
 };
+
 const makeDbQuery = (pg) => async (query, values) => {
   try {
     const { rows } = await pg.query(query, values);

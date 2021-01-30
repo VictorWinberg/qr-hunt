@@ -1,14 +1,17 @@
 <template>
   <div id="app">
+    <Login />
     <router-view />
   </div>
 </template>
 
-<script lang="ts">
+<script>
 import Vue from "vue";
+import Login from "@/components/Login.vue";
 
 export default Vue.extend({
-  name: "App"
+  name: "App",
+  components: { Login }
 });
 </script>
 

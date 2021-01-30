@@ -5,6 +5,11 @@ module.exports = ({ app, passport }) => {
     return `${protocol}://${host}/auth/google/callback`;
   };
 
+  app.get("/auth/user", (req, res) => {
+    const { user = {} } = req;
+    res.send({ ...user, isAuthenticated: req.isAuthenticated() });
+  });
+
   app.get("/auth/google", (req, res, next) => {
     passport.authenticate("google", {
       scope: ["profile", "email"],
