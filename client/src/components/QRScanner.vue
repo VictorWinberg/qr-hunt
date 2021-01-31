@@ -79,7 +79,7 @@ export default Vue.extend({
               method: "POST",
               body: JSON.stringify({ title, lat, lng, qrcode: this.qrcode })
             });
-            console.log(qrspot, err);
+            alert(qrspot);
           });
         }
         return;
@@ -92,7 +92,7 @@ export default Vue.extend({
             method: "POST",
             body: JSON.stringify({ comment, rating: 5, qrcode: this.qrcode })
           });
-          console.log(qrshard, err);
+          alert(qrshard);
         }
         return;
       }
