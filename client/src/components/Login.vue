@@ -12,7 +12,6 @@
 <script>
 import Vue from "vue";
 import GoogleSignIn from "@/components/GoogleSignIn.vue";
-import { doFetch } from "@/utils";
 
 export default Vue.extend({
   components: { GoogleSignIn },
@@ -22,8 +21,8 @@ export default Vue.extend({
     };
   },
   async created() {
-    const { res, err } = await doFetch("/auth/user");
-    if (!res.isAuthenticated || err) {
+    const { data, err } = await this.fetch("/auth/user");
+    if (!data.isAuthenticated || err) {
       this.isAuthenticated = false;
     }
   }
