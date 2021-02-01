@@ -7,7 +7,7 @@ import "./plugins/google-maps";
 import "./plugins/custom-fetch";
 import "./registerServiceWorker";
 
-import "@/assets/scss/app.scss";
+import "./assets/scss/app.scss";
 
 Vue.config.productionTip = false;
 
