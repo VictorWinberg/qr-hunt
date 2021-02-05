@@ -6,7 +6,8 @@
     "serve": "vue-cli-service serve --open",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "test": "vue-cli-service test:unit --coverage"
+    "test": "vue-cli-service test:unit --coverage",
+    "stylelint": "stylelint **/*.{vue,scss} --fix"
   },
   "dependencies": {
     "core-js": "3.6.5",
@@ -47,6 +48,9 @@
     "prettier": "1.19.1",
     "sass": "1.24.0",
     "sass-loader": "8.0.0",
+    "stylelint": "^13.9.0",
+    "stylelint-config-recess-order": "^2.3.0",
+    "stylelint-config-standard": "^20.0.0",
     "typescript": "3.7.4",
     "vue-template-compiler": "2.6.11"
   },
@@ -67,7 +71,13 @@
     }
   },
   "lint-staged": {
-    "*.ts": "vue-cli-service lint",
-    "*.vue": "vue-cli-service lint"
+    "*.{vue,ts}": "vue-cli-service lint",
+    "*.{vue,scss}": "stylelint --fix"
+  },
+  "stylelint": {
+    "extends": [
+      "stylelint-config-standard",
+      "stylelint-config-recess-order"
+    ]
   }
 }
