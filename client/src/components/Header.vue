@@ -3,13 +3,13 @@
     <div class="header-title">
       QR-Hunt
     </div>
-    <div class="my-account-icon-wrapper">
+    <router-link to="/user" class="my-account-icon-wrapper">
       <img
         alt="My Account"
         class="my-account-icon"
         src="./../assets/user.svg"
       />
-    </div>
+    </router-link>
   </header>
 </template>
 
@@ -20,16 +20,16 @@ export default {};
 <style lang="scss">
 header {
   position: relative;
-  padding: 0.5em;
+  z-index: 1;
   display: flex;
   justify-content: space-between;
-  box-shadow: 0 2px 6px 0 rgba(#000, 0.2);
+  padding: 0.5em;
   background: linear-gradient(#eee, $white);
-  z-index: 1;
+  box-shadow: 0 2px 6px 0 rgba(#000, 0.2);
 
   .header-title {
-    text-align: left;
     font-size: 24px;
+    text-align: left;
   }
 
   .my-account-icon-wrapper {
