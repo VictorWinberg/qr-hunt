@@ -31,17 +31,17 @@ export default Vue.extend({
 
 <style>
 .login {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  background: rgba(75, 0, 130, 0.8);
   position: fixed;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
   z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  background: rgba(75, 0, 130, 0.8);
 }
 
 .login__inner {

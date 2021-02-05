@@ -243,6 +243,23 @@ export default Vue.extend({
 </script>
 
 <style lang="scss">
+#center-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+  cursor: pointer;
+  background-color: $white;
+  border-radius: 2px;
+  box-shadow: $shadow-color;
+
+  .my-location-icon {
+    width: 70%;
+  }
+}
+
 .vue-map-container {
   flex: 1;
   width: 100vw;
@@ -251,35 +268,18 @@ export default Vue.extend({
   &.hide-controls {
     .gmnoprint,
     #center-button {
-      opacity: 0;
       display: flex !important;
+      opacity: 0;
     }
   }
 
   &.show-controls {
     .gmnoprint,
     #center-button {
-      opacity: 1;
       display: flex !important;
+      opacity: 1;
       transition: opacity 200ms 1s;
     }
-  }
-}
-
-#center-button {
-  cursor: pointer;
-  background-color: $white;
-  box-shadow: $shadow-color;
-  border-radius: 2px;
-  width: 40px;
-  height: 40px;
-  margin-right: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  .my-location-icon {
-    width: 70%;
   }
 }
 
@@ -287,23 +287,24 @@ export default Vue.extend({
   width: 100%;
 
   .geocache-info-container {
+    height: 90px;
+    margin: 0 60px 24px;
     cursor: pointer;
     background-color: $white;
-    box-shadow: $shadow-color;
     border-radius: 2px;
-    height: 90px;
-    margin: 0px 60px 24px;
+    box-shadow: $shadow-color;
 
     .geocacho-info-title {
       padding: 10px;
       font-size: 22px;
     }
+
     .geocache-info-details {
-      font-size: 14px;
       display: flex;
       justify-content: center;
       max-width: 500px;
       margin: 0 auto;
+      font-size: 14px;
 
       .geocache-info-details-distance {
         padding: 0 10px;
@@ -312,6 +313,7 @@ export default Vue.extend({
           height: 14px;
         }
       }
+
       .geocache-info-details-raiting {
         padding: 0 10px;
 
