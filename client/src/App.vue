@@ -24,5 +24,12 @@ export default Vue.extend({
   display: flex;
   text-align: center;
   justify-content: center;
+  height: 100vh;
+}
+
+body,
+html {
+  margin: 0;
+  background-color: $white;
 }
 </style>

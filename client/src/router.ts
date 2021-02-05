@@ -1,9 +1,9 @@
 import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
 
-import Home from "@/components/Home.vue";
-import Login from "@/components/Login.vue";
-import NotFound from "@/components/NotFound.vue";
+import Home from "./components/Home.vue";
+import Login from "./components/Login.vue";
+import NotFound from "./components/NotFound.vue";
 
 Vue.use(VueRouter);
 

@@ -1,9 +1,8 @@
 <template>
-  <div>
+  <footer>
     <!-- printed QR Code -->
-    <canvas id="qrcode"></canvas>
-    <br />
-    <br />
+    <div class="footer-content"></div>
+    <canvas id="qrcode" @click="qrScan()"></canvas>
     <!-- actual QR Scanner -->
     <div class="qr-scanner" :class="!scanning && 'hidden'">
       <div class="qr-scanner-inner">
@@ -11,11 +10,7 @@
       </div>
       <video id="qrscan"></video>
     </div>
-    <button @click="qrScan()">QR SCAN</button>
-    <br />
-    <br />
-    <h3>QR Code: <br />{{ qrcode }}</h3>
-  </div>
+  </footer>
 </template>
 
 <script>
@@ -44,8 +39,16 @@ export default Vue.extend({
       this.qrcode = qrcode;
       this.qrRead();
     }
+    const options = {
+      margin: 0.5,
+      width: 80
+    };
 
-    QRCode.toCanvas(document.getElementById("qrcode"), "https://zolly.ml");
+    QRCode.toCanvas(
+      document.getElementById("qrcode"),
+      "https://zolly.ml",
+      options
+    );
 
     this.scanner = new QRScanner(document.getElementById("qrscan"), result => {
       if (result) {
@@ -103,6 +106,26 @@ export default Vue.extend({
 </script>
 
 <style lang="scss">
+footer {
+  position: relative;
+  width: 100%;
+  height: 65px;
+}
+
+.footer-content {
+  height: 100%;
+  background: $white;
+  box-shadow: 0 -2px 6px 0 rgba($black, 0.2);
+}
+
+#qrcode {
+  border: solid $white 10px;
+  position: relative;
+  border-radius: 50%;
+  top: -100px;
+  box-shadow: 0px -4px 4px 2px rgba($black, 0.2);
+}
+
 .hidden {
   display: none;
 }
@@ -111,9 +134,10 @@ export default Vue.extend({
   position: fixed;
   overflow: hidden;
   top: 0;
+  bottom: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  margin-top: 50px;
 
   .qr-scanner-inner {
     position: absolute;
