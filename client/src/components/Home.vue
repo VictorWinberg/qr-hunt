@@ -2,7 +2,7 @@
   <div class="home">
     <Header />
     <div class="map-wrapper">
-      <google-maps />
+      <GoogleMaps />
       <CurrentSpot />
     </div>
     <qr-scanner />
