@@ -17,14 +17,14 @@ export default Vue.extend({
 
 <style lang="scss">
 #app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color: $text-color;
   display: flex;
-  text-align: center;
   justify-content: center;
   height: 100vh;
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
+  color: $text-color;
+  text-align: center;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body,

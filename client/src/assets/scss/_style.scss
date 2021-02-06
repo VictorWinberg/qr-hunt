@@ -8,12 +8,12 @@ html {
 
 /*** TRANSITIONS ***/
 
-.fade-enter-active, 
+.fade-enter-active,
 .fade-leave-active {
   transition: opacity 200ms;
 }
 
-.fade-enter, 
+.fade-enter,
 .fade-leave-to {
   opacity: 0;
 }
@@ -25,6 +25,7 @@ html {
   100% {
     transform: translateY(0);
   }
+
   50% {
     transform: translateY(100vh) translateY(-66px);
   }

@@ -6,7 +6,7 @@
     <!-- actual QR Scanner -->
     <div class="qr-scanner" :class="!scanning && 'hidden'">
       <div class="qr-scanner-inner">
-        <h3><span style="color: red">&#8226;</span> QR SCAN</h3>
+        <h3><span style="color: red;">&#8226;</span> QR SCAN</h3>
       </div>
       <video id="qrscan"></video>
     </div>
@@ -119,11 +119,11 @@ footer {
 }
 
 #qrcode {
-  border: solid $white 10px;
   position: relative;
-  border-radius: 50%;
   top: -100px;
-  box-shadow: 0px -4px 4px 2px rgba($black, 0.2);
+  border: solid $white 10px;
+  border-radius: 50%;
+  box-shadow: 0 -4px 4px 2px rgba($black, 0.2);
 }
 
 .hidden {
@@ -132,22 +132,22 @@ footer {
 
 .qr-scanner {
   position: fixed;
-  overflow: hidden;
   top: 0;
   bottom: 0;
   left: 0;
   width: 100%;
   margin-top: 50px;
+  overflow: hidden;
 
   .qr-scanner-inner {
     position: absolute;
-    overflow: hidden;
     top: 20px;
-    left: 20px;
     right: 20px;
     bottom: 20px;
-    border: 3px solid white;
+    left: 20px;
     z-index: 1;
+    overflow: hidden;
+    border: 3px solid white;
 
     h3 {
       position: absolute;
@@ -157,15 +157,15 @@ footer {
     }
 
     &::after {
-      content: "";
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 20px;
-      animation: scanning 5s infinite cubic-bezier(0.7, 0.3, 0.3, 0.7);
+      content: "";
       background-color: rgba(red, 0.5);
       box-shadow: 0 0 50px red;
+      animation: scanning 5s infinite cubic-bezier(0.7, 0.3, 0.3, 0.7);
     }
   }
 }
@@ -174,12 +174,11 @@ footer {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%) scaleX(-1) !important;
-
-  min-width: 100%;
-  min-height: 100%;
-  max-width: none;
   width: auto;
+  min-width: 100%;
+  max-width: none;
   height: auto;
+  min-height: 100%;
+  transform: translate(-50%, -50%) scaleX(-1) !important;
 }
 </style>

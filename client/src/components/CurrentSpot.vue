@@ -35,9 +35,9 @@ export default Vue.extend({
 .current-spot-wrapper {
   position: relative;
   flex: 3;
-  height: 0px;
-  transition: all 1s;
+  height: 0;
   box-shadow: 0 -2px 6px 0 rgba($black, 0.2);
+  transition: all 1s;
 
   &.hide-info {
     flex: 0;
