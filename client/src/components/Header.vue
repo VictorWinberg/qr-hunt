@@ -3,13 +3,13 @@
     <div class="header-title">
       QR-Hunt
     </div>
-    <div class="my-account-icon-wrapper">
+    <router-link to="/user" class="my-account-icon-wrapper">
       <img
         alt="My Account"
         class="my-account-icon"
         src="./../assets/user.svg"
       />
-    </div>
+    </router-link>
   </header>
 </template>
 
