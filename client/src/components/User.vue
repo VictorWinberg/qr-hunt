@@ -1,14 +1,18 @@
 <template>
   <div>
-    <h1>{{ user.name }}</h1>
-    <p>{{ user.email }}</p>
-    <img :src="user.photo" />
-    <h3>Achievements</h3>
-    <ul>
-      <li v-for="achievement in achievements" :key="achievement.name">
-        {{ achievement.name }}
-      </li>
-    </ul>
+    <div class="user">
+      <img class="user__photo" :src="user.photo" />
+      <h1 class="user__title">{{ user.name }}</h1>
+      <p class="user__email">{{ user.email }}</p>
+    </div>
+    <div class="achievements">
+      <h3>Achievements</h3>
+      <ul>
+        <li v-for="achievement in achievements" :key="achievement.name">
+          {{ achievement.name }}
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -31,22 +35,32 @@ export default Vue.extend({
 });
 </script>
 
-<style>
-.login {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  background: rgba(75, 0, 130, 0.8);
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 10;
+<style lang="scss">
+.user__title {
+  grid-area: top;
+  align-self: end;
 }
 
-.login__inner {
-  margin-bottom: 40vh;
+.user__email {
+  grid-area: bottom;
+}
+
+.user__photo {
+  grid-area: left;
+  width: 96px;
+  height: 96px;
+  margin: 0 1rem;
+  background: linear-gradient(to right, #bdc3c7, #2c3e50);
+  border-radius: 50%;
+}
+
+@media screen and (min-width: 500px) {
+  .user {
+    display: grid;
+    grid-template:
+      "left top"
+      "left bottom";
+    text-align: left;
+  }
 }
 </style>
