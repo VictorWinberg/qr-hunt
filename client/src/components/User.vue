@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="user-wrapper">
     <div class="user">
       <img class="user__photo" :src="user.photo" />
       <h1 class="user__title">{{ user.name }}</h1>
@@ -36,6 +36,10 @@ export default Vue.extend({
 </script>
 
 <style lang="scss">
+.user-wrapper {
+  flex: 1;
+}
+
 .user__title {
   grid-area: top;
   align-self: end;
