@@ -1,8 +1,8 @@
 <template>
   <header>
-    <div class="header-title">
+    <router-link to="/" class="header-title">
       QR-Hunt
-    </div>
+    </router-link>
     <router-link to="/user" class="my-account-icon-wrapper">
       <img
         alt="My Account"
@@ -26,20 +26,22 @@ header {
   padding: 0.5em;
   background: linear-gradient(#eee, $white);
   box-shadow: 0 2px 6px 0 rgba(#000, 0.2);
+}
 
-  .header-title {
-    font-size: 24px;
-    text-align: left;
-  }
+.header-title {
+  font-size: 24px;
+  color: inherit;
+  text-align: left;
+  text-decoration: none;
+}
 
-  .my-account-icon-wrapper {
-    display: flex;
-    align-items: center;
+.my-account-icon-wrapper {
+  display: flex;
+  align-items: center;
 
-    .my-account-icon {
-      width: auto;
-      height: 24px;
-    }
+  .my-account-icon {
+    width: auto;
+    height: 24px;
   }
 }
 </style>

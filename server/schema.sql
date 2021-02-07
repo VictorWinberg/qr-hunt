@@ -64,6 +64,7 @@ DROP TABLE IF EXISTS achievements CASCADE;
 CREATE TABLE achievements (
   name      VARCHAR(36)   NOT NULL,
   title     VARCHAR(50)   NOT NULL,
+  icon      VARCHAR(50),
   score     INT,
   level     INT,
 
