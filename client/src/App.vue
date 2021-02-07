@@ -1,23 +1,27 @@
 <template>
   <div id="app">
     <Login />
+    <Header />
     <router-view />
+    <QrScanner />
   </div>
 </template>
 
 <script>
 import Vue from "vue";
-import Login from "@/components/Login.vue";
+import Header from "./components/Header.vue";
+import QrScanner from "./components/QRScanner.vue";
 
 export default Vue.extend({
   name: "App",
-  components: { Login }
+  components: { Header, QrScanner }
 });
 </script>
 
 <style lang="scss">
 #app {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   height: 100vh;
   font-family: "Avenir", Helvetica, Arial, sans-serif;
