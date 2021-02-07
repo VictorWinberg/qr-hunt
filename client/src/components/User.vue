@@ -1,9 +1,9 @@
 <template>
   <div class="user-wrapper">
     <div class="user-header">
-      <img class="user-header__photo" :src="user.photo" />
-      <h1 class="user-header__title">{{ user.name }}</h1>
-      <p class="user-header__email">{{ user.email }}</p>
+      <img class="user-header__photo async async--img" :src="user.photo" />
+      <h1 class="user-header__title async async--text">{{ user.name }}</h1>
+      <p class="user-header__email async async--text">{{ user.email }}</p>
     </div>
 
     <h2>Achievements</h2>
@@ -194,7 +194,6 @@ export default Vue.extend({
   width: 96px;
   height: 96px;
   margin: 0 1rem 0 auto;
-  background: linear-gradient(to right, #bdc3c7, #2c3e50);
   border-radius: 50%;
 }
 

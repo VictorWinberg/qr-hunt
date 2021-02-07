@@ -29,19 +29,19 @@ export default Vue.extend({
 });
 </script>
 
-<style>
+<style lang="scss">
 .login {
   position: fixed;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
-  z-index: 10;
+  z-index: 1000;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
-  background: rgba(75, 0, 130, 0.8);
+  background: rgba($primary, 0.8);
 }
 
 .login__inner {

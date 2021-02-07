@@ -1,12 +1,12 @@
 <template>
-  <div>
-    <span class="not-found__title">404</span>
-    <h1 class="m-0">Page Not Found</h1>
+  <router-link to="/" class="not-found__wrapper">
+    <span class="not-found__code">404</span>
+    <h1 class="not-found__status">Page Not Found</h1>
     <p>
-      We're sorry, the page you requested could not be found. Please go back to
-      the homepage.
+      We're sorry, the page you requested could not be found. <br />
+      Click anywhere to go back to the homepage.
     </p>
-  </div>
+  </router-link>
 </template>
 
 <script>
@@ -14,7 +14,19 @@ export default {};
 </script>
 
 <style lang="scss">
-.not-found__title {
-  font-size: 5rem;
+.not-found__wrapper {
+  display: block;
+  width: 100%;
+  height: 100%;
+  color: inherit;
+  text-decoration: none;
+}
+
+.not-found__code {
+  font-size: 12rem;
+}
+
+.not-found__status {
+  margin-bottom: 1rem;
 }
 </style>
