@@ -21,7 +21,7 @@ export default Vue.extend({
     };
   },
   async created() {
-    const { data, err } = await this.fetch("/auth/user");
+    const { data, err } = await this.$fetch("/auth/user");
     if (!data.isAuthenticated || err) {
       this.isAuthenticated = false;
     }

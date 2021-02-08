@@ -70,7 +70,7 @@ export default Vue.extend({
       this.scanning = false;
     },
     async qrRead() {
-      const { data, err } = await this.fetch("/api/scan/" + this.qrcode);
+      const { data, err } = await this.$fetch("/api/scan/" + this.qrcode);
       if (err) return alert(err);
       if (!data.qrcode) return alert("Error: 404 - QR Code not found");
       if (!data.qrspot) {
@@ -78,7 +78,7 @@ export default Vue.extend({
           const title = prompt("Enter a title", "Placeholder");
           navigator.geolocation.getCurrentPosition(async ({ coords }) => {
             const { latitude: lat, longitude: lng } = coords;
-            const { data: qrspot, err } = await this.fetch("/api/qrspots", {
+            const { data: qrspot, err } = await this.$fetch("/api/qrspots", {
               method: "POST",
               body: JSON.stringify({ title, lat, lng, qrcode: this.qrcode })
             });
@@ -91,7 +91,7 @@ export default Vue.extend({
       if (!data.qrshard) {
         if (confirm("Collect QR?")) {
           const comment = prompt("Enter a comment", "Placeholder");
-          const { data: qrshard, err } = await this.fetch("/api/qrshards", {
+          const { data: qrshard, err } = await this.$fetch("/api/qrshards", {
             method: "POST",
             body: JSON.stringify({ comment, rating: 5, qrcode: this.qrcode })
           });

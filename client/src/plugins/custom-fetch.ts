@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Vue from "vue";
 import { VueConstructor } from "vue/types/umd";
+import Snackbar from "node-snackbar";
 
 const CustomFetch = {
   install(Vue: VueConstructor<Vue>): void {
-    Vue.prototype.fetch = async function(
+    Vue.prototype.$fetch = async function(
       input: RequestInfo,
       init: RequestInit = {}
     ): Promise<{ data: any; err: any }> {
@@ -22,7 +23,13 @@ const CustomFetch = {
         }
         return { data: await response.json(), err: false };
       } catch (err) {
-        alert(err);
+        Snackbar.show({
+          text: err,
+          pos: "top-right",
+          backgroundColor: "#d32f2f",
+          actionTextColor: "#ccc",
+          duration: 10000000000000000
+        });
         return { data: {}, err };
       }
     };

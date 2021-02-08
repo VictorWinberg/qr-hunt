@@ -1,7 +1,10 @@
 <template>
   <div class="user-wrapper">
     <div class="user-header">
-      <img class="user-header__photo async async--img" :src="user.photo" />
+      <div
+        class="user-header__photo async async--img"
+        :style="{ background: `url(${user.photo})` }"
+      ></div>
       <h1 class="user-header__title async async--text">{{ user.name }}</h1>
       <p class="user-header__email async async--text">{{ user.email }}</p>
     </div>
@@ -41,9 +44,9 @@ export default Vue.extend({
     };
   },
   async created() {
-    const user = await this.fetch("/auth/user");
+    const user = await this.$fetch("/auth/user");
     if (!user.err) this.user = user.data;
-    const achievements = await this.fetch("/api/achievements");
+    const achievements = await this.$fetch("/api/achievements");
     if (!achievements.err) this.achievements = achievements.data;
   },
   methods: {
@@ -65,6 +68,7 @@ export default Vue.extend({
 
 <style lang="scss">
 .user-wrapper {
+  z-index: 1;
   flex: 1;
   width: 100%;
   max-width: 800px;
@@ -193,7 +197,7 @@ export default Vue.extend({
   grid-area: left;
   width: 96px;
   height: 96px;
-  margin: 0 1rem 0 auto;
+  margin: auto;
   border-radius: 50%;
 }
 
@@ -204,6 +208,10 @@ export default Vue.extend({
       "left top"
       "left bottom";
     text-align: left;
+  }
+
+  .user-header__photo {
+    margin: 0 1rem 0 auto;
   }
 }
 </style>
