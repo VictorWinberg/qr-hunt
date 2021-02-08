@@ -3,6 +3,15 @@ import Vue from "vue";
 import { VueConstructor } from "vue/types/umd";
 import Snackbar from "node-snackbar";
 
+function isJson(str: any): boolean {
+  try {
+    JSON.parse(str);
+  } catch (e) {
+    return false;
+  }
+  return true;
+}
+
 const CustomFetch = {
   install(Vue: VueConstructor<Vue>): void {
     Vue.prototype.$fetch = async function(
@@ -21,14 +30,14 @@ const CustomFetch = {
         if (!response.ok) {
           throw new Error(`${response.status} - ${response.statusText}`);
         }
-        return { data: await response.json(), err: false };
+        const data = await response.text();
+        return { data: isJson(data) ? JSON.parse(data) : data, err: false };
       } catch (err) {
         Snackbar.show({
           text: err,
           pos: "top-right",
           backgroundColor: "#d32f2f",
-          actionTextColor: "#ccc",
-          duration: 10000000000000000
+          actionTextColor: "#ccc"
         });
         return { data: {}, err };
       }
