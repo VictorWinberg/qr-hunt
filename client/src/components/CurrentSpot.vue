@@ -10,7 +10,7 @@
           <img alt="My Location" class="distance-icon" :src="distanceIcon" />
           <span>{{ distanceToMarker() }}</span>
         </div>
-        <div class="qrspot-info__raiting">
+        <div class="qrspot-info__rating">
           <img alt="Star" class="star-icon" :src="starIcon" />
           {{ currentSpot.rating || "N/A" }}
         </div>
