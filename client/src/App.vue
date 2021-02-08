@@ -9,12 +9,13 @@
 
 <script>
 import Vue from "vue";
-import Header from "./components/Header.vue";
-import QrScanner from "./components/QRScanner.vue";
+import Login from "@/components/Login.vue";
+import Header from "@/components/Header.vue";
+import QrScanner from "@/components/QRScanner.vue";
 
 export default Vue.extend({
   name: "App",
-  components: { Header, QrScanner }
+  components: { Login, Header, QrScanner }
 });
 </script>
 
