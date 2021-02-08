@@ -108,19 +108,23 @@ export default Vue.extend({
 <style lang="scss">
 footer {
   position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   width: 100%;
   height: 65px;
 }
 
 .footer-content {
+  width: 100%;
   height: 100%;
   background: $white;
   box-shadow: 0 -2px 6px 0 rgba($black, 0.2);
 }
 
 #qrcode {
-  position: relative;
-  top: -100px;
+  position: absolute;
+  top: -35px;
   border: solid $white 10px;
   border-radius: 50%;
   box-shadow: 0 -4px 4px 2px rgba($black, 0.2);

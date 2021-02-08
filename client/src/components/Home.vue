@@ -21,6 +21,7 @@ export default Vue.extend({
 <style lang="scss">
 .home {
   flex: 1;
+  overflow: hidden;
 }
 
 .map-wrapper {
