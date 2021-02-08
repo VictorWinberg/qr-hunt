@@ -48,8 +48,9 @@ module.exports = ({ pg, db }) => async (req, res, next) => {
       return res.send(achievements);
     }
     case Boolean(req.url.match("^/api/achievements/.+/?$")): {
-      const name = req.url.match("^/api/achievements/(.+)/?$")[1];
+      if (!req.isAuthenticated()) return res.sendStatus(401);
 
+      const name = req.url.match("^/api/achievements/(.+)/?$")[1];
       const sql = `
         SELECT achievement_name as name, title, icon, score, level, user_achievements.created_at
         FROM user_achievements

@@ -15,7 +15,8 @@
     "test-client": "cd client && npm test",
     "test-server": "cd server && npm test",
     "lint": "npm-run-all -s lint-client",
-    "lint-client": "cd client && npm run lint"
+    "lint-client": "cd client && npm run lint",
+    "db:pull": "pg_dump --format=c -h 192.168.0.100 -U vicnie qrhunt | pg_restore --clean --no-owner -h localhost -d qrhunt"
   },
   "dependencies": {
     "dotenv": "^8.2.0",
