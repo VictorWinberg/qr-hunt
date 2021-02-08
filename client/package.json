@@ -4,13 +4,15 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve --open",
-    "build": "vue-cli-service build",
+    "build": "vue-cli-service build --report-json",
     "lint": "vue-cli-service lint",
     "test": "vue-cli-service test:unit --coverage",
+    "bundle-analyze": "webpack-bundle-analyzer dist/report.json",
     "stylelint": "stylelint **/*.{vue,scss} --fix"
   },
   "dependencies": {
     "core-js": "3.6.5",
+    "node-snackbar": "^0.1.16",
     "qr-scanner": "^1.2.0",
     "qrcode": "^1.4.4",
     "register-service-worker": "1.6.2",
@@ -52,7 +54,8 @@
     "stylelint-config-recess-order": "^2.3.0",
     "stylelint-config-standard": "^20.0.0",
     "typescript": "3.7.4",
-    "vue-template-compiler": "2.6.11"
+    "vue-template-compiler": "2.6.11",
+    "webpack-bundle-analyzer": "^4.4.0"
   },
   "browserslist": [
     "> 1%",
