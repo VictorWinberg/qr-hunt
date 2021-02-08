@@ -1,13 +1,15 @@
 const achievements = {
-  USER_HAS_SIGNED_UP: async ({ req }) => {
-    return req.path === "/auth/google/callback" && req.user;
+  USER_HAS_SIGNED_UP: ({ req }) => {
+    return req.path === "/auth/google/callback";
   },
-  FIRST_QRSPOT_FOUND: async ({ req, res }) => {
-    return (
-      (req.route || {}).path === "/api/scan/:id" &&
-      req.user &&
+  FIRST_QRSPOT_FOUND: ({ req, res }) => {
+    return [
+      (req.route || {}).path === "/api/scan/:id",
       (res.body || {}).qrspot
-    );
+    ].every(Boolean);
+  },
+  THANKFUL: ({ req }) => {
+    return req.path === "/api/thanks";
   }
 };
 
@@ -31,18 +33,40 @@ module.exports = ({ pg, db }) => async (req, res, next) => {
     });
   });
 
-  if (req.url === "/api/achievements") {
-    if (!req.isAuthenticated()) return res.sendStatus(401);
+  switch (true) {
+    case Boolean(req.url.match("^/api/achievements/?$")): {
+      if (!req.isAuthenticated()) return res.sendStatus(401);
 
-    const sql = `
+      const sql = `
         SELECT achievement_name as name, title, icon, score, level, user_achievements.created_at
         FROM user_achievements
         FULL JOIN achievements ON user_achievements.achievement_name = achievements.name
         WHERE user_id = $1`;
 
-    const { rows: achievements, err } = await db.query(sql, [req.user.id]);
-    if (err) return res.status(400).send(err);
-    return res.send(achievements);
+      const { rows: achievements, err } = await db.query(sql, [req.user.id]);
+      if (err) return res.status(400).send(err);
+      return res.send(achievements);
+    }
+    case Boolean(req.url.match("^/api/achievements/.+/?$")): {
+      const name = req.url.match("^/api/achievements/(.+)/?$")[1];
+
+      const sql = `
+        SELECT achievement_name as name, title, icon, score, level, user_achievements.created_at
+        FROM user_achievements
+        FULL JOIN achievements ON user_achievements.achievement_name = achievements.name
+        WHERE user_id = $1 AND achievement_name = $2 LIMIT 1`;
+
+      const {
+        rows: [achievement],
+        err
+      } = await db.query(sql, [req.user.id, name.toUpperCase()]);
+      if (err) return res.status(400).send(err);
+      return res.send(achievement);
+    }
+    case Boolean(req.url.match("^/api/thanks/?$")): {
+      if (!req.isAuthenticated()) return res.sendStatus(401);
+      return res.sendStatus(200);
+    }
   }
 
   return next();
