@@ -2,6 +2,10 @@
   background-color: $background-color;
 }
 
+.snackbar-container .action {
+  outline: none;
+}
+
 /*** TRANSITIONS ***/
 
 .fade-enter-active,
