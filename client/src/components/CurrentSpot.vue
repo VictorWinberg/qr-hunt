@@ -161,7 +161,7 @@ export default Vue.extend({
   }
 }
 
-.qrspot-info__raiting {
+.qrspot-info__rating {
   padding: 0 10px;
 
   .star-icon {
