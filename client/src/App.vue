@@ -3,19 +3,21 @@
     <Login />
     <Header />
     <router-view />
-    <QrScanner />
+    <QRScanner v-if="$store.state.scanning" />
+    <Footer />
   </div>
 </template>
 
 <script>
 import Vue from "vue";
-import Login from "@/components/Login.vue";
 import Header from "@/components/Header.vue";
-import QrScanner from "@/components/QRScanner.vue";
+import Footer from "@/components/Footer.vue";
+import Login from "@/components/Login.vue";
+import QRScanner from "@/components/QRScanner.vue";
 
 export default Vue.extend({
   name: "App",
-  components: { Login, Header, QrScanner }
+  components: { Header, Footer, Login, QRScanner }
 });
 </script>
 
@@ -32,11 +34,5 @@ export default Vue.extend({
   text-align: center;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-body,
-html {
-  margin: 0;
-  background-color: $white;
 }
 </style>

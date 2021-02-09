@@ -7,7 +7,8 @@ export default new Vuex.Store({
   state: {
     currentSpot: {},
     showSpotInfo: false,
-    showSpotDetails: false
+    showSpotDetails: false,
+    scanning: false
   },
   getters: {
     getCurrentSpot(state) {
@@ -29,6 +30,12 @@ export default new Vuex.Store({
     },
     setShowSpotDetails(state, value) {
       state.showSpotDetails = value;
+    },
+    toggleScan(state) {
+      state.scanning = !state.scanning;
+    },
+    stopScan(state) {
+      state.scanning = false;
     }
   },
   actions: {}
