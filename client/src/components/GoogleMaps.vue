@@ -39,20 +39,22 @@
       @click="() => selectQRspot(marker, index)"
     />
     <div id="my-location-button" @click="centerMapToUser()">
-      <img alt="My Location" class="my-location-icon" :src="myLocationIcon" />
+      <img
+        alt="My Location"
+        class="my-location-icon"
+        :src="require('@/assets/my-location.svg')"
+      />
     </div>
   </GmapMap>
 </template>
 
 <script>
 import Vue from "vue";
-import myLocationIcon from "./../assets/my-location.png";
 
 export default Vue.extend({
   data() {
     const { mapCoords, mapZoom, userCoords } = localStorage;
     return {
-      myLocationIcon,
       map: null,
       infoWindow: {
         coords: null,
@@ -199,23 +201,6 @@ export default Vue.extend({
 </script>
 
 <style lang="scss">
-#center-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  margin-right: 10px;
-  cursor: pointer;
-  background-color: $white;
-  border-radius: 2px;
-  box-shadow: $shadow-color;
-
-  .my-location-icon {
-    width: 70%;
-  }
-}
-
 #my-location-button {
   display: flex;
   align-items: center;
@@ -234,8 +219,6 @@ export default Vue.extend({
 }
 
 .vue-map-container {
-  width: 100vw;
-
   &.collapse-map {
     height: 30%;
     transition: all 300ms 200ms;

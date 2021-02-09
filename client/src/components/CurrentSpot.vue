@@ -30,8 +30,8 @@
 
 <script>
 import Vue from "vue";
-import distanceIcon from "./../assets/distance.png";
-import starIcon from "./../assets/star.png";
+import distanceIcon from "@/assets/distance.png";
+import starIcon from "@/assets/star.png";
 
 const { userCoords } = localStorage;
 

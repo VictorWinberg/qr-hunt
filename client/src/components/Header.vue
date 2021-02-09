@@ -2,14 +2,17 @@
   <header>
     <router-link to="/" class="header-title">
       QR-Hunt
+      <i class="fas fa-crosshairs"></i>
+      <i class="fas fa-hat-cowboy"></i>
+      <i class="fas fa-map-marked-alt"></i>
     </router-link>
-    <router-link to="/user" class="my-account-icon-wrapper">
-      <img
-        alt="My Account"
-        class="my-account-icon"
-        src="./../assets/user.svg"
-      />
+    <div class="header-delimiter"></div>
+    <router-link to="/user" class="header-icon">
+      <i class="fas fa-user-secret fa-2x"></i>
     </router-link>
+    <a href="/auth/logout" class="header-icon">
+      <i class="far fa-hand-point-right fa-2x"></i>
+    </a>
   </header>
 </template>
 
@@ -23,25 +26,55 @@ header {
   z-index: 1;
   display: flex;
   justify-content: space-between;
-  padding: 0.5em;
+  padding: 1em;
   background: linear-gradient(#eee, $white);
   box-shadow: 0 2px 6px 0 rgba(#000, 0.2);
 }
 
 .header-title {
-  font-size: 24px;
+  position: relative;
+  font-size: 2rem;
   color: inherit;
   text-align: left;
   text-decoration: none;
+
+  &:hover {
+    color: $primary;
+  }
+
+  .fas {
+    position: absolute;
+  }
+
+  .fa-crosshairs {
+    top: 4px;
+    left: -2px;
+  }
+
+  .fa-hat-cowboy {
+    top: -8px;
+    right: 45px;
+    transform: scale(0.75) rotate(-30deg);
+  }
+
+  .fa-map-marked-alt {
+    top: -5px;
+    right: -20px;
+    transform: scale(0.8) rotate(30deg);
+  }
 }
 
-.my-account-icon-wrapper {
-  display: flex;
-  align-items: center;
+.header-icon {
+  align-self: center;
+  margin: 0 1.5rem;
+  color: inherit;
 
-  .my-account-icon {
-    width: auto;
-    height: 24px;
+  &:hover {
+    color: $primary;
   }
+}
+
+.header-delimiter {
+  margin: auto;
 }
 </style>
