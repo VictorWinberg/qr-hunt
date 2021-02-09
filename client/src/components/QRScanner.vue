@@ -65,6 +65,7 @@ export default Vue.extend({
   bottom: 0;
   left: 0;
   z-index: 5;
+  overflow: hidden;
   background: rgba($primary, 0.5);
   animation: slide-up 1s forwards;
 
@@ -105,7 +106,6 @@ export default Vue.extend({
   left: 50%;
   width: auto;
   min-width: 100%;
-  max-width: none;
   height: auto;
   min-height: 100%;
   transform: translate(-50%, -50%) scaleX(-1) !important;
