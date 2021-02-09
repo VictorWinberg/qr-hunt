@@ -11,8 +11,8 @@
 
 <script>
 import Vue from "vue";
+import { mapMutations, mapActions } from "vuex";
 import QRScanner from "qr-scanner";
-import Snackbar from "@/plugins/snackbar";
 
 // eslint-disable-next-line import/no-webpack-loader-syntax
 import QrScannerWorkerPath from "!!file-loader!../../node_modules/qr-scanner/qr-scanner-worker.min.js";
@@ -22,75 +22,39 @@ export default Vue.extend({
   name: "QRScanner",
   data() {
     return {
-      qrcode: "",
       scanner: undefined,
       timeout: -1,
-      timeoutMs: 10 * 1000,
-      scanning: true
+      timeoutMs: 10 * 1000
     };
   },
   created() {
     const { qrcode } = this.$route.query;
     if (qrcode) {
-      this.qrcode = qrcode;
-      this.scanning = false;
+      this.handleQR(qrcode);
+      this.stopScan();
     }
   },
   mounted() {
-    if (!this.scanning) return this.handleQR();
+    if (!this.$store.state.scanning) return;
 
     this.scanner = new QRScanner(document.getElementById("qrscan"), result => {
       if (result) {
-        this.qrcode = result;
-        this.scanner.stop();
-        this.scanning = false;
-        this.handleQR();
+        this.handleQR(result);
+        this.stopScan();
         clearTimeout(this.timeout);
       }
     });
     this.scanner.start();
     this.timeout = window.setTimeout(() => {
-      this.scanner.stop();
-      this.scanning = false;
+      this.handleQR(null);
+      this.stopScan();
     }, this.timeoutMs);
   },
   beforeDestroy() {
-    this.scanner.destroy();
+    this.scanner && this.scanner.destroy();
+    clearTimeout(this.timeout);
   },
-  methods: {
-    async handleQR() {
-      const { data, err } = await this.$fetch("/api/scan/" + this.qrcode);
-      if (err) return Snackbar.err(err);
-      if (!data.qrcode) return Snackbar.err("Error: 404 - QR Code not found");
-      if (!data.qrspot) {
-        if (confirm("Do you want to create a QR Spot?")) {
-          const title = prompt("Enter a title", "Placeholder");
-          navigator.geolocation.getCurrentPosition(async ({ coords }) => {
-            const { latitude: lat, longitude: lng } = coords;
-            const { data: qrspot, err } = await this.$fetch("/api/qrspots", {
-              method: "POST",
-              body: JSON.stringify({ title, lat, lng, qrcode: this.qrcode })
-            });
-            alert(qrspot);
-          });
-        }
-        return;
-      }
-      // TODO: Do you want to deactivate QR Spot?
-      if (!data.qrshard) {
-        if (confirm("Collect QR?")) {
-          const comment = prompt("Enter a comment", "Placeholder");
-          const { data: qrshard, err } = await this.$fetch("/api/qrshards", {
-            method: "POST",
-            body: JSON.stringify({ comment, rating: 5, qrcode: this.qrcode })
-          });
-          alert(qrshard);
-        }
-        return;
-      }
-      alert("QR Code is already collected");
-    }
-  }
+  methods: { ...mapMutations(["stopScan"]), ...mapActions(["handleQR"]) }
 });
 </script>
 
