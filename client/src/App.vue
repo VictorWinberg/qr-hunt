@@ -21,10 +21,11 @@ export default Vue.extend({
 
 <style lang="scss">
 #app {
+  position: absolute;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  height: 100vh;
+  height: 100%;
   font-family: "Avenir", Helvetica, Arial, sans-serif;
   color: $text-color;
   text-align: center;
