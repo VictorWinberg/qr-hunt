@@ -17,16 +17,3 @@
 .fade-leave-to {
   opacity: 0;
 }
-
-/*** ANIMATIONS ***/
-
-@keyframes scanning {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-
-  50% {
-    transform: translateY(100vh) translateY(-66px);
-  }
-}

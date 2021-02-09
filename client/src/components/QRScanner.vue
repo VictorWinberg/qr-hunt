@@ -1,21 +1,17 @@
 <template>
-  <footer>
-    <!-- printed QR Code -->
-    <div class="footer-content"></div>
-    <canvas id="qrcode" @click="qrScan()"></canvas>
-    <!-- actual QR Scanner -->
-    <div class="qr-scanner" :class="!scanning && 'hidden'">
-      <div class="qr-scanner-inner">
-        <h3><span style="color: red;">&#8226;</span> QR SCAN</h3>
+  <div class="qr-scanner-wrapper">
+    <div class="qr-scanner">
+      <div class="qr-scanner__camera">
+        <i class="fas fa-camera-retro"></i> QR SCAN
       </div>
-      <video id="qrscan"></video>
     </div>
-  </footer>
+    <video id="qrscan"></video>
+  </div>
 </template>
 
 <script>
 import Vue from "vue";
-import QRCode from "qrcode";
+import { mapMutations, mapActions } from "vuex";
 import QRScanner from "qr-scanner";
 
 // eslint-disable-next-line import/no-webpack-loader-syntax
@@ -26,139 +22,57 @@ export default Vue.extend({
   name: "QRScanner",
   data() {
     return {
-      qrcode: "",
       scanner: undefined,
       timeout: -1,
-      timeoutMs: 10 * 1000,
-      scanning: false
+      timeoutMs: 10 * 1000
     };
   },
-  mounted() {
+  created() {
     const { qrcode } = this.$route.query;
     if (qrcode) {
-      this.qrcode = qrcode;
-      this.qrRead();
+      this.handleQR(qrcode);
+      this.stopScan();
     }
-    const options = {
-      margin: 0.5,
-      width: 80
-    };
-
-    QRCode.toCanvas(
-      document.getElementById("qrcode"),
-      "https://zolly.ml",
-      options
-    );
+  },
+  mounted() {
+    if (!this.$store.state.scanning) return;
 
     this.scanner = new QRScanner(document.getElementById("qrscan"), result => {
       if (result) {
-        this.qrcode = result;
-        this.qrRead();
-        this.qrStop();
+        this.handleQR(result);
+        this.stopScan();
         clearTimeout(this.timeout);
       }
     });
+    this.scanner.start();
+    this.timeout = window.setTimeout(() => {
+      this.handleQR(null);
+      this.stopScan();
+    }, this.timeoutMs);
   },
-  methods: {
-    qrScan() {
-      this.scanner && this.scanner.start();
-      this.scanning = true;
-      this.timeout = window.setTimeout(() => this.qrStop(), this.timeoutMs);
-    },
-    qrStop() {
-      this.scanner && this.scanner.stop();
-      this.scanning = false;
-    },
-    async qrRead() {
-      const { data, err } = await this.$fetch("/api/scan/" + this.qrcode);
-      if (err) return alert(err);
-      if (!data.qrcode) return alert("Error: 404 - QR Code not found");
-      if (!data.qrspot) {
-        if (confirm("Do you want to create a QR Spot?")) {
-          const title = prompt("Enter a title", "Placeholder");
-          navigator.geolocation.getCurrentPosition(async ({ coords }) => {
-            const { latitude: lat, longitude: lng } = coords;
-            const { data: qrspot, err } = await this.$fetch("/api/qrspots", {
-              method: "POST",
-              body: JSON.stringify({ title, lat, lng, qrcode: this.qrcode })
-            });
-            alert(qrspot);
-          });
-        }
-        return;
-      }
-      // TODO: Do you want to deactivate QR Spot?
-      if (!data.qrshard) {
-        if (confirm("Collect QR?")) {
-          const comment = prompt("Enter a comment", "Placeholder");
-          const { data: qrshard, err } = await this.$fetch("/api/qrshards", {
-            method: "POST",
-            body: JSON.stringify({ comment, rating: 5, qrcode: this.qrcode })
-          });
-          alert(qrshard);
-        }
-        return;
-      }
-      alert("QR Code is already collected");
-    }
-  }
+  beforeDestroy() {
+    this.scanner && this.scanner.destroy();
+    clearTimeout(this.timeout);
+  },
+  methods: { ...mapMutations(["stopScan"]), ...mapActions(["handleQR"]) }
 });
 </script>
 
 <style lang="scss">
-footer {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  height: 65px;
-}
-
-.footer-content {
-  width: 100%;
-  height: 100%;
-  background: $white;
-  box-shadow: 0 -2px 6px 0 rgba($black, 0.2);
-}
-
-#qrcode {
+.qr-scanner-wrapper {
   position: absolute;
-  top: -35px;
-  border: solid $white 10px;
-  border-radius: 50%;
-  box-shadow: 0 -4px 4px 2px rgba($black, 0.2);
-}
-
-.hidden {
-  display: none;
-}
-
-.qr-scanner {
-  position: fixed;
-  top: 0;
+  right: 0;
   bottom: 0;
   left: 0;
-  width: 100%;
-  margin-top: 50px;
-  overflow: hidden;
+  z-index: 5;
+  background: rgba($primary, 0.5);
+  animation: slide-up 1s forwards;
 
-  .qr-scanner-inner {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    bottom: 20px;
-    left: 20px;
+  .qr-scanner {
+    position: relative;
     z-index: 1;
-    overflow: hidden;
-    border: 3px solid white;
-
-    h3 {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      color: white;
-    }
+    width: 100%;
+    height: 100%;
 
     &::after {
       position: absolute;
@@ -167,9 +81,20 @@ footer {
       width: 100%;
       height: 20px;
       content: "";
-      background-color: rgba(red, 0.5);
-      box-shadow: 0 0 50px red;
+      background-color: rgba($text-color, 0.5);
+      box-shadow: 0 0 50px $text-color;
       animation: scanning 5s infinite cubic-bezier(0.7, 0.3, 0.3, 0.7);
+      animation-delay: 1s;
+    }
+
+    .qr-scanner__camera {
+      position: absolute;
+      top: 20px;
+      right: 0;
+      left: 0;
+      font-size: 2rem;
+      font-weight: bold;
+      color: $text-color;
     }
   }
 }
@@ -184,5 +109,26 @@ footer {
   height: auto;
   min-height: 100%;
   transform: translate(-50%, -50%) scaleX(-1) !important;
+}
+
+@keyframes scanning {
+  0%,
+  100% {
+    top: 0;
+  }
+
+  50% {
+    top: calc(100% - 20px);
+  }
+}
+
+@keyframes slide-up {
+  0% {
+    top: 100%;
+  }
+
+  100% {
+    top: 0;
+  }
 }
 </style>
