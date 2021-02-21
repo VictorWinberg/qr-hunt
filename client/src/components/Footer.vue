@@ -25,7 +25,7 @@ export default Vue.extend({
     );
   },
   methods: {
-    ...mapMutations(["toggleScan"]),
+    ...mapMutations("scan", ["toggleScan"]),
     qrscan() {
       this.toggleScan();
     }

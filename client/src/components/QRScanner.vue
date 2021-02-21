@@ -11,7 +11,7 @@
 
 <script>
 import Vue from "vue";
-import { mapMutations, mapActions } from "vuex";
+import { mapState, mapMutations, mapActions } from "vuex";
 import QRScanner from "qr-scanner";
 
 // eslint-disable-next-line import/no-webpack-loader-syntax
@@ -27,6 +27,7 @@ export default Vue.extend({
       timeoutMs: 10 * 1000
     };
   },
+  computed: mapState("scan", ["scanning"]),
   created() {
     const { qrcode } = this.$route.query;
     if (qrcode) {
@@ -35,11 +36,11 @@ export default Vue.extend({
     }
   },
   mounted() {
-    if (!this.$store.state.scanning) return;
+    if (!this.scanning) return;
 
-    this.scanner = new QRScanner(document.getElementById("qrscan"), result => {
-      if (result) {
-        this.handleQR(result);
+    this.scanner = new QRScanner(document.getElementById("qrscan"), qrcode => {
+      if (qrcode) {
+        this.handleQR(qrcode);
         this.stopScan();
         clearTimeout(this.timeout);
       }
@@ -54,7 +55,10 @@ export default Vue.extend({
     this.scanner && this.scanner.destroy();
     clearTimeout(this.timeout);
   },
-  methods: { ...mapMutations(["stopScan"]), ...mapActions(["handleQR"]) }
+  methods: {
+    ...mapMutations("scan", ["stopScan"]),
+    ...mapActions(["handleQR"])
+  }
 });
 </script>
 

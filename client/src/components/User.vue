@@ -30,26 +30,28 @@
         </div>
       </div>
     </div>
+
+    <button class="user-remove" @click="deleteMe">DELETE MY ACCOUNT</button>
   </div>
 </template>
 
 <script>
 import Vue from "vue";
+import { mapState, mapMutations } from "vuex";
 
 export default Vue.extend({
   data() {
     return {
-      user: {},
       achievements: []
     };
   },
+  computed: mapState("auth", ["isAuthenticated", "user"]),
   async created() {
-    const user = await this.$fetch("/auth/user");
-    if (!user.err) this.user = user.data;
     const achievements = await this.$fetch("/api/achievements");
     if (!achievements.err) this.achievements = achievements.data;
   },
   methods: {
+    ...mapMutations("auth", ["setAuth"]),
     hashColor(str) {
       let hash = 0;
       for (let i = 0; i < str.length; i++) {
@@ -61,6 +63,13 @@ export default Vue.extend({
         colour += ("00" + value.toString(16)).substr(-2);
       }
       return colour;
+    },
+    async deleteMe() {
+      const { err } = await this.$fetch("/api/user", { method: "DELETE" });
+      if (err) return;
+
+      this.setAuth({ isAuthenticated: false });
+      this.$router.push("/");
     }
   }
 });
@@ -69,7 +78,9 @@ export default Vue.extend({
 <style lang="scss">
 .user-wrapper {
   z-index: 1;
+  display: flex;
   flex: 1;
+  flex-direction: column;
   width: 100%;
   max-width: 800px;
   margin: 2rem auto;
@@ -199,6 +210,16 @@ export default Vue.extend({
   height: 96px;
   margin: auto;
   border-radius: 50%;
+}
+
+.user-remove {
+  padding: 1rem 2rem;
+  margin: auto;
+  margin-bottom: 20px;
+  color: white;
+  cursor: pointer;
+  background: $danger;
+  border: none;
 }
 
 @media screen and (min-width: 500px) {
