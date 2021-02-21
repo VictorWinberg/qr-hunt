@@ -5,7 +5,7 @@
         <i class="fas fa-camera-retro"></i> QR SCAN
       </div>
     </div>
-    <video id="qrscan"></video>
+    <div class="qrscan"><video id="qrscan"></video></div>
   </div>
 </template>
 
@@ -100,15 +100,24 @@ export default Vue.extend({
   }
 }
 
-#qrscan {
+.qrscan {
   position: absolute;
   top: 50%;
   left: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  transform: translate(-50%, -50%);
+}
+
+#qrscan {
+  object-fit: cover;
   width: auto;
   min-width: 100%;
   height: auto;
   min-height: 100%;
-  transform: translate(-50%, -50%) scaleX(-1) !important;
 }
 
 @keyframes scanning {
