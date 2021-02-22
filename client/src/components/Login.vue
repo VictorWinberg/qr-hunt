@@ -1,6 +1,6 @@
 <template>
   <transition name="fade">
-    <div v-if="!isAuthenticated" class="login">
+    <div v-if="status !== 'pending' && !isAuthenticated" class="login">
       <div class="login__inner">
         <h1>QR-Hunt</h1>
         <GoogleSignIn />
@@ -11,21 +11,17 @@
 
 <script>
 import Vue from "vue";
+import { mapState, mapMutations } from "vuex";
 import Snackbar from "node-snackbar";
 import GoogleSignIn from "@/components/GoogleSignIn.vue";
 
 export default Vue.extend({
   components: { GoogleSignIn },
-  data() {
-    return {
-      isAuthenticated: true
-    };
-  },
+  computed: mapState("auth", ["status", "isAuthenticated"]),
   async created() {
     const { data, err } = await this.$fetch("/auth/user");
-    if (!data.isAuthenticated || err) {
-      this.isAuthenticated = false;
-    }
+    if (!err) this.setAuth(data);
+    if (!this.isAuthenticated) return;
 
     const achievement = await this.$fetch("/api/achievements/thankful");
     if (!achievement.err && !achievement.data) {
@@ -43,7 +39,8 @@ export default Vue.extend({
         }
       });
     }
-  }
+  },
+  methods: mapMutations("auth", ["setAuth"])
 });
 </script>
 

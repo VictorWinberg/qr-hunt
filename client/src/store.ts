@@ -5,12 +5,47 @@ import { customFetch } from "@/plugins/custom-fetch";
 
 Vue.use(Vuex);
 
+const moduleAuth = {
+  namespaced: true,
+  state: () => ({
+    user: {},
+    isAuthenticated: false,
+    status: "pending"
+  }),
+  mutations: {
+    setAuth(state, payload) {
+      const { isAuthenticated = false, ...user } = payload;
+      state.isAuthenticated = isAuthenticated;
+      state.user = user;
+      state.status = isAuthenticated ? "success" : "unauthenticated";
+    }
+  }
+};
+
+const moduleScan = {
+  namespaced: true,
+  state: () => ({
+    scanning: false
+  }),
+  mutations: {
+    toggleScan(state) {
+      state.scanning = !state.scanning;
+    },
+    stopScan(state) {
+      state.scanning = false;
+    }
+  }
+};
+
 export default new Vuex.Store({
+  modules: {
+    auth: moduleAuth,
+    scan: moduleScan
+  },
   state: {
     currentSpot: {},
     showSpotInfo: false,
-    showSpotDetails: false,
-    scanning: false
+    showSpotDetails: false
   },
   getters: {
     getCurrentSpot(state) {
@@ -32,12 +67,6 @@ export default new Vuex.Store({
     },
     setShowSpotDetails(state, value) {
       state.showSpotDetails = value;
-    },
-    toggleScan(state) {
-      state.scanning = !state.scanning;
-    },
-    stopScan(state) {
-      state.scanning = false;
     }
   },
   actions: {

@@ -54,7 +54,7 @@ export default Vue.extend({
         return this.$store.getters.getCurrentSpot;
       },
       set(value) {
-        this.$store.commit("setCurrentSpot", value);
+        this.$store.commit("setCurrentSpot", value || {});
       }
     },
     showSpotInfo: {
