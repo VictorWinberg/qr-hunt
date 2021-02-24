@@ -9,6 +9,29 @@
       <p class="user-header__email async async--text">{{ user.email }}</p>
     </div>
 
+    <div class="user-xp">
+      <i
+        class="user-xp__level fas fa-star"
+        :style="{ color: hashColor(user.lvl) }"
+      >
+        <span class="user-xp__text" :style="xpTextStyle(user.lvl)">
+          {{ user.lvl || "?" }}
+        </span>
+      </i>
+      <div class="user-xp__bar">
+        <span class="user-xp__text" :style="xpTextStyle(user.lvl)">
+          {{ user.lvlXp || "X" }} / {{ user.reqLvlXp || "Y" }}
+        </span>
+        <div
+          class="user-xp__bar--fill"
+          :style="{
+            background: hashColor(user.lvl),
+            'max-width': `${(user.lvlXp / user.reqLvlXp) * 100}%`
+          }"
+        ></div>
+      </div>
+    </div>
+
     <h2>Achievements</h2>
     <div class="user-achievements">
       <div
@@ -20,9 +43,11 @@
           <div class="hex hex__inner">
             <div class="hex hex__inner" :style="{ color: hashColor(name) }">
               <div class="hex__icon">
-                <i :class="(icon || 'fas fa-star') + ' fa-2x'"></i>
+                <i :class="(icon || 'fas fa-question') + ' fa-2x'"></i>
                 <div class="banner">
-                  <div class="banner__text">{{ title || name }}</div>
+                  <div class="banner__text async async--text">
+                    {{ title || name || ". . ." }}
+                  </div>
                 </div>
               </div>
             </div>
@@ -38,28 +63,35 @@
 <script>
 import Vue from "vue";
 import { mapState, mapMutations } from "vuex";
+import { md5 } from "../utils";
 
 export default Vue.extend({
   data() {
     return {
-      achievements: []
+      achievements: [{}, {}]
     };
   },
-  computed: mapState("auth", ["isAuthenticated", "user"]),
+  computed: {
+    ...mapState("auth", ["isAuthenticated", "user"])
+  },
   async created() {
     const achievements = await this.$fetch("/api/achievements");
     if (!achievements.err) this.achievements = achievements.data;
   },
   methods: {
     ...mapMutations("auth", ["setAuth"]),
+    xpTextStyle(level) {
+      return {
+        color: this.hashColor(level + 1),
+        "text-shadow": `2px 2px ${this.hashColor(level)}`
+      };
+    },
     hashColor(str) {
-      let hash = 0;
-      for (let i = 0; i < str.length; i++) {
-        hash = str.charCodeAt(i) - ((hash << 5) + hash);
-      }
+      if (!str) return "#dfdfdf";
+      const h = md5(String(str));
       let colour = "#";
       for (let i = 0; i < 3; i++) {
-        const value = (hash >> (i * 8)) & 0xff;
+        const value = (h >> (i * 8)) & 0xff;
         colour += ("00" + value.toString(16)).substr(-2);
       }
       return colour;
@@ -84,6 +116,63 @@ export default Vue.extend({
   width: 100%;
   max-width: 800px;
   margin: 2rem auto;
+}
+
+.user-xp {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.user-xp__level {
+  position: relative;
+  z-index: 1;
+  font-size: 4rem;
+  -webkit-text-stroke: 1px $black;
+}
+
+.user-xp__bar {
+  position: relative;
+  display: inline-block;
+  width: 300px;
+  max-width: 66%;
+  height: 2.5rem;
+  margin-left: -2.25rem;
+  border: 1px solid $black;
+  border-radius: 3px;
+}
+
+.user-xp__bar--fill {
+  height: 100%;
+  animation: bar-fill 2s ease-in-out forwards;
+}
+
+@keyframes bar-fill {
+  0% {
+    width: 0;
+  }
+
+  100% {
+    width: 100%;
+  }
+}
+
+.user-xp__text {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-style: italic;
+  font-weight: bold;
+  color: $black;
+  -webkit-text-fill-color: $white;
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: $black;
 }
 
 .user-achievements {
@@ -192,7 +281,7 @@ export default Vue.extend({
 }
 
 .user-header {
-  margin-bottom: 3rem;
+  margin-bottom: 1rem;
 }
 
 .user-header__title {

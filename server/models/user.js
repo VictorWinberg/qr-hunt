@@ -8,7 +8,11 @@ module.exports = (db) => ({
   },
 
   getById: async (userId) => {
-    const sql = "SELECT * FROM users WHERE id = $1";
+    const sql = `SELECT *,
+      (SELECT COUNT(*) FROM qrshards WHERE user_id = id) AS qrshards_score,
+      (SELECT COUNT(*) FROM user_achievements WHERE user_id = id) AS achievements_score
+      FROM users WHERE id = $1`;
+
     const { rows, err } = await db.query(sql, [userId]);
     return { user: rows[0], err };
   },
@@ -20,7 +24,10 @@ module.exports = (db) => ({
   },
 
   getAll: async () => {
-    const sql = "SELECT * FROM users";
+    const sql = `SELECT *,  
+      (SELECT COUNT(*) FROM qrshards WHERE user_id = id) AS qrshards_score,
+      (SELECT COUNT(*) FROM user_achievements WHERE user_id = id) AS achievements_score
+      FROM users`;
     const { rows, err } = await db.query(sql);
     return { users: rows, err };
   },

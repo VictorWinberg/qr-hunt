@@ -19,7 +19,7 @@ export default Vue.extend({
   components: { GoogleSignIn },
   computed: mapState("auth", ["status", "isAuthenticated"]),
   async created() {
-    const { data, err } = await this.$fetch("/auth/user");
+    const { data, err } = await this.$fetch("/api/user");
     if (!err) this.setAuth(data);
     if (!this.isAuthenticated) return;
 
