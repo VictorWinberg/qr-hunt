@@ -37,10 +37,23 @@ const moduleScan = {
   }
 };
 
+const moduleModal = {
+  namespaced: true,
+  state: () => ({
+    modal: false
+  }),
+  mutations: {
+    setModal(state, value) {
+      state.modal = value;
+    }
+  }
+};
+
 export default new Vuex.Store({
   modules: {
     auth: moduleAuth,
-    scan: moduleScan
+    scan: moduleScan,
+    modal: moduleModal
   },
   state: {
     currentSpot: {},
@@ -70,42 +83,83 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    async handleQR(state, qrcode): Promise<void> {
+    create() {},
+    async collect(state, qrcode) {
+      const comment = prompt("Enter a comment", "Placeholder");
+      // const { data: qrshard, err } = await customFetch("/api/qrshards", {
+      //   method: "POST",
+      //   body: JSON.stringify({ comment, rating: 5, qrcode })
+      // });
+      // alert(qrshard);
+    },
+    async handleQR(store, qrcode): Promise<void> {
       if (!qrcode) return Snackbar.err("QR Code not found");
 
       const { data, err } = await customFetch("/api/scan/" + qrcode);
       if (err) return Snackbar.err(err);
       if (!data.qrcode)
         return Snackbar.err("Error: 404 - QR Code not available");
+
+      // Create QR Spot
       if (!data.qrspot) {
-        if (confirm("Do you want to create a QR Spot?")) {
-          const title = prompt("Enter a title", "Placeholder");
-          navigator.geolocation.getCurrentPosition(
-            async ({ coords }): Promise<void> => {
-              const { latitude: lat, longitude: lng } = coords;
-              const { data: qrspot, err } = await customFetch("/api/qrspots", {
-                method: "POST",
-                body: JSON.stringify({ title, lat, lng, qrcode })
-              });
-              alert(qrspot);
+        store.commit("modal/setModal", {
+          title: "New QR Spot",
+          subtitle: "Do you want to create a QR Spot?",
+          options: [
+            {
+              name: "Create",
+              type: "success",
+              action: async () => {
+                const title = prompt("Enter a title", "Placeholder");
+                navigator.geolocation.getCurrentPosition(
+                  async ({ coords }): Promise<void> => {
+                    const { latitude: lat, longitude: lng } = coords;
+                    const { data: qrspot, err } = await customFetch(
+                      "/api/qrspots",
+                      {
+                        method: "POST",
+                        body: JSON.stringify({ title, lat, lng, qrcode })
+                      }
+                    );
+                    store.commit("modal/setModal", false);
+                  }
+                );
+              }
             }
-          );
-        }
+          ]
+        });
         return;
       }
-      // TODO: Do you want to deactivate QR Spot?
+      // Do you want to collect QR Code?
       if (!data.qrshard) {
-        if (confirm("Collect QR?")) {
-          const comment = prompt("Enter a comment", "Placeholder");
-          const { data: qrshard, err } = await customFetch("/api/qrshards", {
-            method: "POST",
-            body: JSON.stringify({ comment, rating: 5, qrcode })
-          });
-          alert(qrshard);
-        }
+        store.commit("modal/setModal", {
+          title: "Collect QR",
+          subtitle: "Do you want to collect this QR shard?",
+          options: [
+            {
+              name: "Collect",
+              type: "success",
+              action: async () => {
+                const { data: qrshard, err } = await customFetch(
+                  "/api/qrshards",
+                  {
+                    method: "POST",
+                    body: JSON.stringify({ qrcode })
+                  }
+                );
+                store.commit("modal/setModal", false);
+              }
+            }
+          ]
+        });
         return;
       }
-      alert("QR Code is already collected");
+      // QR Code already collected
+      store.commit("modal/setModal", {
+        title: "Collect QR",
+        subtitle: "QR Code is already collected",
+        options: [{ name: "Collect", type: "disabled" }]
+      });
     }
   }
 });
