@@ -4,6 +4,7 @@
     <Header />
     <router-view />
     <QRScanner v-if="scanning" />
+    <Modal v-if="modal" />
     <Footer />
   </div>
 </template>
@@ -15,11 +16,15 @@ import Header from "@/components/Header.vue";
 import Footer from "@/components/Footer.vue";
 import Login from "@/components/Login.vue";
 import QRScanner from "@/components/QRScanner.vue";
+import Modal from "@/components/Modal.vue";
 
 export default Vue.extend({
   name: "App",
-  components: { Header, Footer, Login, QRScanner },
-  computed: mapState("scan", ["scanning"])
+  components: { Header, Footer, Login, QRScanner, Modal },
+  computed: {
+    ...mapState("scan", ["scanning"]),
+    ...mapState("modal", ["modal"])
+  }
 });
 </script>
 
