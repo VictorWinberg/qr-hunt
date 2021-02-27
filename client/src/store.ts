@@ -2,6 +2,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 import Snackbar from "@/plugins/snackbar";
 import { customFetch } from "@/plugins/custom-fetch";
+import { modalStateQRspot } from "./constans";
 
 Vue.use(Vuex);
 
@@ -49,39 +50,32 @@ const moduleModal = {
   }
 };
 
+const moduleQrSpot = {
+  namespaced: true,
+  state: () => ({
+    qrSpot: {},
+    showQrSpot: modalStateQRspot.HIDE
+  }),
+  mutations: {
+    setQrSpot(state, value) {
+      state.qrSpot = value;
+    },
+    setShowQrSpot(state, value) {
+      state.showQrSpot = value;
+    }
+  }
+};
+
 export default new Vuex.Store({
   modules: {
     auth: moduleAuth,
     scan: moduleScan,
-    modal: moduleModal
+    modal: moduleModal,
+    qrSpot: moduleQrSpot
   },
-  state: {
-    currentSpot: {},
-    showSpotInfo: false,
-    showSpotDetails: false
-  },
-  getters: {
-    getCurrentSpot(state) {
-      return state.currentSpot;
-    },
-    getShowSpotInfo(state) {
-      return state.showSpotInfo;
-    },
-    getShowSpotDetails(state) {
-      return state.showSpotDetails;
-    }
-  },
-  mutations: {
-    setCurrentSpot(state, value) {
-      state.currentSpot = value;
-    },
-    setShowSpotInfo(state, value) {
-      state.showSpotInfo = value;
-    },
-    setShowSpotDetails(state, value) {
-      state.showSpotDetails = value;
-    }
-  },
+  state: {},
+  getters: {},
+  mutations: {},
   actions: {
     create() {},
     async collect(state, qrcode) {

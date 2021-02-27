@@ -10,9 +10,14 @@
       rotateControl: false,
       mapTypeControl: false,
       fullscreenControl: false,
-      draggable: !showSpotDetails
+      clickableIcons: false,
+      draggable: showQrSpot !== modalStateQRspot.SHOW_DETAILS
     }"
-    :class="showSpotDetails ? 'collapse-map' : 'expand-map'"
+    :class="
+      showQrSpot == modalStateQRspot.SHOW_DETAILS
+        ? 'collapsed-map'
+        : 'expanded-map'
+    "
     @click="deselectQRspot"
     @dragend="handleDrag"
     @zoom_changed="handleZoom"
@@ -35,7 +40,7 @@
       v-for="(marker, index) in markers"
       :key="index"
       :position="{ lat: Number(marker.lat), lng: Number(marker.lng) }"
-      clickable
+      :clickable="showQrSpot !== modalStateQRspot.SHOW_DETAILS"
       @click="() => selectQRspot(marker, index)"
     />
     <div id="my-location-button" @click="centerMapToUser()">
@@ -50,6 +55,8 @@
 
 <script>
 import Vue from "vue";
+import { mapState, mapMutations } from "vuex";
+import { modalStateQRspot } from "@/constans";
 
 export default Vue.extend({
   data() {
@@ -70,47 +77,12 @@ export default Vue.extend({
       mapCoords: mapCoords ? JSON.parse(mapCoords) : { lat: 0, lng: 0 },
       mapZoom: mapZoom ? Number(mapZoom) : 15,
       userCoords: userCoords ? JSON.parse(userCoords) : { lat: 0, lng: 0 },
-      markerSelected: -1,
+      modalStateQRspot,
       markers: []
     };
   },
   computed: {
-    isMarkerSelected() {
-      return this.markerSelected !== -1;
-    },
-    currentMarker() {
-      return this.markers[this.markerSelected] || null;
-    },
-    currentMarkerTitle() {
-      return this.currentMarker?.title || "";
-    },
-    currentMarkerRating() {
-      return this.currentMarker?.rating || "N/A";
-    },
-    currentSpot: {
-      get() {
-        return this.$store.getters.getCurrentSpot;
-      },
-      set(value) {
-        this.$store.commit("setCurrentSpot", value);
-      }
-    },
-    showSpotInfo: {
-      get() {
-        return this.$store.getters.getShowSpotInfo;
-      },
-      set(value) {
-        this.$store.commit("setShowSpotInfo", value);
-      }
-    },
-    showSpotDetails: {
-      get() {
-        return this.$store.getters.getShowSpotDetails;
-      },
-      set(value) {
-        this.$store.commit("setShowSpotDetails", value);
-      }
-    }
+    ...mapState("qrSpot", ["qrSpot", "showQrSpot"])
   },
   watch: {
     mapCoords(newCoords) {
@@ -122,14 +94,16 @@ export default Vue.extend({
     userCoords(newCoords) {
       localStorage.userCoords = JSON.stringify(newCoords);
     },
-    showSpotDetails() {
-      setTimeout(
-        () =>
-          this.map.panTo(
-            new google.maps.LatLng(this.currentSpot.lat, this.currentSpot.lng)
-          ),
-        200
-      );
+    showQrSpot() {
+      if (this.showQrSpot === modalStateQRspot.SHOW_DETAILS) {
+        setTimeout(
+          () =>
+            this.map.panTo(
+              new google.maps.LatLng(this.qrSpot.lat, this.qrSpot.lng)
+            ),
+          200
+        );
+      }
     }
   },
   created() {
@@ -141,6 +115,7 @@ export default Vue.extend({
     this.createMapElements();
   },
   methods: {
+    ...mapMutations("qrSpot", ["setQrSpot", "setShowQrSpot"]),
     async fetchQRSpots() {
       const response = await fetch("/api/qrspots");
       this.markers = await response.json();
@@ -151,16 +126,14 @@ export default Vue.extend({
       const { RIGHT_BOTTOM } = google.maps.ControlPosition;
       this.map.controls[RIGHT_BOTTOM].push(centerControlDiv);
     },
-    selectQRspot({ lat, lng }, index) {
-      this.map.panTo(new google.maps.LatLng(lat, lng));
-      this.markerSelected = index;
-      this.currentSpot = this.currentMarker;
-      this.showSpotInfo = true;
+    selectQRspot(marker) {
+      this.map.panTo(new google.maps.LatLng(marker.lat, marker.lng));
+      this.setQrSpot(marker);
+      this.setShowQrSpot(this.modalStateQRspot.SHOW_INFO);
     },
     deselectQRspot() {
-      this.markerSelected = -1;
-      this.showSpotInfo = false;
-      this.showSpotDetails = false;
+      this.setQrSpot({});
+      this.setShowQrSpot(this.modalStateQRspot.HIDE);
     },
     handleDrag() {
       if (!this.map) return;
@@ -219,7 +192,7 @@ export default Vue.extend({
 }
 
 .vue-map-container {
-  &.collapse-map {
+  &.collapsed-map {
     height: 30%;
     transition: all 300ms 200ms;
 
@@ -230,7 +203,7 @@ export default Vue.extend({
     }
   }
 
-  &.expand-map {
+  &.expanded-map {
     height: 100%;
     transition: all 300ms 0ms;
 

@@ -1,26 +1,29 @@
 <template>
-  <div
-    class="qrspot-wrapper"
-    :class="showSpotDetails ? 'large' : showSpotInfo ? 'small' : 'hide'"
-  >
-    <div class="qrspot-container" @click="toggle()">
-      <div class="qrspot-title">{{ currentSpot.title }}</div>
+  <div class="qrspot-wrapper" :class="showQrSpot">
+    <div
+      class="qrspot-container"
+      @click="setShowQrSpot(modalStateQRspot.SHOW_DETAILS)"
+    >
+      <div class="qrspot-title">{{ qrSpot.title }}</div>
       <div class="qrspot-info">
         <div class="qrspot-info__distance">
-          <img alt="My Location" class="distance-icon" :src="distanceIcon" />
+          <i class="fas fa-route"></i>
           <span>{{ distanceToMarker() }}</span>
         </div>
         <div class="qrspot-info__rating">
-          <img alt="Star" class="star-icon" :src="starIcon" />
-          {{ currentSpot.rating || "N/A" }}
+          <i class="far fa-star"></i>
+          {{ qrSpot.rating || "N/A" }}
         </div>
       </div>
       <transition name="fade">
-        <div v-if="showSpotDetails" class="qrspot-details">
-          <div v-for="(value, key) in currentSpot" :key="key">
-            <span
-              ><b>{{ key }}: </b>{{ value }}</span
-            >
+        <div
+          v-if="showQrSpot === modalStateQRspot.SHOW_DETAILS"
+          class="qrspot-details"
+        >
+          <div v-for="(value, key) in qrSpot" :key="key">
+            <span>
+              <b>{{ key }}: </b>{{ value }}
+            </span>
           </div>
         </div>
       </transition>
@@ -30,8 +33,8 @@
 
 <script>
 import Vue from "vue";
-import distanceIcon from "@/assets/distance.png";
-import starIcon from "@/assets/star.png";
+import { mapState, mapMutations } from "vuex";
+import { modalStateQRspot } from "@/constans";
 
 const { userCoords } = localStorage;
 
@@ -39,47 +42,17 @@ export default Vue.extend({
   name: "CurrentSpot",
   data() {
     return {
-      distanceIcon,
-      starIcon,
-      showDetails: false,
-      userCoords: userCoords ? JSON.parse(userCoords) : { lat: 0, lng: 0 }
+      userCoords: userCoords ? JSON.parse(userCoords) : { lat: 0, lng: 0 },
+      modalStateQRspot
     };
   },
   computed: {
-    hideCurrentSpot() {
-      return !this.$store.getters.getShowSpotInfo;
-    },
-    currentSpot: {
-      get() {
-        return this.$store.getters.getCurrentSpot;
-      },
-      set(value) {
-        this.$store.commit("setCurrentSpot", value || {});
-      }
-    },
-    showSpotInfo: {
-      get() {
-        return this.$store.getters.getShowSpotInfo;
-      },
-      set(value) {
-        this.$store.commit("setShowSpotInfo", value);
-      }
-    },
-    showSpotDetails: {
-      get() {
-        return this.$store.getters.getShowSpotDetails;
-      },
-      set(value) {
-        this.$store.commit("setShowSpotDetails", value);
-      }
-    }
+    ...mapState("qrSpot", ["qrSpot", "showQrSpot"])
   },
   methods: {
-    toggle() {
-      this.showSpotDetails = !this.showSpotDetails;
-    },
+    ...mapMutations("qrSpot", ["setShowQrSpot"]),
     distanceToMarker() {
-      const d = this.calculateDistance(this.userCoords, this.currentSpot);
+      const d = this.calculateDistance(this.userCoords, this.qrSpot);
       return d < 1000 ? d.toFixed(1) + " meter" : (d / 1000).toFixed(1) + " km";
     },
     calculateDistance({ lat: lat1, lng: lng1 }, { lat: lat2, lng: lng2 }) {
@@ -105,7 +78,7 @@ export default Vue.extend({
   position: absolute;
   box-shadow: 0 -2px 6px 0 rgba($black, 0.2);
 
-  &.hide {
+  &.HIDE {
     right: 60px;
     bottom: -65px;
     left: 60px;
@@ -114,7 +87,7 @@ export default Vue.extend({
       height 500ms 0ms;
   }
 
-  &.small {
+  &.SHOW_INFO {
     right: 60px;
     bottom: 24px;
     left: 60px;
@@ -122,7 +95,7 @@ export default Vue.extend({
     transition: all 300ms 200ms, height 500ms 0ms;
   }
 
-  &.large {
+  &.SHOW_DETAILS {
     right: 0;
     bottom: 0;
     left: 0;
@@ -155,17 +128,9 @@ export default Vue.extend({
 
 .qrspot-info__distance {
   padding: 0 10px;
-
-  .distance-icon {
-    height: 14px;
-  }
 }
 
 .qrspot-info__rating {
   padding: 0 10px;
-
-  .star-icon {
-    height: 14px;
-  }
 }
 </style>
