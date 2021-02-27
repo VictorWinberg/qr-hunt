@@ -112,7 +112,8 @@ export default Vue.extend({
   flex-direction: column;
   width: 100%;
   max-width: 800px;
-  margin: 2rem auto;
+  padding: 2rem 0;
+  overflow-y: scroll;
 }
 
 .user-xp {
