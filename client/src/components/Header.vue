@@ -25,8 +25,9 @@ header {
   position: relative;
   z-index: 2;
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  padding: 1em;
+  height: 5rem;
   background: linear-gradient(#eee, $white);
   box-shadow: 0 2px 6px 0 rgba(#000, 0.2);
 }
@@ -65,7 +66,6 @@ header {
 }
 
 .header-icon {
-  align-self: center;
   margin: 0 1.5rem;
   color: inherit;
 
