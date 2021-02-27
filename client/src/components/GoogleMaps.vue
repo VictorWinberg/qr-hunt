@@ -118,8 +118,8 @@ export default Vue.extend({
   methods: {
     ...mapMutations("qrSpot", ["setQrSpot", "setShowQrSpot"]),
     async fetchQRSpots() {
-      const response = await api.get("/api/qrspots");
-      this.markers = await response.json();
+      const { err, data } = await api.get("/api/qrspots");
+      if (!err) this.markers = data;
     },
     createMapElements() {
       /** Create button for centering position at user */
