@@ -65,6 +65,7 @@ export default {
   top: 0;
   right: 0;
   padding: 20px;
+  cursor: pointer;
 }
 
 .modal {
@@ -90,6 +91,7 @@ export default {
   flex: 1;
   padding: 14px;
   font-size: 18px;
+  cursor: pointer;
 
   &:not(:first-child) {
     margin-left: 20px;
