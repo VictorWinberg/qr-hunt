@@ -13,7 +13,7 @@ CREATE TABLE users (
 
 DROP TABLE IF EXISTS qrcodes CASCADE;
 CREATE TABLE qrcodes (
-  uuid      VARCHAR(36)  NOT NULL,
+  uuid       VARCHAR(36)  NOT NULL,
 
   owner_id   INT,
 
@@ -46,7 +46,7 @@ CREATE TABLE qrspots (
 DROP TABLE IF EXISTS qrshards CASCADE;
 CREATE TABLE qrshards (
   id        SERIAL        NOT NULL,
-  rating    INT           NOT NULL,
+  rating    INT,
   comment   VARCHAR(255),
 
   user_id   INT,
@@ -75,6 +75,7 @@ CREATE TABLE achievements (
 
 DROP TABLE IF EXISTS user_achievements CASCADE;
 CREATE TABLE user_achievements (
+  popup            BOOLEAN     NOT NULL DEFAULT FALSE,
   user_id          INT,
   achievement_name VARCHAR(36),
 

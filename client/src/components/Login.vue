@@ -12,35 +12,19 @@
 <script>
 import Vue from "vue";
 import { mapState, mapMutations } from "vuex";
-import Snackbar from "node-snackbar";
 import GoogleSignIn from "@/components/GoogleSignIn.vue";
+import { api } from "@/utils";
 
 export default Vue.extend({
   components: { GoogleSignIn },
   computed: mapState("auth", ["status", "isAuthenticated"]),
   async created() {
-    const { data, err } = await this.$fetch("/api/user");
+    const { data, err } = await api.get("/api/user");
     if (!err) this.setAuth(data);
-    if (!this.isAuthenticated) return;
-
-    const achievement = await this.$fetch("/api/achievements/thankful");
-    if (!achievement.err && !achievement.data) {
-      Snackbar.show({
-        text: "Welcome to QR-Hunt!",
-        actionText: "Thanks!",
-        actionTextColor: "#f66496",
-        onActionClick: () => {
-          Snackbar.show({
-            text: "YEEEY! You are so kind!",
-            textColor: "#f66496",
-            showAction: false
-          });
-          this.$fetch("/api/thanks");
-        }
-      });
-    }
   },
-  methods: mapMutations("auth", ["setAuth"])
+  methods: {
+    ...mapMutations("auth", ["setAuth"])
+  }
 });
 </script>
 

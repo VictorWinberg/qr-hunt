@@ -2,8 +2,18 @@
   background-color: $background-color;
 }
 
+.snackbar-container {
+  z-index: 1;
+}
+
 .snackbar-container .action {
   outline: none;
+}
+
+.snackbar-pos.top-center,
+.snackbar-pos.top-right,
+.snackbar-pos.top-left {
+  top: 5rem;
 }
 
 /*** TRANSITIONS ***/

@@ -1,3 +1,51 @@
+import Snackbar from "node-snackbar";
+
+export function isJson(str): boolean {
+  try {
+    JSON.parse(str);
+  } catch (e) {
+    return false;
+  }
+  return true;
+}
+
+const apiFetch = (method?: string) => async (
+  input: RequestInfo,
+  init: RequestInit = {}
+): Promise<{ data; err }> => {
+  try {
+    const response = await fetch(input, {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      credentials: "include",
+      method,
+      ...init
+    });
+    if (!response.ok) {
+      throw new Error(`${response.status} - ${response.statusText}`);
+    }
+    const data = await response.text();
+    return { data: isJson(data) ? JSON.parse(data) : data, err: false };
+  } catch (err) {
+    Snackbar.show({
+      text: err,
+      pos: "top-right",
+      backgroundColor: "#d32f2f",
+      actionTextColor: "#ccc"
+    });
+    return { data: null, err };
+  }
+};
+
+export const api = {
+  get: apiFetch("GET"),
+  put: apiFetch("PUT"),
+  post: apiFetch("POST"),
+  delete: apiFetch("DELETE")
+};
+
 export function md5(str) {
   const rotL = (lVal, iShift) => (lVal << iShift) | (lVal >>> (32 - iShift));
 

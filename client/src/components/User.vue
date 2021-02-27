@@ -9,7 +9,7 @@
       <p class="user-header__email async async--text">{{ user.email }}</p>
     </div>
 
-    <div class="user-xp">
+    <div :key="user.lvl" class="user-xp">
       <i
         class="user-xp__level fas fa-star"
         :style="{ color: hashColor(user.lvl) }"
@@ -20,7 +20,7 @@
       </i>
       <div class="user-xp__bar">
         <span class="user-xp__text" :style="xpTextStyle(user.lvl)">
-          {{ user.lvlXp || "X" }} / {{ user.reqLvlXp || "Y" }}
+          {{ user.lvlXp }} / {{ user.reqLvlXp || "?" }}
         </span>
         <div
           class="user-xp__bar--fill"
@@ -63,23 +63,20 @@
 <script>
 import Vue from "vue";
 import { mapState, mapMutations } from "vuex";
-import { md5 } from "../utils";
+import { api, md5 } from "@/utils";
 
 export default Vue.extend({
-  data() {
-    return {
-      achievements: [{}, {}]
-    };
-  },
   computed: {
-    ...mapState("auth", ["isAuthenticated", "user"])
+    ...mapState("auth", ["isAuthenticated", "user"]),
+    ...mapState("achievements", ["achievements"])
   },
   async created() {
-    const achievements = await this.$fetch("/api/achievements");
-    if (!achievements.err) this.achievements = achievements.data;
+    const { data, err } = await api.get("/api/achievements");
+    if (!err) this.setAchievements(data);
   },
   methods: {
     ...mapMutations("auth", ["setAuth"]),
+    ...mapMutations("achievements", ["setAchievements"]),
     xpTextStyle(level) {
       return {
         color: this.hashColor(level + 1),
@@ -97,7 +94,7 @@ export default Vue.extend({
       return colour;
     },
     async deleteMe() {
-      const { err } = await this.$fetch("/api/user", { method: "DELETE" });
+      const { err } = await api.delete("/api/user");
       if (err) return;
 
       this.setAuth({ isAuthenticated: false });
@@ -144,6 +141,7 @@ export default Vue.extend({
 
 .user-xp__bar--fill {
   height: 100%;
+  transition: max-width 2s ease-in-out;
   animation: bar-fill 2s ease-in-out forwards;
 }
 
