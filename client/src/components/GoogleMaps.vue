@@ -57,6 +57,7 @@
 import Vue from "vue";
 import { mapState, mapMutations } from "vuex";
 import { modalStateQRspot } from "@/constans";
+import { api } from "@/utils";
 
 export default Vue.extend({
   data() {
@@ -117,7 +118,7 @@ export default Vue.extend({
   methods: {
     ...mapMutations("qrSpot", ["setQrSpot", "setShowQrSpot"]),
     async fetchQRSpots() {
-      const response = await fetch("/api/qrspots");
+      const response = await api.get("/api/qrspots");
       this.markers = await response.json();
     },
     createMapElements() {

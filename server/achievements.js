@@ -6,10 +6,13 @@ const achievements = {
     return [
       (req.route || {}).path === "/api/scan/:id",
       (res.body || {}).qrspot
-    ].every(Boolean);
+    ];
   },
   THANKFUL: ({ req }) => {
-    return req.path === "/api/thanks";
+    return [
+      req.method === "POST",
+      req.path.toLowerCase() === "/api/achievements/thankful"
+    ];
   }
 };
 
@@ -21,8 +24,13 @@ module.exports = ({ pg, db }) => async (req, res, next) => {
   };
 
   res.on("finish", async () => {
+    if (!req.isAuthenticated()) return;
+
     Object.entries(achievements).forEach(async ([key, fn]) => {
-      if (await fn({ key, pg, db, req, res })) {
+      let achievement = await fn({ key, pg, db, req, res });
+      if (Array.isArray(achievement)) achievement = achievement.every(Boolean);
+
+      if (achievement) {
         const sql = `
           INSERT INTO user_achievements (user_id, achievement_name) VALUES ($1, $2)
           ON CONFLICT DO NOTHING RETURNING *`;
@@ -33,21 +41,56 @@ module.exports = ({ pg, db }) => async (req, res, next) => {
     });
   });
 
+  const { method, url } = req;
   switch (true) {
-    case Boolean(req.url.match("^/api/achievements/?$")): {
+    case method === "GET" && Boolean(url.match("^/api/achievements/?$")): {
       if (!req.isAuthenticated()) return res.sendStatus(401);
 
       const sql = `
         SELECT achievement_name as name, title, icon, score, level, user_achievements.created_at
         FROM user_achievements
         FULL JOIN achievements ON user_achievements.achievement_name = achievements.name
-        WHERE user_id = $1`;
+        WHERE popup = 't' AND user_id = $1`;
 
       const { rows: achievements, err } = await db.query(sql, [req.user.id]);
       if (err) return res.status(400).send(err);
       return res.send(achievements);
     }
-    case Boolean(req.url.match("^/api/achievements/.+/?$")): {
+    case method === "GET" && Boolean(url.match("^/api/achievements/new/?$")): {
+      if (!req.isAuthenticated()) return res.sendStatus(401);
+
+      const sql = `
+        SELECT achievement_name as name, title, icon, score, level, user_achievements.created_at
+        FROM user_achievements
+        FULL JOIN achievements ON user_achievements.achievement_name = achievements.name
+        WHERE popup = 'f' AND user_id = $1 LIMIT 1`;
+
+      const {
+        rows: [achievement],
+        err
+      } = await db.query(sql, [req.user.id]);
+      if (err) return res.status(400).send(err);
+      if (!achievement) return res.sendStatus(204);
+      return res.send(achievement);
+    }
+    case method === "POST" && Boolean(url.match("^/api/achievements/new/?$")): {
+      if (!req.isAuthenticated()) return res.sendStatus(401);
+      const { name = "" } = req.body;
+
+      const sql = `
+        UPDATE user_achievements SET popup = 't'
+        WHERE user_id = $1 AND achievement_name = $2
+        RETURNING *`;
+
+      const {
+        rows: [achievement],
+        err
+      } = await db.query(sql, [req.user.id, name]);
+      if (err) return res.status(400).send(err);
+      if (!achievement) return res.sendStatus(404);
+      return res.send(achievement);
+    }
+    case Boolean(url.match("^/api/achievements/.+/?$")): {
       if (!req.isAuthenticated()) return res.sendStatus(401);
 
       const name = req.url.match("^/api/achievements/(.+)/?$")[1];
@@ -62,11 +105,8 @@ module.exports = ({ pg, db }) => async (req, res, next) => {
         err
       } = await db.query(sql, [req.user.id, name.toUpperCase()]);
       if (err) return res.status(400).send(err);
+      if (!achievement) return res.sendStatus(204);
       return res.send(achievement);
-    }
-    case Boolean(req.url.match("^/api/thanks/?$")): {
-      if (!req.isAuthenticated()) return res.sendStatus(401);
-      return res.sendStatus(200);
     }
   }
 

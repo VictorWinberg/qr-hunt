@@ -1,0 +1,2 @@
+ALTER TABLE qrshards
+ALTER COLUMN rating DROP NOT NULL;
