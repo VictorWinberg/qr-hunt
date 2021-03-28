@@ -1,0 +1,6 @@
+/*basic fancy styles for class-less html*/
+@import url("https://cdn.jsdelivr.net/npm/water.css@2/out/water.css");
+
+.green {
+    color: green;
+}
