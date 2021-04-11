@@ -17,10 +17,13 @@ const options = {
     servers: [
       {
         url: "http://localhost:3000/api"
+      },
+      {
+        url: "https://qr.zolly.ml/api"
       }
     ]
   },
-  apis: ["models/*.js", "routes/*.js"]
+  apis: ["**/models/*.js", "**/routes/*.js"]
 };
 const specs = swaggerJsdoc(options);
 
