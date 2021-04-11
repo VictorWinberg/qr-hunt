@@ -19,3 +19,6 @@ psql qrhunt < server/schema.sql
 npm install
 npm start
 ```
+
+## Swagger UI
+Visit `/api/docs`
