@@ -1,7 +1,20 @@
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     QRCode:
+ *       properties:
+ *         uuid:
+ *           type: string
+ *           format: uuid
+ *         owner_id:
+ *           type: integer
+ */
+
 module.exports = (db) => ({
-  create: async ({ uuid }) => {
-    const sql = "INSERT INTO qrcodes (uuid) VALUES ($1) RETURNING *";
-    const { rows, err } = await db.query(sql, [uuid]);
+  create: async (ownerId, { uuid }) => {
+    const sql = "INSERT INTO qrcodes (uuid, owner_id) VALUES ($1, $2) RETURNING *";
+    const { rows, err } = await db.query(sql, [uuid, ownerId]);
     return { qrcode: rows[0], err };
   },
 

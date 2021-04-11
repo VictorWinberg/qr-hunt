@@ -5,6 +5,13 @@
 ## Prerequisite
 
 - Node (macOS: `brew install node`)
+- Postgres (macOS: `brew install postgres`)
+
+## Database Setup
+```
+createdb qrhunt
+psql qrhunt < server/schema.sql
+```
 
 ## Node Setup
 

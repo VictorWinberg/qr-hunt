@@ -1,12 +1,26 @@
-const valid = ["rating", "comment"];
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     QRShard:
+ *       properties:
+ *         rating:
+ *           type: integer
+ *         comment:
+ *           type: string
+ *         qrspot_id:
+ *           type: integer
+ */
+
+const valid = ["rating", "comment", "qrspot_id"];
 const keyValuePairs = require("../utils").keyValuePairs(valid);
 
 module.exports = (db) => ({
-  create: async (userId, { qrcode, ...qrshard }) => {
+  create: async (userId, qrshard) => {
     const { keys, values, indices } = keyValuePairs(qrshard);
     const sql = `
-        INSERT INTO qrshards ( ${keys.concat("user_id", "qrspot_id")} ) 
-        VALUES (${indices.concat(userId, `(SELECT id FROM qrspots WHERE qrcode = '${qrcode}')`)})
+        INSERT INTO qrshards ( ${keys.concat("user_id")} ) 
+        VALUES (${indices.concat(userId)})
         RETURNING *`;
 
     const { rows, err } = await db.query(sql, values);

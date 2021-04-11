@@ -3,6 +3,36 @@ module.exports = ({ app, db, isLoggedIn }) => {
   const QRSpot = require("../models/qrspot")(db);
   const QRShard = require("../models/qrshard")(db);
 
+  
+  /**
+   * @swagger
+   * /scan/{qrcode}:
+   *   get:
+   *     summary: Scan a QRCode
+   *     tags:
+   *       - Scan
+   *     parameters:
+   *       - in: path
+   *         name: qrcode
+   *         schema:
+   *           type: string
+   *           format: uuid
+   *         required: true
+   *     responses:
+   *       200:
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 qrcode:
+   *                   $ref: '#/components/schemas/QRCode'
+   *                 qrspot:
+   *                   $ref: '#/components/schemas/QRSpot'
+   *                 qrshard:
+   *                   $ref: '#/components/schemas/QRShard'
+   */
+
   app.get("/api/scan/:id", isLoggedIn, async (req, res) => {
     const { params, user = {} } = req;
 
