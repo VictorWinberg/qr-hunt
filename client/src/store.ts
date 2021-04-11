@@ -146,7 +146,8 @@ export default new Vuex.Store({
               type: "success",
               action: async () => {
                 const { data: qrshard, err } = await api.post("/api/qrshards", {
-                  body: JSON.stringify({ qrcode })
+                  // eslint-disable-next-line @typescript-eslint/camelcase
+                  body: JSON.stringify({ qrspot_id: data.qrspot })
                 });
                 store.commit("modal/setModal", false);
               }

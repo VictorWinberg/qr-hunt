@@ -1,3 +1,30 @@
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     QRSpot:
+ *       properties:
+ *         id:
+ *           type: integer
+ *         title:
+ *           type: string
+ *         lat:
+ *           type: number
+ *         lng:
+ *           type: number
+ *         note:
+ *           type: string
+ *         hint:
+ *           type: string
+ *         score:
+ *           type: integer
+ *         qrcode:
+ *           type: string
+ *           format: uuid
+ *         assigner_id:
+ *           type: integer
+ */
+
 const valid = ["title", "lat", "lng", "note", "hint", "score", "qrcode", "assigner_id"];
 const keyValuePairs = require("../utils").keyValuePairs(valid);
 

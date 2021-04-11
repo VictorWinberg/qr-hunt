@@ -9,6 +9,7 @@ const passport = require("passport");
 
 const achievements = require("./achievements");
 const utils = require("./utils");
+const swagger = require("./swagger");
 
 dotenv.config({ path: path.resolve(__dirname, "..", ".env") });
 
@@ -69,6 +70,9 @@ require("./routes/qrshards")(props);
 require("./routes/qrcodes")(props);
 require("./routes/scan")(props);
 require("./routes/users")(props);
+
+// swagger
+swagger(app);
 
 app.get("*", (_, res) => {
   res.sendFile(path.resolve(__dirname, "..", "client", "dist", "index.html"));

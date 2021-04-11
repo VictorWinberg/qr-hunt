@@ -1,4 +1,21 @@
-module.exports = (db) => ({
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     User:
+ *       properties:
+ *         id:
+ *           type: integer
+ *         name:
+ *           type: string
+ *         email:
+ *           type: string
+ *           format: email
+ *         photo:
+ *           type: string
+ */
+
+module.exports = db => ({
   create: async ({ name, email, photo }) => {
     const sql = `
         INSERT INTO users (name, email, photo)
@@ -7,7 +24,7 @@ module.exports = (db) => ({
     return { user: rows[0], err };
   },
 
-  getById: async (userId) => {
+  getById: async userId => {
     const sql = `SELECT *,
       (SELECT COUNT(*) FROM qrshards WHERE user_id = id) AS qrshards_score,
       (SELECT COUNT(*) FROM user_achievements WHERE popup = 't' AND user_id = id) AS achievements_score
@@ -17,7 +34,7 @@ module.exports = (db) => ({
     return { user: rows[0], err };
   },
 
-  getByEmail: async (email) => {
+  getByEmail: async email => {
     const sql = "SELECT * FROM users WHERE email = $1";
     const { rows, err } = await db.query(sql, [email]);
     return { user: rows[0], err };
@@ -32,9 +49,9 @@ module.exports = (db) => ({
     return { users: rows, err };
   },
 
-  delete: async (id) => {
+  delete: async id => {
     const sql = "DELETE FROM users WHERE id = $1 RETURNING *";
     const { rows, err } = await db.query(sql, [id]);
     return { user: rows[0], err };
-  },
+  }
 });
