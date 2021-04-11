@@ -23,7 +23,6 @@ module.exports = ({ app, db, isLoggedIn }) => {
 
   app.post("/api/qrshards", isLoggedIn, async (req, res) => {
     const { body, user = {} } = req;
-    console.log(body);
     const { qrshard, err } = await QRShard.create(user.id, body);
     if (err) return res.status(400).send(err);
     return res.send(qrshard);
