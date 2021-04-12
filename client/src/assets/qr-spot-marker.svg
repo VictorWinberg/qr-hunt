@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 512 512">
+
+<g xmlns="http://www.w3.org/2000/svg" id="Layer_1">
+  <path d="m256,512c-5.68359,0 -10.875,-3.21094 -13.41797,-8.29297l-46.14062,-92.28125c-88.92188,-26.21484 -150.44141,-108.0664 -150.44141,-201.42578c0,-115.79297 94.20703,-210 210,-210s210,94.20703 210,210c0,93.36328 -61.51953,175.21484 -150.44531,201.42969l-46.14063,92.27734c-2.53906,5.08203 -7.73437,8.29297 -13.41406,8.29297zm0,0" fill="#A0D58A" id="svg_1"/>
+  <path id="svg_2" fill="#396849" d="m255.90909,0l0,512c5.67969,0 10.875,-3.21094 13.41406,-8.29297l46.14063,-92.27734c88.92578,-26.21485 150.44531,-108.06641 150.44531,-201.42969c0,-115.79297 -94.20703,-210 -210,-210zm0,0"/>
+  <rect id="svg_3" height="100" width="100" y="203.22727" x="155.68182" opacity="undefined" stroke-opacity="null" stroke-dasharray="null" stroke-width="null" stroke="null" fill="#ffffff"/>
+  <rect id="svg_4" height="100" width="100" y="103.13636" x="155.90909" opacity="undefined" stroke-opacity="null" stroke-dasharray="null" stroke-width="null" stroke="null" fill="#000000"/>
+  <rect id="svg_5" height="100" width="100" y="203.04545" x="255.81818" opacity="undefined" stroke-opacity="null" stroke-dasharray="null" stroke-width="null" stroke="null" fill="#000000"/>
+  <rect id="svg_6" height="100" width="100" y="103" x="256" opacity="undefined" stroke-opacity="null" stroke-dasharray="null" stroke-width="null" stroke="null" fill="#ffffff"/>
+ </g>
+</svg>

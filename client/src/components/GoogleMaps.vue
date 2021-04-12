@@ -30,10 +30,10 @@
     />
 
     <GmapMarker
-      label="Me"
       :position="userCoords"
+      alignment="center"
       clickable
-      @click="() => selectQRspot(userCoords, -1)"
+      :icon="require('@/assets/position-marker.svg')"
     />
 
     <GmapMarker
@@ -41,6 +41,7 @@
       :key="index"
       :position="{ lat: Number(marker.lat), lng: Number(marker.lng) }"
       :clickable="showQrSpot !== modalStateQRspot.SHOW_DETAILS"
+      :icon="require('@/assets/qr-spot-marker.svg')"
       @click="() => selectQRspot(marker, index)"
     />
     <div id="my-location-button" @click="centerMapToUser()">
