@@ -6,13 +6,23 @@ import { api } from "@/utils";
   const newAchievements = async () => {
     const achievement = await api.get("/api/achievements/new");
     if (!achievement.err && achievement.data) {
-      const { name, title } = achievement.data;
+      const { name, title, icon } = achievement.data;
       Snackbar.show({
-        text: `<b>-Achievement-</b><br/> ${title || name}`,
-        actionText: "<i class='fas fa-hand-holding-heart fa-2x'></i>",
-        actionTextColor: "#32a852",
-        duration: 10 * 1000,
-        pos: "top-center",
+        text: `
+          <div class="achievement-top"><p>Great work!</p></div>
+          You've unlocked a new achievement!
+          <br/>
+          <h2>${title || name}</h2>
+          <br/>
+          <i class="${icon} fa-2x"></i>
+        `,
+        textColor: "black",
+        actionText: "ok",
+        actionTextColor: "white",
+        backgroundColor: "rgba(100,100,0,0.3)",
+        duration: 0,
+        pos: undefined,
+        customClass: "achievement-popup",
         onActionClick: async () => {
           await api.post("/api/achievements/new", {
             body: JSON.stringify({ name })

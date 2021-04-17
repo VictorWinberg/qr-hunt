@@ -113,6 +113,7 @@ export default Vue.extend({
   width: 100%;
   max-width: 800px;
   padding: 2rem 0;
+  margin: auto;
   overflow-y: scroll;
 }
 
