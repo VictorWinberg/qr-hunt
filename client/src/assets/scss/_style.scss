@@ -18,6 +18,59 @@
   top: 5rem;
 }
 
+.achievement-popup {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-width: none;
+  font-size: 1rem !important;
+
+  > p {
+    position: relative;
+    padding: 2rem 5rem !important;
+    line-height: 1.5 !important;
+    background: #f5dca4;
+    border: 2px solid #a67b1e;
+    border-radius: 12px;
+  }
+
+
+
+  > .action {
+    z-index: 1;
+    padding: 0.5rem 3rem;
+    margin: 0;
+    margin-top: -1.5rem;
+    background: #2ecc40;
+    border: 2px solid #a67b1e;
+    border-radius: 1.5rem;
+  }
+}
+
+.achievement-top {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  font-size: 1rem;
+
+  p {
+    padding: 0.5rem 3rem;
+    margin-top: -1.5rem;
+    color: #f5dca4;
+    background: #b14c03;
+    border: 2px solid #a67b1e;
+    border-radius: 1.5rem;
+  }
+}
+
 /*** TRANSITIONS ***/
 
 .fade-enter-active,
