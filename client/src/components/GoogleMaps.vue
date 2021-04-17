@@ -11,7 +11,10 @@
       mapTypeControl: false,
       fullscreenControl: false,
       clickableIcons: false,
-      draggable: showQrSpot !== modalStateQRspot.SHOW_DETAILS
+      draggable: showQrSpot !== modalStateQRspot.SHOW_DETAILS,
+      styles: [
+        { featureType: 'poi.business', stylers: [{ visibility: 'off' }] }
+      ]
     }"
     :class="
       showQrSpot == modalStateQRspot.SHOW_DETAILS
@@ -31,9 +34,23 @@
 
     <GmapMarker
       :position="userCoords"
-      alignment="center"
       clickable
-      :icon="require('@/assets/position-marker.svg')"
+      :icon="{
+        url: require('@/assets/position-marker.svg'),
+        anchor: { x: 12, y: 12 }
+      }"
+    />
+
+    <GmapCircle
+      :center="userCoords"
+      :radius="20"
+      :options="{
+        fillColor: '#0042FF',
+        fillOpacity: '0.15',
+        strokeColor: '#FFFFFF',
+        strokeOpacity: '0.5',
+        strokeWeight: '2'
+      }"
     />
 
     <GmapMarker
