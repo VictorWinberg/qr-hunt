@@ -170,10 +170,8 @@ export default Vue.extend({
       };
 
       navigator.geolocation.getCurrentPosition(({ coords }) => {
-        this.map.panTo(
-          new google.maps.LatLng(coords.latitude, coords.longitude)
-        );
         this.setCurrentPosition({ coords });
+        this.centerMapToUser();
       });
       navigator.geolocation.watchPosition(
         this.setCurrentPosition,
@@ -187,6 +185,7 @@ export default Vue.extend({
     },
     centerMapToUser() {
       this.map.panTo(new google.maps.LatLng(this.userCoords));
+      if (this.map.zoom < 15) this.map.setZoom(15);
     }
   }
 });
