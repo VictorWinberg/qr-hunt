@@ -22,9 +22,9 @@
           <div v-if="mode === QR_SPOT_MODE.CREATE">
             <h1>Create new Spot</h1>
             <form lass="form">
-              <label for="title"
-                >Create an awesome title for your new spot:</label
-              >
+              <label for="title">
+                Create an awesome title for your new spot:
+              </label>
               <input
                 id="title"
                 type="text"
@@ -33,9 +33,9 @@
                 @input="e => setQrSpot({ ...qrSpot, title: e.target.value })"
               />
 
-              <label for="note"
-                >Tell your master plan behind this unique spot</label
-              >
+              <label for="note">
+                Tell your master plan behind this unique spot
+              </label>
               <input
                 id="note"
                 type="text"
@@ -156,10 +156,7 @@ export default Vue.extend({
     bottom: -65px;
     left: 60px;
     height: 0;
-    transition:
-      bottom 500ms 0ms,
-      left 0ms 500ms,
-      right 0ms 500ms,
+    transition: bottom 500ms 0ms, left 0ms 500ms, right 0ms 500ms,
       height 500ms 0ms;
   }
 
