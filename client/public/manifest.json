@@ -1,6 +1,6 @@
 {
-  "name": "QR-Hunt",
-  "short_name": "qr-hunt",
+  "name": "QR Hunt",
+  "short_name": "QR Hunt",
   "icons": [
     {
       "src": "favicon.ico",
@@ -22,5 +22,5 @@
   "display": "standalone",
   "orientation": "portrait",
   "theme_color": "#000",
-  "background_color": "#fff"
+  "background_color": "#000"
 }
