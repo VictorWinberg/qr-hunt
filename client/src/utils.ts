@@ -1,4 +1,4 @@
-import Snackbar from "node-snackbar";
+import Snackbar from "@/plugins/snackbar";
 
 export function isJson(str): boolean {
   try {
@@ -29,12 +29,7 @@ const apiFetch = (method?: string) => async (
     const data = await response.text();
     return { data: isJson(data) ? JSON.parse(data) : data, err: false };
   } catch (err) {
-    Snackbar.show({
-      text: err,
-      pos: "top-right",
-      backgroundColor: "#d32f2f",
-      actionTextColor: "#ccc"
-    });
+    Snackbar.err(err);
     return { data: null, err };
   }
 };

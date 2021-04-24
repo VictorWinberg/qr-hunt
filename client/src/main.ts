@@ -2,7 +2,7 @@ import Vue, { VNode } from "vue";
 
 import App from "./App.vue";
 import router from "./router";
-import store from "./store";
+import store from "./store/store";
 import "./plugins/achievements";
 import "./plugins/google-maps";
 import "./registerServiceWorker";

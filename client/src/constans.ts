@@ -1,5 +1,11 @@
-export const modalStateQRspot = {
+export const QR_SPOT_MODAL_STATE = {
   HIDE: "HIDE",
   SHOW_INFO: "SHOW_INFO",
   SHOW_DETAILS: "SHOW_DETAILS"
+};
+
+export const QR_SPOT_MODE = {
+  VIEW: "VIEW",
+  EDIT: "EDIT",
+  CREATE: "CREATE"
 };
