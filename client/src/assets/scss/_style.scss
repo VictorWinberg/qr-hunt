@@ -39,8 +39,6 @@
     border-radius: 12px;
   }
 
-
-
   > .action {
     z-index: 1;
     padding: 0.5rem 3rem;
@@ -71,14 +69,38 @@
   }
 }
 
+/*** ANIMATIONS ***/
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 /*** TRANSITIONS ***/
 
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 200ms;
+  transition: opacity 500ms;
 }
 
 .fade-enter,
 .fade-leave-to {
+  opacity: 0;
+}
+
+.fade-slow-enter-active,
+.fade-slow-leave-active {
+  transition: opacity;
+  transition-delay: 1s;
+  transition-duration: 2s;
+}
+
+.fade-slow-enter,
+.fade-slow-leave-to {
   opacity: 0;
 }
