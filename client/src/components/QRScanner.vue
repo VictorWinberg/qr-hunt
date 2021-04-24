@@ -57,7 +57,7 @@ export default Vue.extend({
   },
   methods: {
     ...mapMutations("scan", ["stopScan"]),
-    ...mapActions(["handleQR"])
+    ...mapActions("scan", ["handleQR"])
   }
 });
 </script>

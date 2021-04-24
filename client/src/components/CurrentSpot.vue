@@ -1,10 +1,10 @@
 <template>
-  <div class="qrspot-wrapper" :class="showQrSpot">
+  <div class="qrspot-wrapper" :class="modalState">
     <div
       class="qrspot-container"
-      @click="setShowQrSpot(modalStateQRspot.SHOW_DETAILS)"
+      @click="setModalState(QR_SPOT_MODAL_STATE.SHOW_DETAILS)"
     >
-      <div v-if="modeQrSpot === modeStateQRSpot.VIEW">
+      <div v-if="mode === QR_SPOT_MODE.VIEW">
         <div class="qrspot-title">{{ qrSpot.title }}</div>
         <div class="qrspot-info">
           <div class="qrspot-info__distance">
@@ -19,7 +19,7 @@
       </div>
       <transition name="fade">
         <div>
-          <div v-if="modeQrSpot === modeStateQRSpot.CREATE">
+          <div v-if="mode === QR_SPOT_MODE.CREATE">
             <h1>Create new Spot</h1>
             <form lass="form">
               <label for="title"
@@ -30,9 +30,7 @@
                 type="text"
                 autocomplete="off"
                 :value="qrSpot.title"
-                @input="
-                  e => setQrSpotValue({ key: 'title', value: e.target.value })
-                "
+                @input="e => setQrSpot({ ...qrSpot, title: e.target.value })"
               />
 
               <label for="note"
@@ -43,26 +41,26 @@
                 type="text"
                 autocomplete="off"
                 :value="qrSpot.note"
-                @input="
-                  e => setQrSpotValue({ key: 'note', value: e.target.value })
-                "
+                @input="e => setQrSpot({ ...qrSpot, note: e.target.value })"
               />
-
-              <label for="hint"
-                >Do you want to give the searches a hint of where to find this
-                treasure?</label
-              >
+              <label for="hint">
+                Do you want to give the searches a hint of where to find this
+                treasure?
+              </label>
               <input
                 id="hint"
                 type="text"
                 autocomplete="off"
                 :hint="qrSpot.hint"
-                @input="
-                  e => setQrSpotValue({ key: 'hint', value: e.target.value })
-                "
+                @input="e => setQrSpot({ ...qrSpot, hint: e.target.value })"
               />
-
-              <div v-if="loadingCoords">
+              <div v-if="qrSpot.lat && qrSpot.lng">
+                Coordinates:
+                <br />
+                <b>Lat:</b> {{ Math.round(qrSpot.lat * 1000) / 1000 }},
+                <b>Lng:</b> {{ Math.round(qrSpot.lng * 1000) / 1000 }}
+              </div>
+              <div v-else>
                 Loading amazing coordinates...
                 <br />
                 <img
@@ -75,7 +73,7 @@
               <button
                 type="button"
                 class="saveBtn"
-                :class="{ disabled: loadingCoords }"
+                :class="{ disabled: !valid }"
                 @click="save"
               >
                 Save Spot
@@ -83,7 +81,7 @@
             </form>
           </div>
           <div
-            v-if="showQrSpot === modalStateQRspot.SHOW_DETAILS"
+            v-if="modalState === QR_SPOT_MODAL_STATE.SHOW_DETAILS"
             class="qrspot-details"
           >
             <div v-for="(value, key) in qrSpot" :key="key">
@@ -101,7 +99,7 @@
 <script>
 import Vue from "vue";
 import { mapState, mapMutations } from "vuex";
-import { modeStateQRSpot, modalStateQRspot } from "@/constans";
+import { QR_SPOT_MODE, QR_SPOT_MODAL_STATE } from "@/constans";
 
 const { userCoords } = localStorage;
 
@@ -110,18 +108,21 @@ export default Vue.extend({
   data() {
     return {
       userCoords: userCoords ? JSON.parse(userCoords) : { lat: 0, lng: 0 },
-      loadingCoords: false,
-      modeStateQRSpot,
-      modalStateQRspot
+      QR_SPOT_MODE,
+      QR_SPOT_MODAL_STATE
     };
   },
   computed: {
-    ...mapState("qrSpot", ["qrSpot", "modeQrSpot", "showQrSpot"])
+    ...mapState("qrSpot", ["qrSpot", "mode", "modalState"]),
+    valid: function() {
+      const { title, lat, lng } = this.qrSpot;
+      return title && lat && lng;
+    }
   },
   methods: {
-    ...mapMutations("qrSpot", ["setQrSpot", "setQrSpotValue", "setShowQrSpot"]),
+    ...mapMutations("qrSpot", ["setQrSpot", "setModalState"]),
     save() {
-      this.$store.dispatch("createQRSpot");
+      this.$store.dispatch("qrSpot/create");
     },
     distanceToMarker() {
       const d = this.calculateDistance(this.userCoords, this.qrSpot);
@@ -155,7 +156,10 @@ export default Vue.extend({
     bottom: -65px;
     left: 60px;
     height: 0;
-    transition: bottom 500ms 0ms, left 0ms 500ms, right 0ms 500ms,
+    transition:
+      bottom 500ms 0ms,
+      left 0ms 500ms,
+      right 0ms 500ms,
       height 500ms 0ms;
   }
 
@@ -177,15 +181,15 @@ export default Vue.extend({
 }
 
 .qrspot-container {
+  box-sizing: border-box;
   height: 100%;
+  padding: 1em 1em 2em;
   overflow: scroll;
   color: $black;
   cursor: pointer;
   background-color: $white;
   border-radius: 2px;
   box-shadow: $shadow-color;
-  padding: 1em 1em 2em;
-  box-sizing: border-box;
 }
 
 .qrspot-title {
@@ -216,20 +220,20 @@ form {
 
 .saveBtn,
 input[type="text"] {
-  width: 100%;
-  border: solid #bbbbbb 1px;
-  padding: 0.5em;
   box-sizing: border-box;
+  width: 100%;
+  padding: 0.5em;
   margin-bottom: 1em;
+  border: solid #bbb 1px;
 }
 
 .saveBtn {
-  background-color: green;
   color: white;
+  background-color: green;
 
   &.disabled {
-    opacity: 0.5;
     pointer-events: none;
+    opacity: 0.5;
   }
 }
 
@@ -242,6 +246,7 @@ input[type="text"] {
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }

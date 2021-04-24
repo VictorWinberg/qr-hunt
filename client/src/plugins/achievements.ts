@@ -1,5 +1,5 @@
 import Snackbar from "node-snackbar";
-import store from "@/store";
+import store from "@/store/store";
 import { api } from "@/utils";
 
 (async () => {
