@@ -1,6 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import { modalStateQRspot } from "@/constans";
+import { modeStateQRSpot, modalStateQRspot } from "@/constans";
 import Snackbar from "@/plugins/snackbar";
 import { api } from "@/utils";
 
@@ -66,11 +66,18 @@ const moduleQrSpot = {
   namespaced: true,
   state: () => ({
     qrSpot: {},
+    modeQrSpot: modeStateQRSpot.VIEW,
     showQrSpot: modalStateQRspot.HIDE
   }),
   mutations: {
     setQrSpot(state, value) {
       state.qrSpot = value;
+    },
+    setQrSpotValue(state, object) {
+      state.qrSpot[object.key] = object.value;
+    },
+    setModeQrSpot(state, value) {
+      state.modeQrSpot = value;
     },
     setShowQrSpot(state, value) {
       state.showQrSpot = value;
@@ -90,13 +97,18 @@ export default new Vuex.Store({
   getters: {},
   mutations: {},
   actions: {
-    create() {},
     async collect(state, qrcode) {
       const comment = prompt("Enter a comment", "Placeholder");
       // const { data: qrshard, err } = await api.post("/api/qrshards", {
       //   body: JSON.stringify({ comment, rating: 5, qrcode })
       // });
       // alert(qrshard);
+    },
+    async createQRSpot(store: any) {
+      const { data: res, err } = await api.post("/api/qrspots", {
+        body: JSON.stringify(store.state.qrSpot.qrSpot)
+      });
+      store.commit("qrSpot/setModeQrSpot", modeStateQRSpot.VIEW);
     },
     async handleQR(store, qrcode): Promise<void> {
       if (!qrcode) return Snackbar.err("QR Code not found");
@@ -116,19 +128,25 @@ export default new Vuex.Store({
               name: "Create",
               type: "success",
               action: async () => {
-                const title = prompt("Enter a title", "Placeholder");
-                navigator.geolocation.getCurrentPosition(
-                  async ({ coords }): Promise<void> => {
-                    const { latitude: lat, longitude: lng } = coords;
-                    const { data: qrspot, err } = await api.post(
-                      "/api/qrspots",
-                      {
-                        body: JSON.stringify({ title, lat, lng, qrcode })
-                      }
-                    );
-                    store.commit("modal/setModal", false);
-                  }
+                store.commit("modal/setModal", false);
+                store.commit("qrSpot/setModeQrSpot", modeStateQRSpot.CREATE);
+                store.commit(
+                  "qrSpot/setShowQrSpot",
+                  modalStateQRspot.SHOW_DETAILS
                 );
+                // store.commit("qrSpot/setShowQrSpot", modalStateQRspot.SHOW_DETAILS);
+                // const title = prompt("Enter a title", "Placeholder");
+                // navigator.geolocation.getCurrentPosition(
+                //   async ({ coords }): Promise<void> => {
+                //     const { latitude: lat, longitude: lng } = coords;
+                //     const { data: qrspot, err } = await api.post(
+                //       "/api/qrspots",
+                //       {
+                //         body: JSON.stringify({ title, lat, lng, qrcode })
+                //       }
+                //     );
+                //   }
+                // );
               }
             }
           ]

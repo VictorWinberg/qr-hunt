@@ -74,7 +74,7 @@
 <script>
 import Vue from "vue";
 import { mapState, mapMutations } from "vuex";
-import { modalStateQRspot } from "@/constans";
+import { modeStateQRSpot, modalStateQRspot } from "@/constans";
 import { api } from "@/utils";
 
 export default Vue.extend({
@@ -96,12 +96,13 @@ export default Vue.extend({
       mapCoords: mapCoords ? JSON.parse(mapCoords) : { lat: 0, lng: 0 },
       mapZoom: mapZoom ? Number(mapZoom) : 15,
       userCoords: userCoords ? JSON.parse(userCoords) : { lat: 0, lng: 0 },
+      modeStateQRSpot,
       modalStateQRspot,
       markers: []
     };
   },
   computed: {
-    ...mapState("qrSpot", ["qrSpot", "showQrSpot"])
+    ...mapState("qrSpot", ["qrSpot", "modeQrSpot", "showQrSpot"])
   },
   watch: {
     mapCoords(newCoords) {
@@ -115,11 +116,13 @@ export default Vue.extend({
     },
     showQrSpot() {
       if (this.showQrSpot === modalStateQRspot.SHOW_DETAILS) {
+        const position =
+          this.modeQrSpot === this.modeStateQRSpot.CREATE
+            ? this.userCoords
+            : this.qrSpot;
         setTimeout(
           () =>
-            this.map.panTo(
-              new google.maps.LatLng(this.qrSpot.lat, this.qrSpot.lng)
-            ),
+            this.map.panTo(new google.maps.LatLng(position.lat, position.lng)),
           200
         );
       }
@@ -134,7 +137,7 @@ export default Vue.extend({
     this.createMapElements();
   },
   methods: {
-    ...mapMutations("qrSpot", ["setQrSpot", "setShowQrSpot"]),
+    ...mapMutations("qrSpot", ["setQrSpot", "setModeQrSpot", "setShowQrSpot"]),
     async fetchQRSpots() {
       const { err, data } = await api.get("/api/qrspots");
       if (!err) this.markers = data;
@@ -153,6 +156,7 @@ export default Vue.extend({
     deselectQRspot() {
       this.setQrSpot({});
       this.setShowQrSpot(this.modalStateQRspot.HIDE);
+      this.setModeQrSpot(this.modeStateQRSpot.VIEW);
     },
     handleDrag() {
       if (!this.map) return;
@@ -211,7 +215,7 @@ export default Vue.extend({
 
 .vue-map-container {
   &.collapsed-map {
-    height: 30%;
+    height: 25%;
     transition: all 300ms 200ms;
 
     .gmnoprint,
