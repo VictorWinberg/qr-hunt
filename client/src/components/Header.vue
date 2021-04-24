@@ -1,10 +1,8 @@
 <template>
   <header>
     <router-link to="/" class="header-title">
-      QR-Hunt
-      <i class="fas fa-crosshairs"></i>
-      <i class="fas fa-hat-cowboy"></i>
-      <i class="fas fa-map-marked-alt"></i>
+      <img alt="Logo" height="50" :src="require('@/assets/logo.svg')" />
+      <span class="logo-title">QR-Hunt</span>
     </router-link>
     <div class="header-delimiter"></div>
     <router-link to="/user" class="header-icon">
@@ -30,6 +28,7 @@ header {
   height: 5rem;
   background: linear-gradient(#eee, $white);
   box-shadow: 0 2px 6px 0 rgba(#000, 0.2);
+  color: #6a4733;
 }
 
 .header-title {
@@ -38,31 +37,20 @@ header {
   color: inherit;
   text-align: left;
   text-decoration: none;
+  display: flex;
+  align-items: center;
+  margin-left: 2rem;
 
   &:hover {
     color: $primary;
   }
+}
 
-  .fas {
-    position: absolute;
-  }
-
-  .fa-crosshairs {
-    top: 4px;
-    left: -2px;
-  }
-
-  .fa-hat-cowboy {
-    top: -8px;
-    right: 45px;
-    transform: scale(0.75) rotate(-30deg);
-  }
-
-  .fa-map-marked-alt {
-    top: -5px;
-    right: -20px;
-    transform: scale(0.8) rotate(30deg);
-  }
+.logo-title {
+  position: absolute;
+  left: -3.5rem;
+  right: -5rem;
+  text-align: center;
 }
 
 .header-icon {

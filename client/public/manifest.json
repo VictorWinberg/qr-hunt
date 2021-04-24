@@ -1,20 +1,26 @@
 {
   "name": "QR-Hunt",
   "short_name": "qr-hunt",
-  "theme_color": "#fff",
   "icons": [
     {
-      "src": "./img/icons/favicon-192x192.png",
+      "src": "favicon.ico",
+      "sizes": "48x48 32x32 16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "icons/favicon-192x192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "./img/icons/favicon-512x512.png",
+      "src": "icons/favicon-512x512.png",
       "sizes": "512x512",
       "type": "image/png"
     }
   ],
-  "start_url": ".",
+  "start_url": "/",
   "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#000",
   "background_color": "#fff"
 }
