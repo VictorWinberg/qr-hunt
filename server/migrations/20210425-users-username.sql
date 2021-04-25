@@ -1,0 +1,5 @@
+ALTER TABLE users
+ADD COLUMN username VARCHAR(50) NOT NULL DEFAULT 'todo.delete.account';
+
+ALTER TABLE users
+ALTER COLUMN name TYPE VARCHAR(50);

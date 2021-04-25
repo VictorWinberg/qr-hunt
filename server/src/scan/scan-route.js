@@ -1,9 +1,9 @@
 const { isToday } = require("../utils")
 
 module.exports = ({ app, db, isLoggedIn }) => {
-  const QRCode = require("../models/qrcode")(db);
-  const QRSpot = require("../models/qrspot")(db);
-  const QRShard = require("../models/qrshard")(db);
+  const QRCode = require("../qrcode/qrcode-model")(db);
+  const QRSpot = require("../qrspot/qrspot-model")(db);
+  const QRShard = require("../qrshard/qrshard-model")(db);
 
   /**
    * @swagger

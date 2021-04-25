@@ -5,7 +5,7 @@ const GoogleStrategy = require("passport-google-oauth").OAuth2Strategy;
 const get = (p, o) => p.reduce((xs, x) => (xs && xs[x] ? xs[x] : null), o);
 
 module.exports = (passport, db) => {
-  const User = require("./models/user")(db);
+  const User = require("./src/user/user-model")(db);
 
   // used to serialize the user for the session
   passport.serializeUser((user, done) => done(null, user.id));
@@ -41,6 +41,7 @@ module.exports = (passport, db) => {
           // create the user
           const newUser = {
             email,
+            username: email.split("@").shift(),
             name: get(["displayName"], profile),
             photo: get(["photos", 0, "value"], profile),
           };

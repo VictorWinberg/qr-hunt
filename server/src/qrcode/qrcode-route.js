@@ -1,7 +1,7 @@
 const { v4: uuidv4 } = require("uuid");
 
 module.exports = ({ app, db, isLoggedIn }) => {
-  const QRCode = require("../models/qrcode")(db);
+  const QRCode = require("./qrcode-model")(db);
 
   /**
    * @swagger
