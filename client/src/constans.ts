@@ -9,3 +9,7 @@ export const QR_SPOT_MODE = {
   EDIT: "EDIT",
   CREATE: "CREATE"
 };
+
+export const EVENT_TYPE = {
+  QR_SPOTS_UPDATE: "QR_SPOTS_UPDATE"
+};
