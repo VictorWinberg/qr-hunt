@@ -1,4 +1,4 @@
-const keyValuePairs = (valid) => (obj) => {
+const keyValuePairs = (valid, obj) => {
   const keys = Object.keys(obj).filter((key) => valid.includes(key));
   const values = keys.map((key) => obj[key]);
   const indices = keys.map((_, i) => `$${i + 1}`);
@@ -22,4 +22,6 @@ const makeDbQuery = (pg) => async (query, values) => {
   }
 };
 
-module.exports = { keyValuePairs, isLoggedIn, makeDbQuery };
+const isToday = (date) => new Date(date).toDateString() === new Date().toDateString()
+
+module.exports = { keyValuePairs, isLoggedIn, makeDbQuery, isToday };

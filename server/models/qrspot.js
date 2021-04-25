@@ -25,12 +25,12 @@
  *           type: integer
  */
 
-const valid = ["title", "lat", "lng", "note", "hint", "score", "qrcode", "assigner_id"];
-const keyValuePairs = require("../utils").keyValuePairs(valid);
+const { keyValuePairs } = require("../utils");
 
 module.exports = (db) => ({
   create: async (qrspot) => {
-    const { keys, values, indices } = keyValuePairs(qrspot);
+    const valid = ["title", "lat", "lng", "note", "hint", "score", "qrcode", "assigner_id"];
+    const { keys, values, indices } = keyValuePairs(valid, qrspot);
     const sql = `INSERT INTO qrspots ( ${keys} ) VALUES ( ${indices} ) RETURNING *`;
 
     const { rows, err } = await db.query(sql, values);
@@ -38,7 +38,8 @@ module.exports = (db) => ({
   },
 
   update: async (id, qrspot) => {
-    const { keyIndices, values } = keyValuePairs(qrspot);
+    const valid = ["title", "note", "hint"];
+    const { keyIndices, values } = keyValuePairs(valid, qrspot);
     const sql = `UPDATE qrspots SET ${keyIndices} WHERE id = ${id} RETURNING *`;
 
     const { rows, err } = await db.query(sql, values);
