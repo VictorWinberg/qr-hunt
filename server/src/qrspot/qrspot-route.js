@@ -40,7 +40,8 @@ module.exports = ({ app, db, isLoggedIn }) => {
    */
 
   app.post("/api/qrspots", isLoggedIn, async (req, res) => {
-    const { qrspot, err } = await QRSpot.create(req.body);
+    const { body, user = {} } = req;
+    const { qrspot, err } = await QRSpot.create(user.id, body);
     if (err) return res.status(400).send(err);
     return res.send(qrspot);
   });
@@ -69,6 +70,7 @@ module.exports = ({ app, db, isLoggedIn }) => {
     const { params, body, user = {} } = req;
     const { qrspot, err } = await QRSpot.update(user.id, params.id, body);
     if (err) return res.status(400).send(err);
+    if (!qrspot) return res.sendStatus(403);
     return res.send(qrspot);
   });
 };

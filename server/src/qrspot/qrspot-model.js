@@ -21,16 +21,16 @@
  *         qrcode:
  *           type: string
  *           format: uuid
- *         assigner_id:
+ *         owner_id:
  *           type: integer
  */
 
 const { keyValuePairs } = require("../utils");
 
 module.exports = (db) => ({
-  create: async (qrspot) => {
-    const valid = ["title", "lat", "lng", "note", "hint", "score", "qrcode", "assigner_id"];
-    const { keys, values, indices } = keyValuePairs(valid, qrspot);
+  create: async (userId, qrspot) => {
+    const valid = ["title", "lat", "lng", "note", "hint", "score", "qrcode", "owner_id"];
+    const { keys, values, indices } = keyValuePairs(valid, { ...qrspot, owner_id: userId });
     const sql = `INSERT INTO qrspots ( ${keys} ) VALUES ( ${indices} ) RETURNING *`;
 
     const { rows, err } = await db.query(sql, values);
@@ -42,7 +42,7 @@ module.exports = (db) => ({
     const { keyIndices, values } = keyValuePairs(valid, qrspot);
     const sql = `
       UPDATE qrspots SET ${keyIndices}
-      WHERE id = ${id} AND assigner_id = ${userId}
+      WHERE id = ${id} AND owner_id = ${userId}
       RETURNING *`;
 
     const { rows, err } = await db.query(sql, values);
