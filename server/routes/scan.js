@@ -1,9 +1,10 @@
+const { isToday } = require("../utils")
+
 module.exports = ({ app, db, isLoggedIn }) => {
   const QRCode = require("../models/qrcode")(db);
   const QRSpot = require("../models/qrspot")(db);
   const QRShard = require("../models/qrshard")(db);
 
-  
   /**
    * @swagger
    * /scan/{qrcode}:
@@ -50,6 +51,7 @@ module.exports = ({ app, db, isLoggedIn }) => {
       qrcode: qrcode || false,
       qrspot: qrspot || false,
       qrshard: qrshard || false,
+      collectable: !qrshard || !isToday(qrshard.created_at)
     });
   });
 };

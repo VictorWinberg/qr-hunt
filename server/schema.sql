@@ -56,7 +56,6 @@ CREATE TABLE qrshards (
 
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL,
   FOREIGN KEY (qrspot_id) REFERENCES qrspots(id) ON DELETE SET NULL,
-  UNIQUE (user_id, qrspot_id),
   PRIMARY KEY (id)
 );
 

@@ -1,4 +1,3 @@
-import { QR_SPOT_MODAL_STATE, QR_SPOT_MODE } from "@/constans";
 import Snackbar from "@/plugins/snackbar";
 import { api } from "@/utils";
 
@@ -26,16 +25,16 @@ export default {
 
       // Create QR Spot
       if (!data.qrspot) {
-        store.dispatch("qrSpot/init", { qrcode }, { root: true });
-        return;
+        return store.dispatch("qrSpot/init", { qrcode }, { root: true });
       }
+
       // Do you want to collect QR Code?
-      if (!data.qrshard) {
-        store.commit(
+      if (data.collectable) {
+        return store.commit(
           "modal/setModal",
           {
             title: "Collect QR",
-            subtitle: "Do you want to collect this QR shard?",
+            subtitle: "Do you want to collect this QR Shard?",
             options: [
               {
                 name: "Collect",
@@ -43,17 +42,16 @@ export default {
                 action: async () => {
                   const { err } = await api.post("/api/qrshards", {
                     // eslint-disable-next-line @typescript-eslint/camelcase
-                    body: JSON.stringify({ qrspot_id: data.qrspot })
+                    body: JSON.stringify({ qrspot_id: data.qrspot.id })
                   });
                   if (err) return Snackbar.err(err);
-                  store.commit("modal/setModal", false);
+                  store.commit("modal/setModal", false, { root: true });
                 }
               }
             ]
           },
           { root: true }
         );
-        return;
       }
 
       // QR Code already collected
@@ -61,7 +59,7 @@ export default {
         "modal/setModal",
         {
           title: "Collect QR",
-          subtitle: "QR Code is already collected",
+          subtitle: "QR Code is already collected for today",
           options: [{ name: "Collect", type: "disabled" }]
         },
         { root: true }
