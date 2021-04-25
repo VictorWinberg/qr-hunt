@@ -34,13 +34,13 @@ CREATE TABLE qrspots (
   hint      VARCHAR(255),
   score     INT,
 
-  qrcode      VARCHAR(36)  UNIQUE,
-  assigner_id INT,
+  qrcode    VARCHAR(36)   UNIQUE,
+  owner_id  INT,
 
   created_at TIMESTAMP DEFAULT NOW(),
 
   FOREIGN KEY (qrcode) REFERENCES qrcodes(uuid) ON DELETE SET NULL,
-  FOREIGN KEY (assigner_id) REFERENCES users(id) ON DELETE SET NULL,
+  FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE SET NULL,
   PRIMARY KEY (id)
 );
 
