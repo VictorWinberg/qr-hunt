@@ -1,6 +1,7 @@
-import { QR_SPOT_MODAL_STATE, QR_SPOT_MODE } from "@/constans";
+import { EVENT_TYPE, QR_SPOT_MODAL_STATE, QR_SPOT_MODE } from "@/constans";
 import Snackbar from "@/plugins/snackbar";
 import { api } from "@/utils";
+import EventBus from "./event-bus";
 
 const qrSpotGeolocation = store => {
   navigator.geolocation.getCurrentPosition(
@@ -71,6 +72,7 @@ export default {
         body: JSON.stringify(store.state.qrSpot)
       });
       if (err) return Snackbar.err(err);
+      EventBus.$emit(EVENT_TYPE.QR_SPOTS_UPDATE);
       store.commit("setMode", QR_SPOT_MODE.VIEW);
     }
   }

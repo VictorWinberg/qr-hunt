@@ -21,7 +21,7 @@
         ? 'collapsed-map'
         : 'expanded-map'
     "
-    @click="deselectQRspot"
+    @click="deselectQRSpot"
     @dragend="handleDrag"
     @zoom_changed="handleZoom"
   >
@@ -59,7 +59,7 @@
       :position="{ lat: Number(marker.lat), lng: Number(marker.lng) }"
       :clickable="modalState !== QR_SPOT_MODAL_STATE.SHOW_DETAILS"
       :icon="require('@/assets/qr-spot-marker.svg')"
-      @click="() => selectQRspot(marker, index)"
+      @click="() => selectQRSpot(marker, index)"
     />
     <div id="my-location-button" @click="centerMapToUser()">
       <img
@@ -74,8 +74,9 @@
 <script>
 import Vue from "vue";
 import { mapState, mapMutations } from "vuex";
-import { QR_SPOT_MODE, QR_SPOT_MODAL_STATE } from "@/constans";
+import { EVENT_TYPE, QR_SPOT_MODE, QR_SPOT_MODAL_STATE } from "@/constans";
 import { api } from "@/utils";
+import EventBus from "@/store/event-bus";
 
 export default Vue.extend({
   data() {
@@ -130,6 +131,7 @@ export default Vue.extend({
   },
   created() {
     this.fetchQRSpots();
+    EventBus.$on(EVENT_TYPE.QR_SPOTS_UPDATE, this.fetchQRSpots);
   },
   async mounted() {
     this.map = await this.$refs.mapRef.$mapPromise;
@@ -148,12 +150,12 @@ export default Vue.extend({
       const { RIGHT_BOTTOM } = google.maps.ControlPosition;
       this.map.controls[RIGHT_BOTTOM].push(centerControlDiv);
     },
-    selectQRspot(marker) {
+    selectQRSpot(marker) {
       this.map.panTo(new google.maps.LatLng(marker.lat, marker.lng));
       this.setQrSpot(marker);
       this.setModalState(this.QR_SPOT_MODAL_STATE.SHOW_INFO);
     },
-    deselectQRspot() {
+    deselectQRSpot() {
       this.setQrSpot({});
       this.setModalState(this.QR_SPOT_MODAL_STATE.HIDE);
       this.setMode(this.QR_SPOT_MODE.VIEW);
