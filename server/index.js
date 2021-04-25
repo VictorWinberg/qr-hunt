@@ -7,9 +7,9 @@ const path = require("path");
 const { Client: PGClient } = require("pg");
 const passport = require("passport");
 
-const achievements = require("./achievements");
-const utils = require("./utils");
 const swagger = require("./swagger");
+const achievements = require("./src/achievements");
+const utils = require("./src/utils");
 
 dotenv.config({ path: path.resolve(__dirname, "..", ".env") });
 
@@ -64,12 +64,12 @@ const props = {
 app.use(achievements(props));
 
 // routes
-require("./routes/auth")(props);
-require("./routes/qrspots")(props);
-require("./routes/qrshards")(props);
-require("./routes/qrcodes")(props);
-require("./routes/scan")(props);
-require("./routes/users")(props);
+require("./src/auth/auth")(props);
+require("./src/qrspot/qrspot-route")(props);
+require("./src/qrshard/qrshard-route")(props);
+require("./src/qrcode/qrcode-route")(props);
+require("./src/scan/scan-route")(props);
+require("./src/user/user-route")(props);
 
 // swagger
 swagger(app);

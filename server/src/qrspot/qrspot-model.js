@@ -37,10 +37,13 @@ module.exports = (db) => ({
     return { qrspot: rows[0], err };
   },
 
-  update: async (id, qrspot) => {
+  update: async (userId, id, qrspot) => {
     const valid = ["title", "note", "hint"];
     const { keyIndices, values } = keyValuePairs(valid, qrspot);
-    const sql = `UPDATE qrspots SET ${keyIndices} WHERE id = ${id} RETURNING *`;
+    const sql = `
+      UPDATE qrspots SET ${keyIndices}
+      WHERE id = ${id} AND assigner_id = ${userId}
+      RETURNING *`;
 
     const { rows, err } = await db.query(sql, values);
     return { qrspot: rows[0], err };

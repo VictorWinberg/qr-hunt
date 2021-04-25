@@ -1,5 +1,5 @@
 module.exports = ({ app, db, isLoggedIn }) => {
-  const User = require("../models/user")(db);
+  const User = require("./user-model")(db);
 
   const setProps = keys => ({
     qrshards_score = 0,

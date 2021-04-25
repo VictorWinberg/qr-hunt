@@ -1,5 +1,5 @@
 module.exports = ({ app, db, isLoggedIn }) => {
-  const QRShard = require("../models/qrshard")(db);
+  const QRShard = require("./qrshard-model")(db);
 
   /**
    * @swagger

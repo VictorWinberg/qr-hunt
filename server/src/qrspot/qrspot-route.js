@@ -1,6 +1,5 @@
 module.exports = ({ app, db, isLoggedIn }) => {
-  const QRSpot = require("../models/qrspot")(db);
-
+  const QRSpot = require("./qrspot-model")(db);
 
   /**
    * @swagger
@@ -46,8 +45,6 @@ module.exports = ({ app, db, isLoggedIn }) => {
     return res.send(qrspot);
   });
 
-
-
   /**
    * @swagger
    * /qrspots/{id}:
@@ -68,9 +65,9 @@ module.exports = ({ app, db, isLoggedIn }) => {
    *               $ref: '#/components/schemas/QRSpot'
    */
 
-
   app.put("/api/qrspots/:id", isLoggedIn, async (req, res) => {
-    const { qrspot, err } = await QRSpot.update(req.params.id, req.body);
+    const { params, body, user = {} } = req;
+    const { qrspot, err } = await QRSpot.update(user.id, params.id, body);
     if (err) return res.status(400).send(err);
     return res.send(qrspot);
   });
