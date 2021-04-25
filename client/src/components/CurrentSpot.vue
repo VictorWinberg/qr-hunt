@@ -4,35 +4,30 @@
       class="qrspot-container"
       @click="setModalState(QR_SPOT_MODAL_STATE.SHOW_DETAILS)"
     >
-      <transition name="fade">
-        <div v-if="mode === QR_SPOT_MODE.VIEW">
-          <div class="qrspot-title">{{ qrSpot.title }}</div>
-          <div class="qrspot-info">
-            <div class="qrspot-info__distance">
-              <i class="fas fa-route"></i>
-              <span>{{ distanceToMarker(userCoords, qrSpot) }}</span>
-            </div>
-            <div class="qrspot-info__rating">
-              <i class="far fa-star"></i>
-              {{ qrSpot.rating || "N/A" }}
+      <transition name="fade" mode="out-in">
+        <div v-if="mode === QR_SPOT_MODE.VIEW" key="view">
+          <div class="qrspot-summary">
+            <div class="qrspot-title">{{ qrSpot.title }}</div>
+            <div class="qrspot-info">
+              <div class="qrspot-info__distance">
+                <i class="fas fa-route"></i>
+                <span>{{ distanceToMarker(userCoords, qrSpot) }}</span>
+              </div>
+              <div class="qrspot-info__rating">
+                <i class="far fa-star"></i>
+                {{ qrSpot.rating || "N/A" }}
+              </div>
             </div>
           </div>
+          <div v-if="modalState === QR_SPOT_MODAL_STATE.SHOW_DETAILS">
+            <div class="edit-button" @click="edit()">
+              <i class="fas fa-pencil-alt fa-2x"></i>
+            </div>
+            <ViewSpot />
+          </div>
         </div>
-      </transition>
-
-      <transition name="fade">
-        <div v-if="modalState === QR_SPOT_MODAL_STATE.SHOW_DETAILS">
-          <transition name="fade" mode="out-in">
-            <div v-if="mode === QR_SPOT_MODE.VIEW" key="view">
-              <div class="edit-button" @click="edit()">
-                <i class="fas fa-pencil-alt fa-2x"></i>
-              </div>
-              <ViewSpot />
-            </div>
-            <div v-else-if="mode === QR_SPOT_MODE.CREATE" key="create">
-              <CreateSpot />
-            </div>
-          </transition>
+        <div v-else key="update">
+          <UpdateSpot />
         </div>
       </transition>
     </div>
@@ -44,7 +39,7 @@ import Vue from "vue";
 import { mapState, mapMutations } from "vuex";
 import { QR_SPOT_MODE, QR_SPOT_MODAL_STATE } from "@/constans";
 import ViewSpot from "./ViewSpot";
-import CreateSpot from "./CreateSpot";
+import UpdateSpot from "./UpdateSpot";
 import { distance } from "@/utils";
 
 const { userCoords } = localStorage;
@@ -53,7 +48,7 @@ export default Vue.extend({
   name: "CurrentSpot",
   components: {
     ViewSpot,
-    CreateSpot
+    UpdateSpot
   },
   data() {
     return {
@@ -68,7 +63,7 @@ export default Vue.extend({
   methods: {
     ...mapMutations("qrSpot", ["setMode", "setModalState"]),
     edit() {
-      this.setMode(this.QR_SPOT_MODE.CREATE);
+      this.setMode(this.QR_SPOT_MODE.EDIT);
     },
     distanceToMarker(pos1, pos2) {
       const d = distance(pos1, pos2);
@@ -124,7 +119,7 @@ export default Vue.extend({
 .qrspot-container {
   box-sizing: border-box;
   height: 100%;
-  padding: 1em 1em 2em;
+  padding: 1em 1em 1em;
   overflow: scroll;
   color: $black;
   cursor: pointer;

@@ -1,9 +1,16 @@
 <template>
   <div>
-    <div class="create-title">Create new Spot</div>
+    <div class="update-title">
+      <div v-if="mode === QR_SPOT_MODE.CREATE">
+        Make your spot
+      </div>
+      <div v-else>
+        Change your spot
+      </div>
+    </div>
     <form lass="form">
       <label for="title">
-        Create an awesome title for your new spot:
+        Select an awesome title for your spot
       </label>
       <input
         id="title"
@@ -14,7 +21,7 @@
       />
 
       <label for="note">
-        Tell your master plan behind this unique spot
+        Tell us something about this spot
       </label>
       <input
         id="note"
@@ -24,7 +31,7 @@
         @input="e => setQrSpot({ ...qrSpot, note: e.target.value })"
       />
       <label for="hint">
-        Do you want to give the searches a hint of where to find this treasure?
+        Do you want to give a hint of where the spot can be found?
       </label>
       <input
         id="hint"
@@ -64,10 +71,16 @@
 <script>
 import Vue from "vue";
 import { mapState, mapMutations } from "vuex";
+import { QR_SPOT_MODE } from "@/constans";
 
 export default Vue.extend({
+  data() {
+    return {
+      QR_SPOT_MODE
+    };
+  },
   computed: {
-    ...mapState("qrSpot", ["qrSpot"]),
+    ...mapState("qrSpot", ["qrSpot", "mode"]),
     valid: function() {
       const { title, lat, lng } = this.qrSpot;
       return title && lat && lng;
@@ -76,14 +89,18 @@ export default Vue.extend({
   methods: {
     ...mapMutations("qrSpot", ["setQrSpot"]),
     save() {
-      this.$store.dispatch("qrSpot/create");
+      if (this.mode === this.QR_SPOT_MODE.CREATE) {
+        this.$store.dispatch("qrSpot/create");
+      } else if (this.mode === this.QR_SPOT_MODE.EDIT) {
+        this.$store.dispatch("qrSpot/edit");
+      }
     }
   }
 });
 </script>
 
 <style lang="scss">
-.create-title {
+.update-title {
   font-size: 32px;
 }
 
@@ -97,6 +114,7 @@ form {
 input[type="text"] {
   box-sizing: border-box;
   width: 100%;
+  height: 3em;
   padding: 0.5em;
   margin-bottom: 1em;
   border: solid #bbb 1px;

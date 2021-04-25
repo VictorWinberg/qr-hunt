@@ -74,6 +74,14 @@ export default {
       if (err) return Snackbar.err(err);
       EventBus.$emit(EVENT_TYPE.QR_SPOTS_UPDATE);
       store.commit("setMode", QR_SPOT_MODE.VIEW);
+    },
+    async edit(store) {
+      const { err } = await api.put("/api/qrspots/" + store.state.qrSpot.id, {
+        body: JSON.stringify(store.state.qrSpot)
+      });
+      if (err) return Snackbar.err(err);
+      EventBus.$emit(EVENT_TYPE.QR_SPOTS_UPDATE);
+      store.commit("setMode", QR_SPOT_MODE.VIEW);
     }
   }
 };
