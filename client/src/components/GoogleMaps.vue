@@ -156,7 +156,7 @@ export default Vue.extend({
       this.setModalState(this.QR_SPOT_MODAL_STATE.SHOW_INFO);
     },
     deselectQRSpot() {
-      this.setQrSpot({});
+      // this.setQrSpot({});
       this.setModalState(this.QR_SPOT_MODAL_STATE.HIDE);
       this.setMode(this.QR_SPOT_MODE.VIEW);
     },
