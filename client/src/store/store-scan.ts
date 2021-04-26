@@ -46,6 +46,11 @@ export default {
                   });
                   if (err) return Snackbar.err(err);
                   store.commit("modal/setModal", false, { root: true });
+
+                  const user = await api.get("/api/user");
+                  if (!user.err) {
+                    store.commit("auth/setAuth", user.data, { root: true });
+                  }
                 }
               }
             ]
