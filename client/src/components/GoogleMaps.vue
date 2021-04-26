@@ -34,17 +34,18 @@
 
     <GmapMarker
       :position="userCoords"
-      clickable
       :icon="{
         url: require('@/assets/position-marker.svg'),
         anchor: { x: 12, y: 12 }
       }"
+      @click="centerMapToUser"
     />
 
     <GmapCircle
       :center="userCoords"
       :radius="20"
       :options="{
+        clickable: false,
         fillColor: '#0042FF',
         fillOpacity: '0.15',
         strokeColor: '#FFFFFF',
@@ -61,7 +62,8 @@
       :icon="require('@/assets/qr-spot-marker.svg')"
       @click="() => selectQRSpot(marker, index)"
     />
-    <div id="my-location-button" @click="centerMapToUser()">
+
+    <div id="my-location-button" @click="centerMapToUser">
       <img
         alt="My Location"
         class="my-location-icon"
@@ -156,7 +158,6 @@ export default Vue.extend({
       this.setModalState(this.QR_SPOT_MODAL_STATE.SHOW_INFO);
     },
     deselectQRSpot() {
-      // this.setQrSpot({});
       this.setModalState(this.QR_SPOT_MODAL_STATE.HIDE);
       this.setMode(this.QR_SPOT_MODE.VIEW);
     },

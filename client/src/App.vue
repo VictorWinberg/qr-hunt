@@ -4,7 +4,9 @@
     <Header />
     <router-view />
     <QRScanner v-if="scanning" />
-    <Modal v-if="modal" />
+    <transition name="fade">
+      <Modal v-if="modal" />
+    </transition>
     <Footer />
   </div>
 </template>

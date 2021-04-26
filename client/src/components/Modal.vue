@@ -15,7 +15,7 @@
           <div
             v-for="(option, index) in modal.options"
             :key="index"
-            class="modal__options__button"
+            class="modal__options__button ripple"
             :class="option.type"
             v-on="option.action ? { click: option.action } : {}"
           >
