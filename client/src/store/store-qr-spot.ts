@@ -1,4 +1,4 @@
-import { EVENT_TYPE, QR_SPOT_MODAL_STATE, QR_SPOT_MODE } from "@/constans";
+import { EVENT_TYPE, QR_SPOT_MODAL_STATE, QR_SPOT_MODE } from "@/constants";
 import Snackbar from "@/plugins/snackbar";
 import { api } from "@/utils";
 import EventBus from "./event-bus";
@@ -8,7 +8,7 @@ const qrSpotGeolocation = store => {
     async ({ coords }): Promise<void> => {
       const { qrSpot } = store.state;
       const { latitude: lat, longitude: lng } = coords;
-      store.commit("setQrSpot", {
+      store.commit("setQRSpot", {
         ...qrSpot,
         lat,
         lng
@@ -33,7 +33,7 @@ export default {
     modalState: QR_SPOT_MODAL_STATE.HIDE
   }),
   mutations: {
-    setQrSpot(state, value) {
+    setQRSpot(state, value) {
       state.qrSpot = value;
     },
     setMode(state, value) {
@@ -45,7 +45,7 @@ export default {
   },
   actions: {
     async init(store, { qrcode }) {
-      store.commit("setQrSpot", { qrcode });
+      store.commit("setQRSpot", { qrcode });
       store.commit(
         "modal/setModal",
         {
@@ -73,7 +73,7 @@ export default {
       });
       if (err) return Snackbar.err(err);
       EventBus.$emit(EVENT_TYPE.QR_SPOTS_UPDATE);
-      store.commit("setQrSpot", qrspot);
+      store.commit("setQRSpot", qrspot);
       store.commit("setMode", QR_SPOT_MODE.VIEW);
     },
     async edit(store) {
@@ -85,7 +85,7 @@ export default {
       );
       if (err) return Snackbar.err(err);
       EventBus.$emit(EVENT_TYPE.QR_SPOTS_UPDATE);
-      store.commit("setQrSpot", qrspot);
+      store.commit("setQRSpot", qrspot);
       store.commit("setMode", QR_SPOT_MODE.VIEW);
     }
   }

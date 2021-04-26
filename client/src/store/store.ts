@@ -4,7 +4,7 @@ import Vuex from "vuex";
 import moduleAuth from "./store-auth";
 import moduleScan from "./store-scan";
 import moduleModal from "./store-modal";
-import moduleQrSpot from "./store-qr-spot";
+import moduleQRSpot from "./store-qr-spot";
 import moduleAchievements from "./store-achievements";
 
 Vue.use(Vuex);
@@ -14,19 +14,11 @@ export default new Vuex.Store({
     auth: moduleAuth,
     scan: moduleScan,
     modal: moduleModal,
-    qrSpot: moduleQrSpot,
+    qrSpot: moduleQRSpot,
     achievements: moduleAchievements
   },
-  state: {} as any,
+  state: {},
   getters: {},
   mutations: {},
-  actions: {
-    async collect(state, qrcode) {
-      const comment = prompt("Enter a comment", "Placeholder");
-      // const { data: qrshard, err } = await api.post("/api/qrshards", {
-      //   body: JSON.stringify({ comment, rating: 5, qrcode })
-      // });
-      // alert(qrshard);
-    }
-  }
+  actions: {}
 });

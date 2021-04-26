@@ -23,11 +23,11 @@
             <div class="edit-button" @click="edit()">
               <i class="fas fa-pencil-alt fa-2x"></i>
             </div>
-            <ViewSpot />
+            <QRSpotView />
           </div>
         </div>
         <div v-else key="update">
-          <UpdateSpot />
+          <QRSpotUpdate />
         </div>
       </transition>
     </div>
@@ -37,18 +37,18 @@
 <script>
 import Vue from "vue";
 import { mapState, mapMutations } from "vuex";
-import { QR_SPOT_MODE, QR_SPOT_MODAL_STATE } from "@/constans";
-import ViewSpot from "./ViewSpot";
-import UpdateSpot from "./UpdateSpot";
+import { QR_SPOT_MODE, QR_SPOT_MODAL_STATE } from "@/constants";
+import QRSpotView from "./QRSpotView";
+import QRSpotUpdate from "./QRSpotUpdate";
 import { distance } from "@/utils";
 
 const { userCoords } = localStorage;
 
 export default Vue.extend({
-  name: "CurrentSpot",
+  name: "QRSpot",
   components: {
-    ViewSpot,
-    UpdateSpot
+    QRSpotView,
+    QRSpotUpdate
   },
   data() {
     return {

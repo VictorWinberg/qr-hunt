@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <Login />
+    <SignIn />
     <Header />
     <router-view />
     <QRScanner v-if="scanning" />
@@ -16,13 +16,13 @@ import Vue from "vue";
 import { mapState } from "vuex";
 import Header from "@/components/Header.vue";
 import Footer from "@/components/Footer.vue";
-import Login from "@/components/Login.vue";
+import SignIn from "@/components/SignIn.vue";
 import QRScanner from "@/components/QRScanner.vue";
 import Modal from "@/components/Modal.vue";
 
 export default Vue.extend({
   name: "App",
-  components: { Header, Footer, Login, QRScanner, Modal },
+  components: { Header, Footer, SignIn, QRScanner, Modal },
   computed: {
     ...mapState("scan", ["scanning"]),
     ...mapState("modal", ["modal"])

@@ -17,7 +17,7 @@
         type="text"
         autocomplete="off"
         :value="qrSpot.title"
-        @input="e => setQrSpot({ ...qrSpot, title: e.target.value })"
+        @input="e => setQRSpot({ ...qrSpot, title: e.target.value })"
       />
 
       <label for="note">
@@ -28,7 +28,7 @@
         type="text"
         autocomplete="off"
         :value="qrSpot.note"
-        @input="e => setQrSpot({ ...qrSpot, note: e.target.value })"
+        @input="e => setQRSpot({ ...qrSpot, note: e.target.value })"
       />
       <label for="hint">
         Do you want to give a hint of where the spot can be found?
@@ -38,7 +38,7 @@
         type="text"
         autocomplete="off"
         :value="qrSpot.hint"
-        @input="e => setQrSpot({ ...qrSpot, hint: e.target.value })"
+        @input="e => setQRSpot({ ...qrSpot, hint: e.target.value })"
       />
       <div v-if="qrSpot.lat && qrSpot.lng">
         Coordinates:
@@ -70,8 +70,8 @@
 
 <script>
 import Vue from "vue";
-import { mapState, mapMutations } from "vuex";
-import { QR_SPOT_MODE } from "@/constans";
+import { mapState, mapMutations, mapActions } from "vuex";
+import { QR_SPOT_MODE } from "@/constants";
 
 export default Vue.extend({
   data() {
@@ -87,12 +87,13 @@ export default Vue.extend({
     }
   },
   methods: {
-    ...mapMutations("qrSpot", ["setQrSpot"]),
+    ...mapMutations("qrSpot", ["setQRSpot"]),
+    ...mapActions("qrSpot", ["create", "edit"]),
     save() {
-      if (this.mode === this.QR_SPOT_MODE.CREATE) {
-        this.$store.dispatch("qrSpot/create");
-      } else if (this.mode === this.QR_SPOT_MODE.EDIT) {
-        this.$store.dispatch("qrSpot/edit");
+      if (this.mode === QR_SPOT_MODE.CREATE) {
+        this.create();
+      } else if (this.mode === QR_SPOT_MODE.EDIT) {
+        this.edit();
       }
     }
   }

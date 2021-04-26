@@ -2,19 +2,19 @@
   <div class="home">
     <div class="map-wrapper">
       <GoogleMaps />
-      <CurrentSpot />
+      <QRSpot />
     </div>
   </div>
 </template>
 
 <script>
 import Vue from "vue";
-import GoogleMaps from "./GoogleMaps.vue";
-import CurrentSpot from "./CurrentSpot.vue";
+import GoogleMaps from "../components/GoogleMaps.vue";
+import QRSpot from "../components/QRSpot.vue";
 
 export default Vue.extend({
   name: "Home",
-  components: { GoogleMaps, CurrentSpot }
+  components: { GoogleMaps, QRSpot }
 });
 </script>
 

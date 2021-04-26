@@ -14,10 +14,10 @@ import Vue from "vue";
 import { mapState, mapMutations, mapActions } from "vuex";
 import QRScanner from "qr-scanner";
 
-import { QR_SPOT_MODAL_STATE } from "@/constans";
+import { QR_SPOT_MODAL_STATE } from "@/constants";
 // eslint-disable-next-line import/no-webpack-loader-syntax
-import QrScannerWorkerPath from "!!file-loader!../../node_modules/qr-scanner/qr-scanner-worker.min.js";
-QRScanner.WORKER_PATH = QrScannerWorkerPath;
+import QRScannerWorkerPath from "!!file-loader!../../node_modules/qr-scanner/qr-scanner-worker.min.js";
+QRScanner.WORKER_PATH = QRScannerWorkerPath;
 
 export default Vue.extend({
   name: "QRScanner",
