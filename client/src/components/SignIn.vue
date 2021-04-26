@@ -1,9 +1,9 @@
 <template>
   <transition name="fade">
-    <div v-if="status !== 'pending' && !isAuthenticated" class="login">
-      <div class="login__inner">
+    <div v-if="status !== 'pending' && !isAuthenticated" class="sign-in">
+      <div class="sign-in__inner">
         <h1>QR-Hunt</h1>
-        <GoogleSignIn />
+        <SignInGoogle />
       </div>
     </div>
   </transition>
@@ -12,11 +12,11 @@
 <script>
 import Vue from "vue";
 import { mapState, mapMutations } from "vuex";
-import GoogleSignIn from "@/components/GoogleSignIn.vue";
+import SignInGoogle from "@/components/SignInGoogle.vue";
 import { api } from "@/utils";
 
 export default Vue.extend({
-  components: { GoogleSignIn },
+  components: { SignInGoogle },
   computed: mapState("auth", ["status", "isAuthenticated"]),
   async created() {
     const { data, err } = await api.get("/api/user");
@@ -29,7 +29,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss">
-.login {
+.sign-in {
   position: fixed;
   top: 0;
   right: 0;
@@ -43,7 +43,7 @@ export default Vue.extend({
   background: rgba($primary, 0.8);
 }
 
-.login__inner {
+.sign-in__inner {
   margin-bottom: 40vh;
 }
 </style>

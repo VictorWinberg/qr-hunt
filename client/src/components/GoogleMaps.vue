@@ -76,7 +76,7 @@
 <script>
 import Vue from "vue";
 import { mapState, mapMutations } from "vuex";
-import { EVENT_TYPE, QR_SPOT_MODE, QR_SPOT_MODAL_STATE } from "@/constans";
+import { EVENT_TYPE, QR_SPOT_MODE, QR_SPOT_MODAL_STATE } from "@/constants";
 import { api } from "@/utils";
 import EventBus from "@/store/event-bus";
 
@@ -141,7 +141,7 @@ export default Vue.extend({
     this.createMapElements();
   },
   methods: {
-    ...mapMutations("qrSpot", ["setQrSpot", "setMode", "setModalState"]),
+    ...mapMutations("qrSpot", ["setQRSpot", "setMode", "setModalState"]),
     async fetchQRSpots() {
       const { err, data } = await api.get("/api/qrspots");
       if (!err) this.markers = data;
@@ -154,7 +154,7 @@ export default Vue.extend({
     },
     selectQRSpot(marker) {
       this.map.panTo(new google.maps.LatLng(marker.lat, marker.lng));
-      this.setQrSpot(marker);
+      this.setQRSpot(marker);
       this.setModalState(this.QR_SPOT_MODAL_STATE.SHOW_INFO);
     },
     deselectQRSpot() {

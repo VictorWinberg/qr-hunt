@@ -2,6 +2,7 @@
   <div class="view-wrapper">
     <div class="view-note">{{ qrSpot.note }}</div>
     <div
+      v-if="qrSpot.hint"
       class="hint-card"
       :class="{ 'show-hint': showHint }"
       @click="flipHint()"
