@@ -51,7 +51,7 @@ module.exports = (db) => ({
         SELECT qrshards.* FROM qrshards
         JOIN qrspots ON qrshards.qrspot_id = qrspots.id
         WHERE user_id = $1 AND qrcode = $2
-        ORDER BY qrshards.created_at
+        ORDER BY qrshards.created_at DESC
         LIMIT 1`;
 
     const { rows, err } = await db.query(sql, [userId, qrcode]);
