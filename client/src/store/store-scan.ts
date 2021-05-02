@@ -1,3 +1,4 @@
+import { QR_SPOT_MODAL_STATE } from "@/constants";
 import Snackbar from "@/plugins/snackbar";
 import { api } from "@/utils";
 
@@ -15,7 +16,7 @@ export default {
     }
   },
   actions: {
-    async handleQR(store, qrcode): Promise<void> {
+    async handleQR({ commit, dispatch }, qrcode): Promise<void> {
       if (!qrcode) return Snackbar.err("QR Code not found");
 
       const { data, err } = await api.get("/api/scan/" + qrcode);
@@ -25,12 +26,15 @@ export default {
 
       // Create QR Spot
       if (!data.qrspot) {
-        return store.dispatch("qrSpot/init", { qrcode }, { root: true });
+        return dispatch("qrSpot/init", { qrcode }, { root: true });
       }
+
+      // QR Spot exists
+      dispatch("qrSpot/select", data.qrspot, { root: true });
 
       // Do you want to collect QR Code?
       if (data.collectable) {
-        return store.commit(
+        return commit(
           "modal/setModal",
           {
             title: "Collect QR",
@@ -45,11 +49,16 @@ export default {
                     body: JSON.stringify({ qrspot_id: data.qrspot.id })
                   });
                   if (err) return Snackbar.err(err);
-                  store.commit("modal/setModal", false, { root: true });
+                  commit("modal/setModal", false, { root: true });
+                  commit(
+                    "qrSpot/setModalState",
+                    QR_SPOT_MODAL_STATE.SHOW_DETAILS,
+                    { root: true }
+                  );
 
                   const user = await api.get("/api/user");
                   if (!user.err) {
-                    store.commit("auth/setAuth", user.data, { root: true });
+                    commit("auth/setAuth", user.data, { root: true });
                   }
                 }
               }
@@ -60,7 +69,7 @@ export default {
       }
 
       // QR Code already collected
-      store.commit(
+      commit(
         "modal/setModal",
         {
           title: "Collect QR",
