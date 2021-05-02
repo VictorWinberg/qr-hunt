@@ -3,20 +3,16 @@ import Snackbar from "@/plugins/snackbar";
 import { api } from "@/utils";
 import EventBus from "./event-bus";
 
-const qrSpotGeolocation = store => {
+const qrSpotGeolocation = ({ state, commit }) => {
   navigator.geolocation.getCurrentPosition(
     async ({ coords }): Promise<void> => {
-      const { qrSpot } = store.state;
+      const { qrSpot } = state;
       const { latitude: lat, longitude: lng } = coords;
-      store.commit("setQRSpot", {
-        ...qrSpot,
-        lat,
-        lng
-      });
+      commit("setQRSpot", { ...qrSpot, lat, lng });
     },
     err => {
       Snackbar.err("GeolocationError: " + err.message + " - retrying ...");
-      qrSpotGeolocation(store);
+      qrSpotGeolocation({ state, commit });
     },
     {
       timeout: 10 * 1000,
@@ -28,11 +24,15 @@ const qrSpotGeolocation = store => {
 export default {
   namespaced: true,
   state: () => ({
+    map: null,
     qrSpot: {},
     mode: QR_SPOT_MODE.VIEW,
     modalState: QR_SPOT_MODAL_STATE.HIDE
   }),
   mutations: {
+    setMap(state, value) {
+      state.map = value;
+    },
     setQRSpot(state, value) {
       state.qrSpot = value;
     },
@@ -44,9 +44,9 @@ export default {
     }
   },
   actions: {
-    async init(store, { qrcode }) {
-      store.commit("setQRSpot", { qrcode });
-      store.commit(
+    async init({ state, commit }, { qrcode }) {
+      commit("setQRSpot", { qrcode });
+      commit(
         "modal/setModal",
         {
           title: "New QR Spot",
@@ -56,10 +56,10 @@ export default {
               name: "Create",
               type: "success",
               action: async () => {
-                store.commit("modal/setModal", false, { root: true });
-                store.commit("setMode", QR_SPOT_MODE.CREATE);
-                store.commit("setModalState", QR_SPOT_MODAL_STATE.SHOW_DETAILS);
-                qrSpotGeolocation(store);
+                commit("modal/setModal", false, { root: true });
+                commit("setMode", QR_SPOT_MODE.CREATE);
+                commit("setModalState", QR_SPOT_MODAL_STATE.SHOW_DETAILS);
+                qrSpotGeolocation({ state, commit });
               }
             }
           ]
@@ -67,26 +67,35 @@ export default {
         { root: true }
       );
     },
-    async create(store) {
+    select({ state, commit }, qrspot) {
+      commit("setQRSpot", qrspot);
+      commit("setModalState", QR_SPOT_MODAL_STATE.SHOW_INFO);
+      state.map.panTo(new google.maps.LatLng(qrspot.lat, qrspot.lng));
+    },
+    deselect({ commit }) {
+      commit("setModalState", QR_SPOT_MODAL_STATE.HIDE);
+      commit("setMode", QR_SPOT_MODE.VIEW);
+    },
+    async create({ state, commit }) {
       const { data: qrspot, err } = await api.post("/api/qrspots", {
-        body: JSON.stringify(store.state.qrSpot)
+        body: JSON.stringify(state.qrSpot)
       });
       if (err) return Snackbar.err(err);
       EventBus.$emit(EVENT_TYPE.QR_SPOTS_UPDATE);
-      store.commit("setQRSpot", qrspot);
-      store.commit("setMode", QR_SPOT_MODE.VIEW);
+      commit("setQRSpot", qrspot);
+      commit("setMode", QR_SPOT_MODE.VIEW);
     },
-    async edit(store) {
+    async edit({ state, commit }) {
       const { data: qrspot, err } = await api.put(
-        "/api/qrspots/" + store.state.qrSpot.id,
+        "/api/qrspots/" + state.qrSpot.id,
         {
-          body: JSON.stringify(store.state.qrSpot)
+          body: JSON.stringify(state.qrSpot)
         }
       );
       if (err) return Snackbar.err(err);
       EventBus.$emit(EVENT_TYPE.QR_SPOTS_UPDATE);
-      store.commit("setQRSpot", qrspot);
-      store.commit("setMode", QR_SPOT_MODE.VIEW);
+      commit("setQRSpot", qrspot);
+      commit("setMode", QR_SPOT_MODE.VIEW);
     }
   }
 };
