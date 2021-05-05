@@ -1,5 +1,13 @@
-[{
-      "relation": ["delegate_permission/common.handle_all_urls"],
-      "target" : { "namespace": "android_app", "package_name": "ml.zolly.qr.twa",
-                   "sha256_cert_fingerprints": ["6D:15:25:B3:71:AB:48:86:36:5F:CA:52:75:FE:7A:52:DB:D7:27:8B:5C:81:96:37:B6:52:52:8E:68:BA:69:5D"] }
-    }]
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "ml.zolly.qr.twa",
+      "sha256_cert_fingerprints": [
+        "6D:15:25:B3:71:AB:48:86:36:5F:CA:52:75:FE:7A:52:DB:D7:27:8B:5C:81:96:37:B6:52:52:8E:68:BA:69:5D",
+        "72:C5:7E:B4:05:0B:47:C7:76:6B:07:A7:52:09:29:40:BA:D4:F8:60:F3:65:47:77:63:B1:2B:89:86:1F:DF:AC"
+      ]
+    }
+  }
+]
