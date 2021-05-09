@@ -44,10 +44,11 @@ module.exports = (passport, db) => {
             username: email.split("@").shift(),
             name: get(["displayName"], profile),
             photo: get(["photos", 0, "value"], profile),
+            isNew: true,
           };
 
           const dbCreate = await User.create(newUser);
-          return done(dbCreate.err, dbCreate.user);
+          return done(dbCreate.err, { ...newUser, ...dbCreate.user });
         });
       }
     )
