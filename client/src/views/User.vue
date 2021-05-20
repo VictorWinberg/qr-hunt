@@ -20,7 +20,7 @@
       </i>
       <div class="user-xp__bar">
         <span class="user-xp__text" :style="xpTextStyle(user.lvl)">
-          {{ user.lvlXp }} / {{ user.reqLvlXp ?? "?" }}
+          {{ user.lvlXp ?? "-" }} / {{ user.reqLvlXp ?? "-" }}
         </span>
         <div
           class="user-xp__bar--fill"
