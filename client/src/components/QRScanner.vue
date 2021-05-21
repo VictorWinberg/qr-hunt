@@ -14,7 +14,7 @@ import Vue from "vue";
 import { mapState, mapMutations, mapActions } from "vuex";
 import QRScanner from "qr-scanner";
 
-import { QR_SPOT_MODAL_STATE } from "@/constants";
+import { QR_SPOT_PANEL } from "@/constants";
 // eslint-disable-next-line import/no-webpack-loader-syntax
 import QRScannerWorkerPath from "!!file-loader!../../node_modules/qr-scanner/qr-scanner-worker.min.js";
 QRScanner.WORKER_PATH = QRScannerWorkerPath;
@@ -30,8 +30,8 @@ export default Vue.extend({
   },
   computed: mapState("scan", ["scanning"]),
   created() {
-    this.$store.commit("modal/setModal", false);
-    this.$store.commit("qrSpot/setModalState", QR_SPOT_MODAL_STATE.HIDE);
+    this.$store.commit("popup/setPopup", false);
+    this.$store.commit("qrSpot/setModalState", QR_SPOT_PANEL.HIDE);
 
     const { qrcode } = this.$route.query;
     if (qrcode) {

@@ -1,4 +1,4 @@
-export const QR_SPOT_MODAL_STATE = {
+export const QR_SPOT_PANEL = {
   HIDE: "HIDE",
   SHOW_INFO: "SHOW_INFO",
   SHOW_DETAILS: "SHOW_DETAILS"

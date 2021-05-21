@@ -3,7 +3,7 @@ import Vuex from "vuex";
 
 import moduleAuth from "./store-auth";
 import moduleScan from "./store-scan";
-import moduleModal from "./store-modal";
+import modulePopup from "./store-popup";
 import moduleQRSpot from "./store-qr-spot";
 import moduleAchievements from "./store-achievements";
 
@@ -13,7 +13,7 @@ export default new Vuex.Store({
   modules: {
     auth: moduleAuth,
     scan: moduleScan,
-    modal: moduleModal,
+    popup: modulePopup,
     qrSpot: moduleQRSpot,
     achievements: moduleAchievements
   },

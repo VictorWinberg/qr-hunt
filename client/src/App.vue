@@ -5,7 +5,7 @@
     <router-view />
     <QRScanner v-if="scanning" />
     <transition name="fade">
-      <Modal v-if="modal" />
+      <Popup v-if="popup" />
     </transition>
     <Footer />
   </div>
@@ -18,14 +18,14 @@ import Header from "@/components/Header.vue";
 import Footer from "@/components/Footer.vue";
 import SignIn from "@/components/SignIn.vue";
 import QRScanner from "@/components/QRScanner.vue";
-import Modal from "@/components/Modal.vue";
+import Popup from "@/components/Popup.vue";
 
 export default Vue.extend({
   name: "App",
-  components: { Header, Footer, SignIn, QRScanner, Modal },
+  components: { Header, Footer, SignIn, QRScanner, Popup },
   computed: {
     ...mapState("scan", ["scanning"]),
-    ...mapState("modal", ["modal"])
+    ...mapState("popup", ["popup"])
   }
 });
 </script>
