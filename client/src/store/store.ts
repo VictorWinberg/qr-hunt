@@ -1,7 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 
-import moduleAuth from "./store-auth";
+import moduleUser from "./store-user";
 import moduleScan from "./store-scan";
 import modulePopup from "./store-popup";
 import moduleQRSpot from "./store-qr-spot";
@@ -11,7 +11,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   modules: {
-    auth: moduleAuth,
+    user: moduleUser,
     scan: moduleScan,
     popup: modulePopup,
     qrSpot: moduleQRSpot,

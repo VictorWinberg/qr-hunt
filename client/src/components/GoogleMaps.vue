@@ -80,7 +80,7 @@ import EventBus from "@/store/event-bus";
 
 export default Vue.extend({
   data() {
-    const { mapCoords, mapZoom, userCoords } = localStorage;
+    const { mapCoords, mapZoom } = localStorage;
     return {
       infoWindow: {
         coords: null,
@@ -95,14 +95,14 @@ export default Vue.extend({
       },
       mapCoords: mapCoords ? JSON.parse(mapCoords) : { lat: 0, lng: 0 },
       mapZoom: mapZoom ? Number(mapZoom) : 15,
-      userCoords: userCoords ? JSON.parse(userCoords) : { lat: 0, lng: 0 },
       QR_SPOT_MODE,
       QR_SPOT_PANEL,
       markers: []
     };
   },
   computed: {
-    ...mapState("qrSpot", ["map", "qrSpot", "mode", "panel"])
+    ...mapState("qrSpot", ["map", "qrSpot", "mode", "panel"]),
+    ...mapState({ userCoords: state => state.user.coords })
   },
   watch: {
     mapCoords(newCoords) {
@@ -110,9 +110,6 @@ export default Vue.extend({
     },
     mapZoom(newZoom) {
       localStorage.mapZoom = newZoom;
-    },
-    userCoords(newCoords) {
-      localStorage.userCoords = JSON.stringify(newCoords);
     },
     panel() {
       if (this.panel === QR_SPOT_PANEL.SHOW_DETAILS) {
@@ -145,6 +142,7 @@ export default Vue.extend({
       "setMode",
       "setModalState"
     ]),
+    ...mapMutations("user", ["setCoords"]),
     ...mapActions("qrSpot", ["select", "deselect"]),
     async fetchQRSpots() {
       const { err, data } = await api.get("/api/qrspots");
@@ -172,11 +170,11 @@ export default Vue.extend({
       };
 
       navigator.geolocation.getCurrentPosition(({ coords }) => {
-        this.setCurrentPosition({ coords });
+        this.setCoords(coords);
         this.centerMapToUser();
       });
       navigator.geolocation.watchPosition(
-        this.setCurrentPosition,
+        ({ coords }) => this.setCoords(coords),
         // eslint-disable-next-line no-console
         console.error,
         watchOptions
@@ -190,9 +188,6 @@ export default Vue.extend({
         return require("@/assets/qr-spot-marker--used.svg");
       }
       return require("@/assets/qr-spot-marker--free.svg");
-    },
-    setCurrentPosition({ coords }) {
-      this.userCoords = { lat: coords.latitude, lng: coords.longitude };
     },
     centerMapToUser() {
       this.map.panTo(new google.maps.LatLng(this.userCoords));

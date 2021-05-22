@@ -17,13 +17,13 @@ import { api } from "@/utils";
 
 export default Vue.extend({
   components: { SignInGoogle },
-  computed: mapState("auth", ["status", "isAuthenticated"]),
+  computed: mapState("user", ["status", "isAuthenticated"]),
   async created() {
     const { data, err } = await api.get("/api/user");
     if (!err) this.setAuth(data);
   },
   methods: {
-    ...mapMutations("auth", ["setAuth"])
+    ...mapMutations("user", ["setAuth"])
   }
 });
 </script>
