@@ -42,8 +42,6 @@ import QRSpotView from "./QRSpotView";
 import QRSpotUpdate from "./QRSpotUpdate";
 import { distance } from "@/utils";
 
-const { userCoords } = localStorage;
-
 export default Vue.extend({
   name: "QRSpot",
   components: {
@@ -52,13 +50,13 @@ export default Vue.extend({
   },
   data() {
     return {
-      userCoords: userCoords ? JSON.parse(userCoords) : { lat: 0, lng: 0 },
       QR_SPOT_MODE,
       QR_SPOT_PANEL
     };
   },
   computed: {
-    ...mapState("qrSpot", ["qrSpot", "mode", "panel"])
+    ...mapState("qrSpot", ["qrSpot", "mode", "panel"]),
+    ...mapState({ userCoords: state => state.user.coords })
   },
   methods: {
     ...mapMutations("qrSpot", ["setMode", "setModalState"]),

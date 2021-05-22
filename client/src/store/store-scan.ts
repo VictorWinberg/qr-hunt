@@ -55,7 +55,7 @@ export default {
 
                   const user = await api.get("/api/user");
                   if (!user.err) {
-                    commit("auth/setAuth", user.data, { root: true });
+                    commit("user/setAuth", user.data, { root: true });
                   }
                 }
               }

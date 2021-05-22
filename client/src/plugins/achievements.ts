@@ -29,7 +29,7 @@ import { api } from "@/utils";
           });
           const user = await api.get("/api/user");
           if (!user.err) {
-            store.commit("auth/setAuth", user.data);
+            store.commit("user/setAuth", user.data);
           }
 
           const achievements = await api.get("/api/achievements");
