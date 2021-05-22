@@ -1,5 +1,9 @@
 {
   "extends": ["config:base", "group:allNonMajor", ":pinAllExceptPeerDependencies"],
   "timezone": "Europe/Stockholm",
-  "schedule": "before 3am on the first day of the month"
+  "schedule": "before 3am on the first day of the month",
+  "vulnerabilityAlerts": {
+    "groupName": "SECURITY dependencies",
+    "labels": ["security"]
+  }
 }
