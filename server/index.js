@@ -1,7 +1,6 @@
 const express = require("express");
 const session = require("cookie-session");
 const cookieParser = require("cookie-parser");
-const bodyParser = require("body-parser");
 const dotenv = require("dotenv");
 const path = require("path");
 const { Client: PGClient } = require("pg");
@@ -24,8 +23,9 @@ const app = express();
 
 // set up our express application
 app.use(cookieParser()); // read cookies (needed for auth)
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(utils.camelcaseMiddleware({ deep: true }));
 app.use(
   session({
     name: "session",
