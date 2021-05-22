@@ -1,5 +1,8 @@
 import Snackbar from "@/plugins/snackbar";
 
+export const isToday = date =>
+  new Date(date).toDateString() === new Date().toDateString();
+
 export function isJson(str): boolean {
   try {
     JSON.parse(str);

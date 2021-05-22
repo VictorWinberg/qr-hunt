@@ -19,8 +19,9 @@ module.exports = ({ app, db, isLoggedIn }) => {
    *               minItems: 2
    */
   
-  app.get("/api/qrspots", async (_, res) => {
-    const { qrspots, err } = await QRSpot.getAll();
+  app.get("/api/qrspots", async (req, res) => {
+    const { user = {} } = req;
+    const { qrspots, err } = await QRSpot.getAll(user.id);
     if (err) return res.status(400).send(err);
     return res.send(qrspots);
   });

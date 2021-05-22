@@ -57,15 +57,15 @@
       :key="index"
       :position="{ lat: Number(marker.lat), lng: Number(marker.lng) }"
       :clickable="panel !== QR_SPOT_PANEL.SHOW_DETAILS"
-      :icon="require('@/assets/qr-spot-marker.svg')"
+      :icon="getIcon(marker)"
       @click="() => select(marker)"
     />
 
-    <div id="my-location-button" @click="centerMapToUser">
+    <div id="position-button" @click="centerMapToUser">
       <img
         alt="My Location"
-        class="my-location-icon"
-        :src="require('@/assets/my-location.svg')"
+        class="position-icon"
+        :src="require('@/assets/position-button.svg')"
       />
     </div>
   </GmapMap>
@@ -75,7 +75,7 @@
 import Vue from "vue";
 import { mapState, mapMutations, mapActions } from "vuex";
 import { EVENT_TYPE, QR_SPOT_MODE, QR_SPOT_PANEL } from "@/constants";
-import { api } from "@/utils";
+import { api, isToday } from "@/utils";
 import EventBus from "@/store/event-bus";
 
 export default Vue.extend({
@@ -152,7 +152,7 @@ export default Vue.extend({
     },
     createMapElements() {
       /** Create button for centering position at user */
-      const centerControlDiv = document.getElementById("my-location-button");
+      const centerControlDiv = document.getElementById("position-button");
       const { RIGHT_BOTTOM } = google.maps.ControlPosition;
       this.map.controls[RIGHT_BOTTOM].push(centerControlDiv);
     },
@@ -182,6 +182,15 @@ export default Vue.extend({
         watchOptions
       );
     },
+    getIcon({ collectedAt }) {
+      if (!collectedAt) {
+        return require("@/assets/qr-spot-marker--new.svg");
+      }
+      if (isToday(collectedAt)) {
+        return require("@/assets/qr-spot-marker--used.svg");
+      }
+      return require("@/assets/qr-spot-marker--free.svg");
+    },
     setCurrentPosition({ coords }) {
       this.userCoords = { lat: coords.latitude, lng: coords.longitude };
     },
@@ -194,7 +203,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss">
-#my-location-button {
+#position-button {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -206,7 +215,7 @@ export default Vue.extend({
   border-radius: 2px;
   box-shadow: $shadow-color;
 
-  .my-location-icon {
+  .position-icon {
     width: 70%;
   }
 }
@@ -217,7 +226,7 @@ export default Vue.extend({
     transition: all 300ms 200ms;
 
     .gmnoprint,
-    #my-location-button {
+    #position-button {
       display: flex !important;
       opacity: 0;
     }
@@ -228,7 +237,7 @@ export default Vue.extend({
     transition: all 300ms 0ms;
 
     .gmnoprint,
-    #my-location-button {
+    #position-button {
       display: flex !important;
       opacity: 1;
       transition: opacity 200ms 500ms;
