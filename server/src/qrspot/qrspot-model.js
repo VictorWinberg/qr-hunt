@@ -49,9 +49,13 @@ module.exports = (db) => ({
     return { qrspot: rows[0], err };
   },
 
-  getAll: async () => {
-    const sql = "SELECT * FROM qrspots";
-    const { rows, err } = await db.query(sql);
+  getAll: async (userId) => {
+    const sql = `
+      SELECT DISTINCT ON (qrspots.id) qrspots.*, qrshards.created_at as collected_at
+      FROM qrspots LEFT JOIN qrshards ON qrspots.id = qrshards.qrspot_id AND user_id = $1
+      ORDER BY qrspots.id, qrshards.created_at DESC`;
+
+    const { rows, err } = await db.query(sql, [userId]);
     return { qrspots: rows, err };
   },
 
