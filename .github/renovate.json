@@ -3,7 +3,7 @@
   "timezone": "Europe/Stockholm",
   "schedule": "before 3am on the first day of the month",
   "vulnerabilityAlerts": {
-    "groupName": "SECURITY dependencies",
-    "labels": ["security"]
+    "groupName": "GitHub Vulnerability Alerts",
+    "labels": ["Type: Security"]
   }
 }
