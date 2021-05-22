@@ -3,7 +3,7 @@
   "timezone": "Europe/Stockholm",
   "schedule": "before 3am on the first day of the month",
   "vulnerabilityAlerts": {
-    "groupName": "SECURITY",
+    "groupName": "SECURITY dependencies",
     "labels": ["security"]
   }
 }
