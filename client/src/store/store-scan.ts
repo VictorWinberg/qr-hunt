@@ -45,8 +45,7 @@ export default {
                 type: "success",
                 action: async () => {
                   const { err } = await api.post("/api/qrshards", {
-                    // eslint-disable-next-line @typescript-eslint/camelcase
-                    body: JSON.stringify({ qrspot_id: data.qrspot.id })
+                    body: JSON.stringify({ qrspotId: data.qrspot.id })
                   });
                   if (err) return Snackbar.err(err);
                   commit("modal/setModal", false, { root: true });
