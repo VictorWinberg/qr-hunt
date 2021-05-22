@@ -1,8 +1,8 @@
 <template>
-  <div class="qrspot-wrapper" :class="modalState">
+  <div class="qrspot-wrapper" :class="panel">
     <div
       class="qrspot-container"
-      @click="setModalState(QR_SPOT_MODAL_STATE.SHOW_DETAILS)"
+      @click="setModalState(QR_SPOT_PANEL.SHOW_DETAILS)"
     >
       <transition name="fade" mode="out-in">
         <div v-if="mode === QR_SPOT_MODE.VIEW" key="view">
@@ -19,7 +19,7 @@
               </div>
             </div>
           </div>
-          <div v-if="modalState === QR_SPOT_MODAL_STATE.SHOW_DETAILS">
+          <div v-if="panel === QR_SPOT_PANEL.SHOW_DETAILS">
             <div class="edit-button" @click="edit()">
               <i class="fas fa-pencil-alt fa-2x"></i>
             </div>
@@ -37,7 +37,7 @@
 <script>
 import Vue from "vue";
 import { mapState, mapMutations } from "vuex";
-import { QR_SPOT_MODE, QR_SPOT_MODAL_STATE } from "@/constants";
+import { QR_SPOT_MODE, QR_SPOT_PANEL } from "@/constants";
 import QRSpotView from "./QRSpotView";
 import QRSpotUpdate from "./QRSpotUpdate";
 import { distance } from "@/utils";
@@ -54,11 +54,11 @@ export default Vue.extend({
     return {
       userCoords: userCoords ? JSON.parse(userCoords) : { lat: 0, lng: 0 },
       QR_SPOT_MODE,
-      QR_SPOT_MODAL_STATE
+      QR_SPOT_PANEL
     };
   },
   computed: {
-    ...mapState("qrSpot", ["qrSpot", "mode", "modalState"])
+    ...mapState("qrSpot", ["qrSpot", "mode", "panel"])
   },
   methods: {
     ...mapMutations("qrSpot", ["setMode", "setModalState"]),

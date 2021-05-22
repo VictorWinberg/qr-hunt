@@ -1,4 +1,4 @@
-import { QR_SPOT_MODAL_STATE } from "@/constants";
+import { QR_SPOT_PANEL } from "@/constants";
 import Snackbar from "@/plugins/snackbar";
 import { api } from "@/utils";
 
@@ -35,7 +35,7 @@ export default {
       // Do you want to collect QR Code?
       if (data.collectable) {
         return commit(
-          "modal/setModal",
+          "popup/setPopup",
           {
             title: "Collect QR",
             subtitle: "Do you want to collect this QR Shard?",
@@ -49,12 +49,10 @@ export default {
                     body: JSON.stringify({ qrspot_id: data.qrspot.id })
                   });
                   if (err) return Snackbar.err(err);
-                  commit("modal/setModal", false, { root: true });
-                  commit(
-                    "qrSpot/setModalState",
-                    QR_SPOT_MODAL_STATE.SHOW_DETAILS,
-                    { root: true }
-                  );
+                  commit("popup/setPopup", false, { root: true });
+                  commit("qrSpot/setModalState", QR_SPOT_PANEL.SHOW_DETAILS, {
+                    root: true
+                  });
 
                   const user = await api.get("/api/user");
                   if (!user.err) {
@@ -70,7 +68,7 @@ export default {
 
       // QR Code already collected
       commit(
-        "modal/setModal",
+        "popup/setPopup",
         {
           title: "Collect QR",
           subtitle: "QR Code is already collected for today",

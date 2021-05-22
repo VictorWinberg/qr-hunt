@@ -1,21 +1,21 @@
 <template>
-  <div class="modal-overlay">
-    <div class="modal-wrapper">
-      <div class="close-button" @click="setModal(false)">
+  <div class="popup-overlay">
+    <div class="popup-wrapper">
+      <div class="popup__close" @click="setPopup(false)">
         <i class="fas fa-times fa-2x"></i>
       </div>
-      <div class="modal">
-        <div class="modal__title">
-          {{ modal.title }}
+      <div class="popup">
+        <div class="popup__title">
+          {{ popup.title }}
         </div>
-        <div class="modal__subtitle">
-          {{ modal.subtitle }}
+        <div class="popup__subtitle">
+          {{ popup.subtitle }}
         </div>
-        <div class="modal__options">
+        <div class="popup__options">
           <div
-            v-for="(option, index) in modal.options"
+            v-for="(option, index) in popup.options"
             :key="index"
-            class="modal__options__button ripple"
+            class="popup__options__button ripple"
             :class="option.type"
             v-on="option.action ? { click: option.action } : {}"
           >
@@ -31,16 +31,16 @@
 import { mapMutations, mapState } from "vuex";
 export default {
   computed: {
-    ...mapState("modal", ["modal"])
+    ...mapState("popup", ["popup"])
   },
   methods: {
-    ...mapMutations("modal", ["setModal"])
+    ...mapMutations("popup", ["setPopup"])
   }
 };
 </script>
 
 <style lang="scss">
-.modal-overlay {
+.popup-overlay {
   position: absolute;
   z-index: 1;
   display: flex;
@@ -51,7 +51,7 @@ export default {
   background-color: rgba(#000, 0.5);
 }
 
-.modal-wrapper {
+.popup-wrapper {
   position: relative;
   width: 100%;
   max-width: 500px;
@@ -60,7 +60,7 @@ export default {
   box-shadow: 0 2px 6px 0 rgba(#000, 0.2);
 }
 
-.close-button {
+.popup__close {
   position: absolute;
   top: 0;
   right: 0;
@@ -68,26 +68,26 @@ export default {
   cursor: pointer;
 }
 
-.modal {
+.popup {
   padding: 20px;
 }
 
-.modal__title {
+.popup__title {
   margin-top: 20px;
   font-size: 32px;
 }
 
-.modal__subtitle {
+.popup__subtitle {
   margin-top: 10px;
   font-size: 20px;
 }
 
-.modal__options {
+.popup__options {
   display: flex;
   margin-top: 40px;
 }
 
-.modal__options__button {
+.popup__options__button {
   flex: 1;
   padding: 14px;
   font-size: 18px;

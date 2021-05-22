@@ -1,4 +1,4 @@
-import { EVENT_TYPE, QR_SPOT_MODAL_STATE, QR_SPOT_MODE } from "@/constants";
+import { EVENT_TYPE, QR_SPOT_PANEL, QR_SPOT_MODE } from "@/constants";
 import Snackbar from "@/plugins/snackbar";
 import { api } from "@/utils";
 import EventBus from "./event-bus";
@@ -27,7 +27,7 @@ export default {
     map: null,
     qrSpot: {},
     mode: QR_SPOT_MODE.VIEW,
-    modalState: QR_SPOT_MODAL_STATE.HIDE
+    panel: QR_SPOT_PANEL.HIDE
   }),
   mutations: {
     setMap(state, value) {
@@ -40,14 +40,14 @@ export default {
       state.mode = value;
     },
     setModalState(state, value) {
-      state.modalState = value;
+      state.panel = value;
     }
   },
   actions: {
     async init({ state, commit }, { qrcode }) {
       commit("setQRSpot", { qrcode });
       commit(
-        "modal/setModal",
+        "popup/setPopup",
         {
           title: "New QR Spot",
           subtitle: "Do you want to create a QR Spot?",
@@ -56,9 +56,9 @@ export default {
               name: "Create",
               type: "success",
               action: async () => {
-                commit("modal/setModal", false, { root: true });
+                commit("popup/setPopup", false, { root: true });
                 commit("setMode", QR_SPOT_MODE.CREATE);
-                commit("setModalState", QR_SPOT_MODAL_STATE.SHOW_DETAILS);
+                commit("setModalState", QR_SPOT_PANEL.SHOW_DETAILS);
                 qrSpotGeolocation({ state, commit });
               }
             }
@@ -69,11 +69,11 @@ export default {
     },
     select({ state, commit }, qrspot) {
       commit("setQRSpot", qrspot);
-      commit("setModalState", QR_SPOT_MODAL_STATE.SHOW_INFO);
+      commit("setModalState", QR_SPOT_PANEL.SHOW_INFO);
       state.map.panTo(new google.maps.LatLng(qrspot.lat, qrspot.lng));
     },
     deselect({ commit }) {
-      commit("setModalState", QR_SPOT_MODAL_STATE.HIDE);
+      commit("setModalState", QR_SPOT_PANEL.HIDE);
       commit("setMode", QR_SPOT_MODE.VIEW);
     },
     async create({ state, commit }) {

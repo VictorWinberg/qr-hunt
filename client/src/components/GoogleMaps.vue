@@ -11,15 +11,13 @@
       mapTypeControl: false,
       fullscreenControl: false,
       clickableIcons: false,
-      draggable: modalState !== QR_SPOT_MODAL_STATE.SHOW_DETAILS,
+      draggable: panel !== QR_SPOT_PANEL.SHOW_DETAILS,
       styles: [
         { featureType: 'poi.business', stylers: [{ visibility: 'off' }] }
       ]
     }"
     :class="
-      modalState == QR_SPOT_MODAL_STATE.SHOW_DETAILS
-        ? 'collapsed-map'
-        : 'expanded-map'
+      panel == QR_SPOT_PANEL.SHOW_DETAILS ? 'collapsed-map' : 'expanded-map'
     "
     @click="deselect"
     @dragend="handleDrag"
@@ -58,7 +56,7 @@
       v-for="(marker, index) in markers"
       :key="index"
       :position="{ lat: Number(marker.lat), lng: Number(marker.lng) }"
-      :clickable="modalState !== QR_SPOT_MODAL_STATE.SHOW_DETAILS"
+      :clickable="panel !== QR_SPOT_PANEL.SHOW_DETAILS"
       :icon="require('@/assets/qr-spot-marker.svg')"
       @click="() => select(marker)"
     />
@@ -76,7 +74,7 @@
 <script>
 import Vue from "vue";
 import { mapState, mapMutations, mapActions } from "vuex";
-import { EVENT_TYPE, QR_SPOT_MODE, QR_SPOT_MODAL_STATE } from "@/constants";
+import { EVENT_TYPE, QR_SPOT_MODE, QR_SPOT_PANEL } from "@/constants";
 import { api } from "@/utils";
 import EventBus from "@/store/event-bus";
 
@@ -99,12 +97,12 @@ export default Vue.extend({
       mapZoom: mapZoom ? Number(mapZoom) : 15,
       userCoords: userCoords ? JSON.parse(userCoords) : { lat: 0, lng: 0 },
       QR_SPOT_MODE,
-      QR_SPOT_MODAL_STATE,
+      QR_SPOT_PANEL,
       markers: []
     };
   },
   computed: {
-    ...mapState("qrSpot", ["map", "qrSpot", "mode", "modalState"])
+    ...mapState("qrSpot", ["map", "qrSpot", "mode", "panel"])
   },
   watch: {
     mapCoords(newCoords) {
@@ -116,8 +114,8 @@ export default Vue.extend({
     userCoords(newCoords) {
       localStorage.userCoords = JSON.stringify(newCoords);
     },
-    modalState() {
-      if (this.modalState === QR_SPOT_MODAL_STATE.SHOW_DETAILS) {
+    panel() {
+      if (this.panel === QR_SPOT_PANEL.SHOW_DETAILS) {
         const position =
           this.mode === this.QR_SPOT_MODE.CREATE
             ? this.userCoords

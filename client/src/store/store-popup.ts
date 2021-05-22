@@ -1,11 +1,11 @@
 export default {
   namespaced: true,
   state: () => ({
-    modal: false
+    popup: false
   }),
   mutations: {
-    setModal(state, value) {
-      state.modal = value;
+    setPopup(state, value) {
+      state.popup = value;
     }
   }
 };
