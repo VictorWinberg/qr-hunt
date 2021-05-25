@@ -1,0 +1,7 @@
+name-template: 'v$NEXT_MINOR_VERSION'
+tag-template: 'v$NEXT_MINOR_VERSION'
+
+template: |
+  ## What’s Changed in Search
+  $CHANGES
+change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
