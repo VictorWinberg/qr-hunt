@@ -67,7 +67,7 @@ import { api, md5 } from "@/utils";
 
 export default Vue.extend({
   computed: {
-    ...mapState("auth", ["isAuthenticated", "user"]),
+    ...mapState("user", ["isAuthenticated", "user"]),
     ...mapState("achievements", ["achievements"])
   },
   async created() {
@@ -75,7 +75,7 @@ export default Vue.extend({
     if (!err) this.setAchievements(data);
   },
   methods: {
-    ...mapMutations("auth", ["setAuth"]),
+    ...mapMutations("user", ["setAuth"]),
     ...mapMutations("achievements", ["setAchievements"]),
     xpTextStyle(level) {
       return {
