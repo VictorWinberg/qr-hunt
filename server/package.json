@@ -7,7 +7,7 @@
     "start": "nodemon index"
   },
   "dependencies": {
-    "camelcase-keys": "^6.2.2",
+    "camelcase-keys": "6.2.2",
     "cookie-parser": "1.4.5",
     "cookie-session": "1.4.0",
     "dotenv": "8.6.0",
@@ -15,7 +15,7 @@
     "passport": "0.4.1",
     "passport-google-oauth": "2.0.0",
     "pg": "8.6.0",
-    "snakecase-keys": "^4.0.2",
+    "snakecase-keys": "4.0.2",
     "swagger-jsdoc": "6.1.0",
     "swagger-ui-express": "4.1.6",
     "uuid": "8.3.2"
