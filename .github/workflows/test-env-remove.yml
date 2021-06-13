@@ -29,3 +29,5 @@ jobs:
       with:
         header: test-env
         delete: true
+    - name: Delete merged branch
+      uses: SvanBoxel/delete-merged-branch@v1.3.3
