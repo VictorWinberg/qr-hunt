@@ -1,11 +1,13 @@
 #!/bin/bash
 set -eu # exit script on errors
 
-echo "> npm run install-server..."
-npm run install-server
+echo "copy qr-hunt env"
+cp /home/git/www/qr-hunt/.env .
 
-# # If build wasn't done on github uncomment this
-# echo "> npm run build..."
-# npm run build
+echo "> npm install..."
+npm install
+
+echo "> npm run build..."
+npm run build
 
 export MAIN="server"
