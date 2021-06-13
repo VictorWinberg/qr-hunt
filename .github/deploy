@@ -4,10 +4,11 @@ set -eu # exit script on errors
 echo "copy qr-hunt env"
 cp /home/git/www/qr-hunt/.env .
 
-echo "> npm install..."
-npm install
+echo "> npm install server..."
+npm run install-server
 
-echo "> npm run build..."
-npm run build
+# build is done with github actions
+# echo "> npm run build..."
+# npm run build
 
 export MAIN="server"
