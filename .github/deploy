@@ -1,0 +1,11 @@
+#!/bin/bash
+set -eu # exit script on errors
+
+echo "> npm run install-server..."
+npm run install-server
+
+# # If build wasn't done on github uncomment this
+# echo "> npm run build..."
+# npm run build
+
+export MAIN="server"
