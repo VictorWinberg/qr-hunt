@@ -9,10 +9,6 @@ jobs:
   remove-test-env:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-      with:
-        fetch-depth: '0'
-        ref: ${{ github.head_ref }}
     - name: Install SSH key
       uses: shimataro/ssh-key-action@v2
       with:
@@ -29,5 +25,3 @@ jobs:
       with:
         header: test-env
         delete: true
-    - name: Delete merged branch
-      uses: SvanBoxel/delete-merged-branch@v1.3.3
