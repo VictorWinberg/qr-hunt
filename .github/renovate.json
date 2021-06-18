@@ -4,6 +4,7 @@
   "schedule": "before 3am on the first day of the month",
   "vulnerabilityAlerts": {
     "groupName": "GitHub Vulnerability Alerts",
-    "labels": ["Type: Security"]
+    "labels": ["Type: Security"],
+    "schedule": "before 3am on the first day of the month"
   }
 }
