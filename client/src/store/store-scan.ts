@@ -1,6 +1,7 @@
-import { QR_SPOT_PANEL } from "@/constants";
+import { EVENT_TYPE, QR_SPOT_PANEL } from "@/constants";
 import Snackbar from "@/plugins/snackbar";
 import { api } from "@/utils";
+import EventBus from "./event-bus";
 
 export default {
   namespaced: true,
@@ -48,6 +49,7 @@ export default {
                     body: JSON.stringify({ qrspotId: data.qrspot.id })
                   });
                   if (err) return Snackbar.err(err);
+                  EventBus.$emit(EVENT_TYPE.QR_SPOTS_UPDATE);
                   commit("popup/setPopup", false, { root: true });
                   commit("qrSpot/setModalState", QR_SPOT_PANEL.SHOW_DETAILS, {
                     root: true
