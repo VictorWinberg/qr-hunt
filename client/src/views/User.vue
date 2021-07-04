@@ -14,14 +14,14 @@
         class="user-xp__level fas fa-star"
         :style="{ color: hashColor(user.lvl) }"
       >
-        <span class="user-xp__text" :style="xpTextStyle(user.lvl)">
+        <span class="user-xp__text">
           {{ user.lvl != null ? user.lvl : "?" }}
         </span>
       </i>
       <div class="user-xp__bar">
         <span class="user-xp__text" :style="xpTextStyle(user.lvl)">
           {{ user.lvlXp != null ? user.lvlXp : "-" }} /
-          {{ user.reqLvlXp != null ? user.reqLvlXp : "-" }}
+          {{ user.reqLvlXp != null ? user.reqLvlXp : "-" }} xp
         </span>
         <div
           class="user-xp__bar--fill"
@@ -80,8 +80,7 @@ export default Vue.extend({
     ...mapMutations("achievements", ["setAchievements"]),
     xpTextStyle(level) {
       return {
-        color: this.hashColor(level + 1),
-        "text-shadow": `2px 2px ${this.hashColor(level)}`
+        color: this.hashColor(level + 1)
       };
     },
     hashColor(str) {
@@ -138,6 +137,7 @@ export default Vue.extend({
   max-width: 66%;
   height: 2.5rem;
   margin-left: -2.25rem;
+  font-size: 2.5rem;
   border: 1px solid $black;
   border-radius: 3px;
 }
@@ -167,7 +167,7 @@ export default Vue.extend({
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2rem;
+  font-size: 0.5em;
   font-style: italic;
   font-weight: bold;
   color: $black;
