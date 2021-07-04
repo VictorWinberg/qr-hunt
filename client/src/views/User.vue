@@ -178,7 +178,7 @@ export default Vue.extend({
 
 .user-achievements {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, max-content));
+  grid-template-columns: repeat(auto-fit, minmax(100px, max-content));
   grid-gap: 0.5rem;
   justify-content: center;
 }
@@ -186,16 +186,16 @@ export default Vue.extend({
 .user-achievements__card {
   display: flex;
   justify-content: center;
-  width: 160px;
+  width: 100px;
 }
 
 .hex {
   position: relative;
   display: flex;
-  width: 104px;
-  height: 60px;
-  margin: 30px 10px;
-  font-size: 1.2rem;
+  width: 70px;
+  height: 40px;
+  margin: 20px 10px;
+  font-size: 0.8rem;
   font-weight: bold;
   color: $white;
   background-color: currentColor;
@@ -204,18 +204,18 @@ export default Vue.extend({
   &::after {
     position: absolute;
     content: "";
-    border-right: 52px solid transparent;
-    border-left: 52px solid transparent;
+    border-right: 35px solid transparent;
+    border-left: 35px solid transparent;
   }
 
   &::before {
-    top: -29px;
-    border-bottom: 30px solid currentColor;
+    top: -20px;
+    border-bottom: 20px solid currentColor;
   }
 
   &::after {
-    bottom: -29px;
-    border-top: 30px solid currentColor;
+    bottom: -20px;
+    border-top: 20px solid currentColor;
   }
 }
 
@@ -240,8 +240,8 @@ export default Vue.extend({
   top: 75%;
   left: 50%;
   display: block;
-  width: 150px;
-  margin-left: -75px;
+  width: 110px;
+  margin-left: -55px;
   line-height: 2;
   text-align: center;
   background: #9b2;
@@ -252,25 +252,25 @@ export default Vue.extend({
   &::before,
   &::after {
     position: absolute;
-    top: 14px;
-    left: -36px;
+    top: 16px;
+    left: -15px;
     z-index: -1;
     display: block;
-    width: 20px;
+    width: 10px;
     height: 0;
     content: "";
-    border: 18px solid #9b2;
-    border-right: 12px solid #791;
+    border: 8px solid #9b2;
+    border-right: 6px solid #791;
     border-bottom-color: #94b81e;
     border-left-color: transparent;
     transform: rotate(-5deg);
   }
 
   &::after {
-    right: -36px;
+    right: -15px;
     left: auto;
-    border-right: 18px solid transparent;
-    border-left: 12px solid #791;
+    border-right: 8px solid transparent;
+    border-left: 6px solid #791;
     transform: rotate(5deg);
   }
 }
