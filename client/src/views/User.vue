@@ -80,8 +80,7 @@ export default Vue.extend({
     ...mapMutations("achievements", ["setAchievements"]),
     xpTextStyle(level) {
       return {
-        color: this.hashColor(level + 1),
-        "text-shadow": `2px 2px ${this.hashColor(level)}`
+        color: this.hashColor(level + 1)
       };
     },
     hashColor(str) {
