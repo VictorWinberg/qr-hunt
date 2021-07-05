@@ -2,17 +2,60 @@ const achievements = {
   USER_HAS_SIGNED_UP: ({ req }) => {
     return req.path === "/auth/google/callback";
   },
+  THANKFUL: ({ req }) => {
+    return [
+      req.method === "POST",
+      req.path.toLowerCase() === "/api/achievements/thankful"
+    ];
+  },
   FIRST_QRSPOT_FOUND: ({ req, res }) => {
     return [
       (req.route || {}).path === "/api/scan/:id",
       (res.body || {}).qrspot
     ];
   },
-  THANKFUL: ({ req }) => {
+  QR_CODE_NOT_FOUND: ({ req, res }) => {
+    return [
+      (req.route || {}).path === "/api/scan/:id",
+      !(res.body || {}).qrcode
+    ];
+  },
+  FIRST_QRSPOT_CREATED: ({ req, res }) => {
     return [
       req.method === "POST",
-      req.path.toLowerCase() === "/api/achievements/thankful"
+      req.path.toLowerCase() === "/api/qrspots",
+      res.statusCode === 200
     ];
+  },
+  COLLECT_THREE_IN_DAY: ({ req }) => {
+    return false;
+  },
+  COLLECT_MANY_IN_DAY: ({ req }) => {
+    return false;
+  },
+  COLLECT_AT_MORNING: ({ req, res }) => {
+    const hours = new Date().getHours();
+    return [
+      hours >= 3 && hours < 6,
+      req.method === "POST",
+      req.path.toLowerCase() === "/api/qrshards",
+      res.statusCode === 200
+    ];
+  },
+  COLLECT_AT_NIGHT: ({ req, res }) => {
+    const hours = new Date().getHours();
+    return [
+      hours >= 22 && hours < 3,
+      req.method === "POST",
+      req.path.toLowerCase() === "/api/qrshards",
+      res.statusCode === 200
+    ];
+  },
+  FIRST_RECOLLECT: ({ req }) => {
+    return false;
+  },
+  FIRST_HINT_USED: ({ req }) => {
+    return false;
   }
 };
 
