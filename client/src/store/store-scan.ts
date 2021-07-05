@@ -20,7 +20,8 @@ export default {
     async handleQR({ commit, dispatch }, qrcode): Promise<void> {
       if (!qrcode) return Snackbar.err("QR Code not found");
 
-      const { data, err } = await api.get("/api/scan/" + qrcode);
+      const scanUrl = "/api/scan/" + encodeURIComponent(qrcode);
+      const { data, err } = await api.get(scanUrl);
       if (err) return Snackbar.err(err);
       if (!data.qrcode)
         return Snackbar.err("Error: 404 - QR Code not available");
