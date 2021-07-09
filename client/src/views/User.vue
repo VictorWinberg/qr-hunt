@@ -113,11 +113,30 @@ export default Vue.extend({
       return colour;
     },
     async deleteMe() {
-      const { err } = await api.delete("/api/user");
-      if (err) return;
-
-      this.setAuth({ isAuthenticated: false });
-      this.$router.push("/");
+      this.$store.commit("popup/setPopup", {
+        title: "Delete account",
+        subtitle: "Are you sure you want to delete your account?",
+        options: [
+          {
+            name: "Cancel",
+            type: "disabled",
+            action: async () => {
+              this.$store.commit("popup/setPopup", false);
+            }
+          },
+          {
+            name: "Delete",
+            type: "danger",
+            action: async () => {
+              this.$store.commit("popup/setPopup", false);
+              const { err } = await api.delete("/api/user");
+              if (err) return;
+              this.setAuth({ isAuthenticated: false });
+              this.$router.push("/");
+            }
+          }
+        ]
+      });
     }
   }
 });
