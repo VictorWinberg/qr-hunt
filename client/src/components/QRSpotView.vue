@@ -48,7 +48,10 @@ export default Vue.extend({
 }
 
 .view-note {
+  max-width: 100%;
   margin-top: 1em;
+  word-wrap: break-word;
+  white-space: pre-line;
 }
 
 .hint-card {

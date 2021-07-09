@@ -23,7 +23,7 @@
       <label for="note">
         Tell us something about this spot
       </label>
-      <input
+      <textarea
         id="note"
         type="text"
         autocomplete="off"
@@ -112,16 +112,26 @@ form {
 }
 
 .saveBtn,
-input[type="text"] {
+input[type="text"],
+textarea {
   box-sizing: border-box;
   width: 100%;
   height: 3em;
-  padding: 0.5em;
+  padding: 0.8em 0.5em;
   margin-bottom: 1em;
+  font-family: inherit;
+  resize: none;
   border: solid #bbb 1px;
+  transition: height 200ms;
+}
+
+textarea:focus {
+  height: 8em;
 }
 
 .saveBtn {
+  margin-top: 1em;
+  margin-bottom: 3em;
   color: white;
   background-color: green;
 
