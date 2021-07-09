@@ -3,7 +3,7 @@
     <div class="user-header">
       <div
         class="user-header__photo async async--img"
-        :style="{ background: `url(${user.photo})` }"
+        :style="{ backgroundImage: `url(${user.photo})` }"
       ></div>
       <h1 class="user-header__title async async--text">{{ user.name }}</h1>
       <p class="user-header__email async async--text">{{ user.email }}</p>
@@ -27,7 +27,7 @@
           class="user-xp__bar--fill"
           :style="{
             background: hashColor(user.lvl),
-            'max-width': `${(user.lvlXp / user.reqLvlXp) * 100}%`
+            maxWidth: `${(user.lvlXp / user.reqLvlXp) * 100}%`
           }"
         ></div>
       </div>
@@ -57,6 +57,20 @@
       </div>
     </div>
 
+    <h2>Friends</h2>
+    <ul>
+      <li v-for="friend in friends" :key="friend.id">
+        <div
+          class="friend__photo"
+          :style="{
+            backgroundImage: `url(${friend.photo})`,
+            marginBottom: '-.5em' // Todo: remove this line!
+          }"
+        ></div>
+        <span>{{ friend.name }} - Lvl: {{ friend.lvl }}</span>
+      </li>
+    </ul>
+
     <button class="user-remove" @click="deleteMe">DELETE MY ACCOUNT</button>
   </div>
 </template>
@@ -69,14 +83,19 @@ import { api, md5 } from "@/utils";
 export default Vue.extend({
   computed: {
     ...mapState("user", ["isAuthenticated", "user"]),
+    ...mapState("friends", ["friends"]),
     ...mapState("achievements", ["achievements"])
   },
   async created() {
-    const { data, err } = await api.get("/api/achievements");
-    if (!err) this.setAchievements(data);
+    const achievements = await api.get("/api/achievements");
+    if (!achievements.err) this.setAchievements(achievements.data);
+
+    const friends = await api.get("/api/users");
+    if (!friends.err) this.setFriends(friends.data);
   },
   methods: {
     ...mapMutations("user", ["setAuth"]),
+    ...mapMutations("friends", ["setFriends"]),
     ...mapMutations("achievements", ["setAchievements"]),
     xpTextStyle(level) {
       return {
@@ -299,12 +318,24 @@ export default Vue.extend({
   width: 96px;
   height: 96px;
   margin: auto;
+  background-position: center;
+  background-size: cover;
+  border-radius: 50%;
+}
+
+.friend__photo {
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  margin-right: 0.5em;
+  background-position: center;
+  background-size: cover;
   border-radius: 50%;
 }
 
 .user-remove {
   padding: 1rem 2rem;
-  margin: auto;
+  margin: 2rem auto;
   margin-bottom: 20px;
   color: white;
   cursor: pointer;

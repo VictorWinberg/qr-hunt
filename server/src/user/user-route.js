@@ -37,7 +37,7 @@ module.exports = ({ app, db, isLoggedIn }) => {
   app.get("/api/users", isLoggedIn, async (_, res) => {
     const { users, err } = await User.getAll();
     if (err) return res.status(400).send(err);
-    return res.send(users.map(setProps(["lvl"])));
+    return res.send(users.map(setProps(["xp", "lvl"])));
   });
 
   app.get("/api/users/:id", isLoggedIn, async (req, res) => {

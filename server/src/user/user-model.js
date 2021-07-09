@@ -16,11 +16,11 @@
  */
 
 module.exports = db => ({
-  create: async ({ name, email, photo }) => {
+  create: async ({ name, username, email, photo }) => {
     const sql = `
-        INSERT INTO users (name, email, photo)
-        VALUES ($1, $2, $3) RETURNING *`;
-    const { rows, err } = await db.query(sql, [name, email, photo]);
+        INSERT INTO users (name, username, email, photo)
+        VALUES ($1, $2, $3, $4) RETURNING *`;
+    const { rows, err } = await db.query(sql, [name, username, email, photo]);
     return { user: rows[0], err };
   },
 
@@ -41,10 +41,14 @@ module.exports = db => ({
   },
 
   getAll: async () => {
-    const sql = `SELECT *,  
-      (SELECT COUNT(*) FROM qrshards WHERE user_id = $1) AS qrshards_score,
-      (SELECT COUNT(*) FROM user_achievements WHERE popup = 't' AND user_id = $1) AS achievements_score
-      FROM users`;
+    const sql = `SELECT users.*,
+      COUNT(DISTINCT qrshards.id) AS qrshards_score,
+      COUNT(DISTINCT (user_achievements.user_id, user_achievements.achievement_name)) AS achievements_score
+      FROM users
+      LEFT JOIN qrshards ON qrshards.user_id = users.id
+      LEFT JOIN user_achievements ON user_achievements.user_id = users.id
+      GROUP BY users.id
+      `;
     const { rows, err } = await db.query(sql);
     return { users: rows, err };
   },
