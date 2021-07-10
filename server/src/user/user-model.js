@@ -41,14 +41,23 @@ module.exports = db => ({
   },
 
   getAll: async () => {
-    const sql = `SELECT users.*,
-      COUNT(DISTINCT qrshards.id) AS qrshards_score,
-      COUNT(DISTINCT (user_achievements.user_id, user_achievements.achievement_name)) AS achievements_score
-      FROM users
-      LEFT JOIN qrshards ON qrshards.user_id = users.id
-      LEFT JOIN user_achievements ON user_achievements.user_id = users.id
-      GROUP BY users.id
-      `;
+    const sql = `
+      WITH qrshards_count AS (
+        SELECT users.id, COUNT(qrshards.*) AS qrshards_score
+        FROM users
+        LEFT JOIN qrshards ON qrshards.user_id = users.id
+        GROUP BY users.id
+      ), achievements_count AS (
+        SELECT users.id, COUNT(user_achievements.*) AS achievements_score
+        FROM users
+        LEFT JOIN user_achievements ON user_achievements.user_id = users.id
+        GROUP BY users.id
+      ) 
+
+      SELECT * FROM users
+      JOIN qrshards_count USING (id) 
+      JOIN achievements_count USING (id)
+    `;
     const { rows, err } = await db.query(sql);
     return { users: rows, err };
   },
