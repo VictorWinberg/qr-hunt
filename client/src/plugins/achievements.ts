@@ -47,6 +47,9 @@ import { api } from "@/utils";
     setTimeout(newAchievements, 30 * 1000);
   };
 
+  // Don't show achievements when in intro mode
+  if (new URLSearchParams(window.location.search).get("intro")) return;
+
   newAchievements();
 
   const thankful = await api.get("/api/achievements/thankful");

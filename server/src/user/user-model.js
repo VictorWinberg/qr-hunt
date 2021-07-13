@@ -6,6 +6,8 @@
  *       properties:
  *         id:
  *           type: integer
+ *         username:
+ *           type: string
  *         name:
  *           type: string
  *         email:
@@ -16,11 +18,11 @@
  */
 
 module.exports = db => ({
-  create: async ({ name, username, email, photo }) => {
+  create: async ({ username, name, email, photo }) => {
     const sql = `
-        INSERT INTO users (name, username, email, photo)
+        INSERT INTO users (username, name, email, photo)
         VALUES ($1, $2, $3, $4) RETURNING *`;
-    const { rows, err } = await db.query(sql, [name, username, email, photo]);
+    const { rows, err } = await db.query(sql, [username, name, email, photo]);
     return { user: rows[0], err };
   },
 

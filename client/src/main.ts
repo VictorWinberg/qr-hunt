@@ -5,6 +5,7 @@ import router from "./router";
 import store from "./store/store";
 import "./plugins/achievements";
 import "./plugins/google-maps";
+import "./plugins/intro";
 import "./registerServiceWorker";
 
 import "./assets/scss/app.scss";

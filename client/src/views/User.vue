@@ -33,7 +33,7 @@
       </div>
     </div>
 
-    <h2>Achievements</h2>
+    <h2 class="user-achievements__title">Achievements</h2>
     <div class="user-achievements">
       <div
         v-for="{ name, title, icon } in achievements"
@@ -57,7 +57,7 @@
       </div>
     </div>
 
-    <h2>Friends</h2>
+    <h2 class="friends__title">Friends</h2>
     <ul>
       <li v-for="friend in friends" :key="friend.id">
         <div
@@ -71,7 +71,15 @@
       </li>
     </ul>
 
-    <button class="user-remove" @click="deleteMe">DELETE MY ACCOUNT</button>
+    <h2 class="settings__title">Settings</h2>
+    <div class="bottom-buttons">
+      <a href="/?intro=start" class="help-me">
+        <i class="fas fa-question-circle fa-2x"></i> HELP
+      </a>
+      <a class="user-remove" @click="deleteMe">
+        <i class="fas fa-trash-alt fa-2x"></i> DELETE ACCOUNT
+      </a>
+    </div>
   </div>
 </template>
 
@@ -129,8 +137,10 @@ export default Vue.extend({
             type: "danger",
             action: async () => {
               this.$store.commit("popup/setPopup", false);
+
               const { err } = await api.delete("/api/user");
               if (err) return;
+
               this.setAuth({ isAuthenticated: false });
               this.$router.push("/");
             }
@@ -352,14 +362,31 @@ export default Vue.extend({
   border-radius: 50%;
 }
 
-.user-remove {
-  padding: 1rem 2rem;
-  margin: 2rem auto;
+.bottom-buttons {
+  margin-top: auto;
   margin-bottom: 20px;
-  color: $text-color;
+}
+
+.user-remove,
+.help-me {
+  display: block;
+  padding: 1rem 2rem;
+  margin: 1rem;
+  color: white;
+  text-decoration: none;
   cursor: pointer;
+
+  i.fas {
+    vertical-align: sub;
+  }
+}
+
+.help-me {
+  background: $grey-800;
+}
+
+.user-remove {
   background: $danger;
-  border: none;
 }
 
 @media screen and (min-width: 500px) {

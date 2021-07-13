@@ -13,12 +13,15 @@ module.exports = ({ app, passport }) => {
   });
 
   // the callback after google has authenticated the user
-  app.get("/auth/google/callback", (req, res, next) => {
-    passport.authenticate("google", {
-      successRedirect: "/",
-      callbackURL: callback(req),
-    })(req, res, next);
-  });
+  app.get(
+    "/auth/google/callback",
+    (req, res, next) => {
+      passport.authenticate("google", {
+        callbackURL: callback(req)
+      })(req, res, next);
+    },
+    (req, res) => res.redirect(req.user.isNew ? "/?intro=start" : "/")
+  );
 
   app.get("/auth/logout", (req, res) => {
     req.logout();
