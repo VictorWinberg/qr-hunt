@@ -11,27 +11,37 @@ setTimeout(() => {
           doneLabel: "Yes",
           steps: [
             {
-              title: "Getting started!",
-              intro: "Hello and Welcome ...! 👋"
+              title: "Getting started! 👋",
+              intro:
+                "Hello and welcome to QR Hunt, " +
+                "the app that let's you hunt down QR codes, " +
+                "collect points and compete against your friends!"
             },
             {
               title: "Map",
               element: document.querySelector(".vue-map-container"),
-              intro: "This is the map with all the QR codes to be found"
-            },
-            {
-              title: "You",
-              element: document.querySelector("#position-button"),
-              intro: "Click here to center your location",
-              position: "left"
+              intro:
+                "Here in the center is the map, " +
+                "where all the QR codes can be found"
             },
             {
               title: "Scan",
               element: document.querySelector("#qrcode"),
-              intro: "This is the scan QR code button"
+              intro: "Click down here to scan a QR code you found"
             },
             {
-              title: "User",
+              title: "You",
+              element: document.querySelector("#position-button"),
+              intro: "Tip: click here to center your location",
+              position: "left"
+            },
+            {
+              title: "Map page",
+              element: document.querySelector(".header-title"),
+              intro: "This button redirects to the map page (you are here now)"
+            },
+            {
+              title: "User page",
               element: document.querySelector(".header-icon[href='/user']"),
               intro: "This button redirects to the user page"
             },
@@ -40,38 +50,42 @@ setTimeout(() => {
               element: document.querySelector(
                 ".header-icon[href='/auth/logout']"
               ),
-              intro: "Click here to log out from QR Hunt"
+              intro: "Click here to log out"
             },
             {
-              title: "User",
+              title: "User page",
               element: document.querySelector(".header-icon[href='/user']"),
               intro: "Ready to proceed to the user page?"
             }
           ]
+        })
+        .onexit(() => {
+          window.location.href = window.location.pathname;
         })
         .oncomplete(() => {
           setTimeout(() => {
             window.location.href = "/user/?intro=user";
           }, 0);
         })
-        .onexit(() => {
-          window.location.href = window.location.pathname;
-        })
         .start();
     case "user":
       return introJs()
         .setOptions({
           showProgress: true,
+          disableInteraction: false,
+          doneLabel: "Yes",
           steps: [
             {
-              title: "Getting started!",
+              title: "User page! 👋",
               element: document.querySelector(".user-wrapper"),
-              intro: "This is your user page! 👋"
+              intro:
+                "This is your user page! " +
+                "Here you can see your current level, achievements, friends, settings and more"
             },
             {
               title: "User level",
               element: document.querySelector(".user-xp"),
-              intro: "Here is your user level and xp",
+              intro: "Here is your user level and xp shown",
               position: "bottom-middle-aligned"
             },
             {
@@ -82,7 +96,12 @@ setTimeout(() => {
             {
               title: "Friends",
               element: document.querySelector(".friends__title"),
-              intro: "Here will all your friends be shown"
+              intro: "Here will all your friends and their levels be shown"
+            },
+            {
+              title: "Settings",
+              element: document.querySelector(".settings__title"),
+              intro: "Here is are all settings shown"
             },
             {
               title: "Delete",
@@ -90,10 +109,15 @@ setTimeout(() => {
               intro: "This button will delete all of your data!"
             },
             {
-              title: "That's all! 👋",
+              title: "Help",
               element: document.querySelector(".help-me"),
               intro:
                 "If your want this guide again, please press this help button"
+            },
+            {
+              title: "That's all! 👋",
+              element: document.querySelector(".header-title"),
+              intro: "Ready to go back to the map page?"
             }
           ]
         })
@@ -101,7 +125,9 @@ setTimeout(() => {
           window.location.href = window.location.pathname;
         })
         .oncomplete(() => {
-          window.location.href = "/user/?intro=user";
+          setTimeout(() => {
+            window.location.href = "/";
+          }, 0);
         })
         .start();
   }

@@ -71,6 +71,7 @@
       </li>
     </ul>
 
+    <h2 class="settings__title">Settings</h2>
     <div class="bottom-buttons">
       <a href="/?intro=start" class="help-me">
         <i class="fas fa-question-circle fa-2x"></i> HELP
@@ -368,6 +369,7 @@ export default Vue.extend({
 
 .user-remove,
 .help-me {
+  display: block;
   padding: 1rem 2rem;
   margin: 1rem;
   color: white;
