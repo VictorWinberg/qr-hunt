@@ -5,8 +5,10 @@ categories:
     label: 'Type: Feature'
   - title: '🐛 Bug Fixes'
     labels: 'Type: Bug'
+  - title: ':octocat: Github Actions'
+    labels: 'Type: Action'
   - title: '📚 Dependencies'
-    labels: 'package.json'
+    labels: 'Type: Dependencies'
 template: |
   ## What’s Changed
 
