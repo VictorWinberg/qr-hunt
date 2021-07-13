@@ -2,7 +2,6 @@
   <header>
     <router-link to="/" class="header-title">
       <img alt="Logo" height="50" :src="require('@/assets/logo.svg')" />
-      <span class="logo-title">QR-Hunt</span>
     </router-link>
     <div class="header-delimiter"></div>
     <router-link to="/user" class="header-icon">
@@ -40,13 +39,6 @@ header {
   color: inherit;
   text-align: left;
   text-decoration: none;
-}
-
-.logo-title {
-  position: absolute;
-  right: -5rem;
-  left: -3.5rem;
-  text-align: center;
 }
 
 .header-icon {
