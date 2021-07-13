@@ -21,7 +21,7 @@ setTimeout(() => {
             },
             {
               title: "You",
-              element: document.querySelector("#my-location-button"),
+              element: document.querySelector("#position-button"),
               intro: "Click here to center your location",
               position: "left"
             },
@@ -36,9 +36,16 @@ setTimeout(() => {
               intro: "This button redirects to the user page"
             },
             {
+              title: "Logout",
+              element: document.querySelector(
+                ".header-icon[href='/auth/logout']"
+              ),
+              intro: "Click here to log out from QR Hunt"
+            },
+            {
               title: "User",
               element: document.querySelector(".header-icon[href='/user']"),
-              intro: "Ready to proceed to the user page"
+              intro: "Ready to proceed to the user page?"
             }
           ]
         })
@@ -73,15 +80,20 @@ setTimeout(() => {
               intro: "Here will all your achievements be shown"
             },
             {
-              title: "DELETE",
-              element: document.querySelector(".user-remove"),
-              intro: "This button will delete all of data!"
+              title: "Friends",
+              element: document.querySelector(".friends__title"),
+              intro: "Here will all your friends be shown"
             },
             {
-              title: "End",
+              title: "Delete",
+              element: document.querySelector(".user-remove"),
+              intro: "This button will delete all of your data!"
+            },
+            {
+              title: "That's all! 👋",
               element: document.querySelector(".help-me"),
               intro:
-                "That was all, if your want this guide again please press this help button"
+                "If your want this guide again, please press this help button"
             }
           ]
         })

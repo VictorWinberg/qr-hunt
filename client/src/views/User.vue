@@ -57,7 +57,7 @@
       </div>
     </div>
 
-    <h2>Friends</h2>
+    <h2 class="friends__title">Friends</h2>
     <ul>
       <li v-for="friend in friends" :key="friend.id">
         <div
