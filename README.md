@@ -4,13 +4,18 @@
 
 ## Prerequisite
 
-- Node (macOS: `brew install node`)
-- Postgres (macOS: `brew install postgres`)
+- Node v12
+- Postgres v11.9
 
 ## Database Setup
 ```
 createdb qrhunt
 psql qrhunt < server/schema.sql
+```
+
+### Database clone production
+```
+npm run db:pull
 ```
 
 ## Node Setup
