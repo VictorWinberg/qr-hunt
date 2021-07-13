@@ -149,10 +149,10 @@ export default Vue.extend({
   flex: 1;
   flex-direction: column;
   width: 100%;
-  max-width: 800px;
   padding: 2rem 0;
   margin: auto;
   overflow-y: scroll;
+  background-color: $seconday-color;
 }
 
 .user-xp {
@@ -270,7 +270,7 @@ export default Vue.extend({
 .hex__icon {
   z-index: 1;
   margin-bottom: 1rem;
-  color: $white;
+  color: $text-color;
 }
 
 .banner {
@@ -356,7 +356,7 @@ export default Vue.extend({
   padding: 1rem 2rem;
   margin: 2rem auto;
   margin-bottom: 20px;
-  color: white;
+  color: $text-color;
   cursor: pointer;
   background: $danger;
   border: none;

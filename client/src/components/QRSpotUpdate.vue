@@ -125,6 +125,11 @@ textarea {
   transition: height 200ms;
 }
 
+input[type="text"] {
+  color: $text-color;
+  background-color: $primary-color;
+}
+
 textarea:focus {
   height: 8em;
 }
@@ -133,7 +138,7 @@ textarea:focus {
   margin-top: 1em;
   margin-bottom: 3em;
   color: white;
-  background-color: green;
+  background-color: $dark-brand-color;
 
   &.disabled {
     pointer-events: none;

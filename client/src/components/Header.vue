@@ -26,40 +26,32 @@ header {
   align-items: center;
   justify-content: space-between;
   height: 5rem;
-  background: linear-gradient(#eee, $white);
+  color: $light-brand-color;
+  background: $primary-color;
   box-shadow: 0 2px 6px 0 rgba(#000, 0.2);
-  color: #6a4733;
 }
 
 .header-title {
   position: relative;
+  display: flex;
+  align-items: center;
+  margin-left: 2rem;
   font-size: 2rem;
   color: inherit;
   text-align: left;
   text-decoration: none;
-  display: flex;
-  align-items: center;
-  margin-left: 2rem;
-
-  &:hover {
-    color: $primary;
-  }
 }
 
 .logo-title {
   position: absolute;
-  left: -3.5rem;
   right: -5rem;
+  left: -3.5rem;
   text-align: center;
 }
 
 .header-icon {
   margin: 0 1.5rem;
   color: inherit;
-
-  &:hover {
-    color: $primary;
-  }
 }
 
 .header-delimiter {

@@ -119,9 +119,9 @@ export default Vue.extend({
   height: 100%;
   padding: 1em 1em 1em;
   overflow: scroll;
-  color: $black;
+  color: $text-color;
   cursor: pointer;
-  background-color: $white;
+  background-color: $seconday-color;
   border-radius: 2px;
   box-shadow: $shadow-color;
 }
