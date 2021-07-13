@@ -59,7 +59,7 @@ footer {
   position: absolute;
   top: -50px;
   cursor: pointer;
-  width: 100px;
+  width: 130px;
   // border: solid $dark-brand-color 10px;
   border-radius: 50%;
   filter: drop-shadow(0 -4px 4px rgba($black, 0.75));
