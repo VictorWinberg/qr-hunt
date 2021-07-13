@@ -12,21 +12,13 @@
 <script>
 import Vue from "vue";
 import { mapMutations } from "vuex";
-import QRCode from "qrcode";
 
 export default Vue.extend({
   name: "Footer",
-  mounted() {
-    const options = {
-      margin: 0.5,
-      width: 80
+  data() {
+    return {
+      APP_VERSION
     };
-
-    QRCode.toCanvas(
-      document.getElementById("qrcode"),
-      "https://zolly.ml",
-      options
-    );
   },
   methods: {
     ...mapMutations("scan", ["toggleScan"]),
