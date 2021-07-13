@@ -1,7 +1,11 @@
 <template>
   <footer>
     <div class="footer-content"></div>
-    <canvas id="qrcode" @click="qrscan()"></canvas>
+    <img
+      id="qrcode"
+      :src="require('@/assets/qr-scanner-button.svg')"
+      @click="qrscan()"
+    />
   </footer>
 </template>
 
@@ -47,16 +51,17 @@ footer {
 .footer-content {
   width: 100%;
   height: 100%;
-  background: $white;
+  background: $primary-color;
   box-shadow: 0 -2px 6px 0 rgba($black, 0.2);
 }
 
 #qrcode {
   position: absolute;
-  top: -35px;
+  top: -50px;
   cursor: pointer;
-  border: solid $white 10px;
+  width: 130px;
+  // border: solid $dark-brand-color 10px;
   border-radius: 50%;
-  box-shadow: 0 -4px 4px 2px rgba($black, 0.2);
+  filter: drop-shadow(0 -4px 4px rgba($black, 0.75));
 }
 </style>

@@ -39,8 +39,8 @@ export default Vue.extend({
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
-  background: rgba($primary, 0.8);
+  color: $seconday-color;
+  background: rgba($seconday-color, 0.8);
 }
 
 .sign-in__inner {

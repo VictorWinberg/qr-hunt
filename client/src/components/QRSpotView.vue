@@ -40,7 +40,7 @@ export default Vue.extend({
 });
 </script>
 
-<style>
+<style lang="scss">
 .view-wrapper {
   display: flex;
   flex-direction: column;
@@ -80,13 +80,13 @@ export default Vue.extend({
 }
 
 .hint-card__question {
-  color: black;
-  background-color: white;
+  color: $text-color;
+  background-color: $dark-brand-color;
 }
 
 .hint-card__answer {
-  color: white;
-  background-color: #a9a9a9;
+  color: $dark-brand-color;
+  background-color: $primary-color;
   transform: rotateY(180deg);
 }
 

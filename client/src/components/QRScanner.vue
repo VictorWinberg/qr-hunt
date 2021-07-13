@@ -74,7 +74,7 @@ export default Vue.extend({
   left: 0;
   z-index: 5;
   overflow: hidden;
-  background: rgba($primary, 0.5);
+  background: $seconday-color;
   animation: slide-up 1s forwards;
 
   .qr-scanner {

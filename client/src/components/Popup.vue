@@ -48,7 +48,7 @@ export default {
   justify-content: center;
   width: 100%;
   height: 100%;
-  background-color: rgba(#000, 0.5);
+  background-color: rgba($primary-color, 0.5);
 }
 
 .popup-wrapper {
@@ -56,7 +56,8 @@ export default {
   width: 100%;
   max-width: 500px;
   margin: 20px;
-  background-color: white;
+  color: $text-color;
+  background-color: $primary-color;
   box-shadow: 0 2px 6px 0 rgba(#000, 0.2);
 }
 
@@ -98,23 +99,23 @@ export default {
   }
 
   &.success {
-    color: white;
-    background-color: green;
+    color: $white;
+    background-color: $success;
   }
 
   &.warning {
-    color: black;
-    background-color: orange;
+    color: $black;
+    background-color: $warning;
   }
 
   &.danger {
-    color: white;
-    background-color: red;
+    color: $white;
+    background-color: $danger;
   }
 
   &.disabled {
-    color: white;
-    background-color: gray;
+    color: $white;
+    background-color: $disabled;
   }
 }
 </style>
