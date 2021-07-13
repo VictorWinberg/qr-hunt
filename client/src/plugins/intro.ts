@@ -69,7 +69,7 @@ setTimeout(() => {
             },
             {
               title: "Achievements",
-              element: document.querySelector(".user-achievements-title"),
+              element: document.querySelector(".user-achievements__title"),
               intro: "Here will all your achievements be shown"
             },
             {

@@ -33,7 +33,7 @@
       </div>
     </div>
 
-    <h2 class="user-achievements-title">Achievements</h2>
+    <h2 class="user-achievements__title">Achievements</h2>
     <div class="user-achievements">
       <div
         v-for="{ name, title, icon } in achievements"
@@ -136,10 +136,10 @@ export default Vue.extend({
             type: "danger",
             action: async () => {
               this.$store.commit("popup/setPopup", false);
-              
+
               const { err } = await api.delete("/api/user");
               if (err) return;
-              
+
               this.setAuth({ isAuthenticated: false });
               this.$router.push("/");
             }
