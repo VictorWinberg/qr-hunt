@@ -15,7 +15,6 @@
 <script>
 import Vue from "vue";
 import { mapMutations } from "vuex";
-import QRCode from "qrcode";
 
 export default Vue.extend({
   name: "Footer",
@@ -23,18 +22,6 @@ export default Vue.extend({
     return {
       APP_VERSION
     };
-  },
-  mounted() {
-    const options = {
-      margin: 0.5,
-      width: 80
-    };
-
-    QRCode.toCanvas(
-      document.getElementById("qrcode"),
-      "https://zolly.ml",
-      options
-    );
   },
   methods: {
     ...mapMutations("scan", ["toggleScan"]),
@@ -81,10 +68,10 @@ footer {
 #qrcode {
   position: absolute;
   top: -50px;
-  cursor: pointer;
   width: 130px;
+  cursor: pointer;
+  filter: drop-shadow(0 -4px 4px rgba($black, 0.75));
   // border: solid $dark-brand-color 10px;
   border-radius: 50%;
-  filter: drop-shadow(0 -4px 4px rgba($black, 0.75));
 }
 </style>
