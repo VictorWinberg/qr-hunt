@@ -1,3 +1,4 @@
 'type: feature': feature/*
 'type: bug': ['fix/*', 'bugfix/*', 'bug/*']
 'type: action': action/*
+'type: dependencies': ['renovate/*', 'dependabot/*']
