@@ -15,11 +15,6 @@ import { mapMutations } from "vuex";
 
 export default Vue.extend({
   name: "Footer",
-  data() {
-    return {
-      APP_VERSION
-    };
-  },
   methods: {
     ...mapMutations("scan", ["toggleScan"]),
     qrscan() {
@@ -50,10 +45,10 @@ footer {
 #qrcode {
   position: absolute;
   top: -50px;
-  cursor: pointer;
   width: 130px;
+  cursor: pointer;
+  filter: drop-shadow(0 -4px 4px rgba($black, 0.75));
   // border: solid $dark-brand-color 10px;
   border-radius: 50%;
-  filter: drop-shadow(0 -4px 4px rgba($black, 0.75));
 }
 </style>
