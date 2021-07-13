@@ -49,7 +49,8 @@ setTimeout(() => {
         })
         .onexit(() => {
           window.location.href = window.location.pathname;
-        });
+        })
+        .start();
     case "user":
       return introJs()
         .setOptions({
@@ -89,6 +90,7 @@ setTimeout(() => {
         })
         .oncomplete(() => {
           window.location.href = "/user/?intro=user";
-        });
+        })
+        .start();
   }
 }, 100);
