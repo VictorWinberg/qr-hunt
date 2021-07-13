@@ -1,8 +1,14 @@
-name-template: 'v$NEXT_MINOR_VERSION'
-tag-template: 'v$NEXT_MINOR_VERSION'
-
+name-template: 'v$NEXT_PATCH_VERSION'
+tag-template: 'v$NEXT_PATCH_VERSION'
+categories:
+  - title: '🚀 Features'
+    label: 'Type: Feature'
+  - title: '🐛 Bug Fixes'
+    labels: 'Type: Bug'
+  - title: '📚 Dependencies'
+    labels: 'package.json'
 template: |
-  ## Changelog
+  ## What’s Changed
 
   $CHANGES
 change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
