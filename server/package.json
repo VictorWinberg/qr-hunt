@@ -4,8 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "postinstall": "cd migrations && ./migrate.sh qrhunt",
-    "start": "nodemon index"
+    "start": "nodemon index",
+    "postinstall": "npm-run-all -s db:migrate?",
+    "db:migrate": "./migrations/run.sh qrhunt --fix",
+    "db:migrate?": "./migrations/run.sh qrhunt --check",
+    "db:pull": "pg_dump --format=c -h zolly.ml -U vicnie qrhunt | pg_restore --clean --no-owner -h localhost -d qrhunt"
   },
   "dependencies": {
     "camelcase-keys": "7.0.0",
