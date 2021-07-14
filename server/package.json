@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "postinstall": "cd migrations && ./migrate.sh qrhunt",
     "start": "nodemon index"
   },
   "dependencies": {
