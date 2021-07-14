@@ -1,4 +1,6 @@
+import { EVENT_TYPE } from "@/constants";
 import Snackbar from "@/plugins/snackbar";
+import EventBus from "@/plugins/event-bus";
 
 export const isToday = date =>
   new Date(date).toDateString() === new Date().toDateString();
@@ -26,6 +28,7 @@ const apiFetch = (method?: string) => async (
       method,
       ...init
     });
+    if (method !== "GET") EventBus.$emit(EVENT_TYPE.API_REQUEST_UPDATE);
     if (!response.ok) {
       throw new Error(`${response.status} - ${response.statusText}`);
     }
