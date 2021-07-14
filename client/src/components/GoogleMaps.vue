@@ -75,8 +75,8 @@
 import Vue from "vue";
 import { mapState, mapMutations, mapActions } from "vuex";
 import { EVENT_TYPE, QR_SPOT_MODE, QR_SPOT_PANEL } from "@/constants";
+import EventBus from "@/plugins/event-bus";
 import { api, isToday } from "@/utils";
-import EventBus from "@/store/event-bus";
 
 export default Vue.extend({
   data() {

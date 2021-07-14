@@ -1,7 +1,7 @@
 import { EVENT_TYPE, QR_SPOT_PANEL } from "@/constants";
 import Snackbar from "@/plugins/snackbar";
+import EventBus from "@/plugins/event-bus";
 import { api } from "@/utils";
-import EventBus from "./event-bus";
 
 export default {
   namespaced: true,
