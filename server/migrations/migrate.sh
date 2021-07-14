@@ -46,6 +46,7 @@ for FNAME in `ls *.sql | sort -n`; do
 		PSQL=$(psql -1 -v ON_ERROR_STOP=1 -a -d $DATABASE -f $SCRIPT_PATH 2>&1)
 		RET_CODE=$?
 		echo -e "$SCRIPT_PATH\n$PSQL" >> $LOG_FILE_PATH
+		echo "$PSQL"
 		
 		# Handle potential PostgreSQL errors
 		if [ $RET_CODE -ne 0 ]; then
