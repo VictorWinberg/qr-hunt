@@ -20,7 +20,7 @@ LOG_FILE_PATH=".migrations.log"
 echo -e "Logs for ./migrate.sh -- \"$(date)\"\n" > $LOG_FILE_PATH
 
 # Check if psql is installed
-which -s psql
+which psql
 if [ $? -ne 0 ]; then
 	echo "WARN: psql is not installed, aborting migrations"
 	exit 0
