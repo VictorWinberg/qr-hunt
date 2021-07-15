@@ -7,10 +7,11 @@
   z-index: 1;
   margin: 0;
   text-align: center;
-}
 
-.snackbar-container .action {
-  outline: none;
+  .action {
+    color: $light-brand-color;
+    outline: none;
+  }
 }
 
 .snackbar-pos.top-center,
