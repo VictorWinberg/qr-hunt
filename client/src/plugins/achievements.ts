@@ -24,7 +24,7 @@ export const newAchievements = async () => {
       textColor: "black",
       actionText: "ok",
       actionTextColor: "white",
-      backgroundColor: "rgba(100,100,0,0.3)",
+      backgroundColor: "rgba(36,36,36,0.9)",
       duration: 0,
       pos: undefined,
       customClass: "achievement-popup",
@@ -62,21 +62,10 @@ const isThankful = async () => {
   if (!thankful.err && !thankful.data) {
     Snackbar.show({
       text: "Do you enjoy QR-Hunt?",
-      actionText: "Yes! <i class='fas fa-comment'></i>",
-      actionTextColor: "#f66496",
       pos: "top-center",
-      onActionClick: async () => {
-        Snackbar.show({
-          text: `<b>Thanks,</b><br/> you are so kind!`,
-          textColor: "#f66496",
-          actionText: "<i class='fas fa-heart fa-2x'></i>",
-          actionTextColor: "#f66496",
-          pos: "top-center"
-        });
-        await api.post("/api/achievements/thankful");
-
-        setTimeout(newAchievements, 5 * 1000);
-      }
+      actionText: "Yes! <i class='fas fa-thumbs-up'></i>",
+      actionTextColor: "",
+      onActionClick: () => api.post("/api/achievements/thankful")
     });
   }
 };
