@@ -1,7 +1,7 @@
 import { EVENT_TYPE, QR_SPOT_PANEL } from "@/constants";
+import { api } from "@/utils";
 import Snackbar from "@/plugins/snackbar";
 import EventBus from "@/plugins/event-bus";
-import { api } from "@/utils";
 
 export default {
   namespaced: true,
@@ -55,11 +55,6 @@ export default {
                   commit("qrSpot/setModalState", QR_SPOT_PANEL.SHOW_DETAILS, {
                     root: true
                   });
-
-                  const user = await api.get("/api/user");
-                  if (!user.err) {
-                    commit("user/setAuth", user.data, { root: true });
-                  }
                 }
               }
             ]

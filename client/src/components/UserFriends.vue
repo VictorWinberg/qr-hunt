@@ -2,15 +2,15 @@
   <div>
     <h2 class="friends__title">Friends</h2>
     <ul>
-      <li v-for="friend in friends" :key="friend.id">
+      <li v-for="user in friends" :key="user.id">
         <div
           class="friend__photo"
           :style="{
-            backgroundImage: `url(${friend.photo})`,
-            marginBottom: '-.5em' // Todo: remove this line!
+            backgroundImage: `url(${user.photo})`,
+            marginBottom: '-.5em' // Todo: change this fixed margin!
           }"
         ></div>
-        <span>{{ friend.name }} - Lvl: {{ friend.lvl }}</span>
+        <span>{{ user.name || user.username }} - Lvl: {{ user.lvl }}</span>
       </li>
     </ul>
   </div>
@@ -18,18 +18,27 @@
 
 <script>
 import { mapState, mapMutations } from "vuex";
+import { EVENT_TYPE } from "@/constants";
 import { api } from "@/utils";
+import EventBus from "@/plugins/event-bus";
 
 export default {
   computed: {
-    ...mapState("friends", ["friends"])
+    ...mapState("user", ["friends"])
   },
-  async created() {
-    const friends = await api.get("/api/users");
-    if (!friends.err) this.setFriends(friends.data);
+  created() {
+    this.fetchFriends();
+    EventBus.$on(EVENT_TYPE.API_REQUEST_UPDATE, this.fetchFriends);
+  },
+  beforeDestroy() {
+    EventBus.$off(EVENT_TYPE.API_REQUEST_UPDATE, this.fetchFriends);
   },
   methods: {
-    ...mapMutations("friends", ["setFriends"])
+    ...mapMutations("user", ["setFriends"]),
+    async fetchFriends() {
+      const friends = await api.get("/api/users");
+      if (!friends.err) this.setFriends(friends.data);
+    }
   }
 };
 </script>
