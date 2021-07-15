@@ -67,7 +67,7 @@
             marginBottom: '-.5em' // Todo: remove this line!
           }"
         ></div>
-        <span>{{ friend.name }} - Lvl: {{ friend.lvl }}</span>
+        <span>{{ friend.username }} - Lvl: {{ friend.lvl }}</span>
       </li>
     </ul>
 
