@@ -54,12 +54,12 @@ module.exports = db => ({
         FROM users
         LEFT JOIN user_achievements ON user_achievements.user_id = users.id
         GROUP BY users.id
-        ORDER BY users.username, users.id
       ) 
 
       SELECT * FROM users
       JOIN qrshards_count USING (id) 
       JOIN achievements_count USING (id)
+      ORDER BY users.name, users.username
     `;
     const { rows, err } = await db.query(sql);
     return { users: rows, err };
