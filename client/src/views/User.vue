@@ -59,7 +59,7 @@
 
     <h2 class="friends__title">Friends</h2>
     <ul>
-      <li v-for="friend in friends" :key="friend.id">
+      <li v-for="friend in friends.sort(sortBy('xp'))" :key="friend.id">
         <div
           class="friend__photo"
           :style="{
@@ -86,7 +86,7 @@
 <script>
 import Vue from "vue";
 import { mapState, mapMutations } from "vuex";
-import { api, md5 } from "@/utils";
+import { api, md5, sortBy } from "@/utils";
 
 export default Vue.extend({
   computed: {
@@ -102,6 +102,7 @@ export default Vue.extend({
     if (!friends.err) this.setFriends(friends.data);
   },
   methods: {
+    sortBy,
     ...mapMutations("user", ["setAuth"]),
     ...mapMutations("friends", ["setFriends"]),
     ...mapMutations("achievements", ["setAchievements"]),
