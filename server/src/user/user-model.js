@@ -59,6 +59,7 @@ module.exports = db => ({
       SELECT * FROM users
       JOIN qrshards_count USING (id) 
       JOIN achievements_count USING (id)
+      ORDER BY name, username, users.id
     `;
     const { rows, err } = await db.query(sql);
     return { users: rows, err };
