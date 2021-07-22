@@ -5,7 +5,7 @@
 ## Prerequisite
 
 - Node v12
-- Postgres v11.9
+- Postgres v11
 
 ## Environment variables
 
