@@ -95,7 +95,8 @@ setTimeout(() => {
               element: document.querySelector(".user-wrapper"),
               intro:
                 "This is your user page! " +
-                "Here you can see your current level, achievements, friends, settings and more"
+                "Here you can see your current level, " +
+                "achievements, friends, settings and more"
             },
             {
               title: "User level",
@@ -121,7 +122,9 @@ setTimeout(() => {
             {
               title: "Delete",
               element: document.querySelector(".user-remove"),
-              intro: "This button will delete all of your data!"
+              intro:
+                "This button will delete your account " +
+                "and all of your data!"
             },
             {
               title: "Help",
