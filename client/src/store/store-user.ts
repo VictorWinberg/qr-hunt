@@ -6,7 +6,9 @@ export default {
     user: {},
     coords: userCoords ? JSON.parse(userCoords) : { lat: 0, lng: 0 },
     isAuthenticated: false,
-    status: "pending"
+    status: "pending",
+    friends: [],
+    leaderboard: []
   }),
   mutations: {
     setAuth(state, payload) {
@@ -18,6 +20,12 @@ export default {
     setCoords(state, { latitude, longitude }) {
       state.coords = { lat: latitude, lng: longitude };
       localStorage.userCoords = JSON.stringify(state.coords);
+    },
+    setFriends(state, friends) {
+      state.friends = friends;
+    },
+    setLeaderboard(state, leaderboard) {
+      state.leaderboard = leaderboard;
     }
   }
 };

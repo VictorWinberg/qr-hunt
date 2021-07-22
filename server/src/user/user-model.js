@@ -17,6 +17,27 @@
  *           type: string
  */
 
+const SELECT_USERS_SQL = `
+  WITH qrshards_count AS (
+    SELECT users.id, CAST(COUNT(qrshards.*) AS int) AS qrshards_score
+    FROM users
+    LEFT JOIN qrshards ON qrshards.user_id = users.id
+    GROUP BY users.id
+  ), achievements_count AS (
+    SELECT users.id, CAST(COUNT(user_achievements.*) AS int) AS achievements_score
+    FROM users
+    LEFT JOIN user_achievements ON user_achievements.user_id = users.id
+    WHERE popup = 't'
+    GROUP BY users.id
+  )
+
+  SELECT id, username, name, email, photo, created_at,
+    CAST(COALESCE(qrshards_score + achievements_score * 5, 0) AS int) AS xp
+  FROM users
+  LEFT JOIN qrshards_count USING (id)
+  LEFT JOIN achievements_count USING (id)
+`;
+
 module.exports = db => ({
   create: async ({ username, name, email, photo }) => {
     const sql = `
@@ -27,11 +48,8 @@ module.exports = db => ({
   },
 
   getById: async userId => {
-    const sql = `SELECT *,
-      (SELECT COUNT(*) FROM qrshards WHERE user_id = $1) AS qrshards_score,
-      (SELECT COUNT(*) FROM user_achievements WHERE popup = 't' AND user_id = $1) AS achievements_score
-      FROM users WHERE id = $1`;
-
+    const sql = `${SELECT_USERS_SQL}
+        WHERE id = $1`;
     const { rows, err } = await db.query(sql, [userId]);
     return { user: rows[0], err };
   },
@@ -43,24 +61,15 @@ module.exports = db => ({
   },
 
   getAll: async () => {
-    const sql = `
-      WITH qrshards_count AS (
-        SELECT users.id, COUNT(qrshards.*) AS qrshards_score
-        FROM users
-        LEFT JOIN qrshards ON qrshards.user_id = users.id
-        GROUP BY users.id
-      ), achievements_count AS (
-        SELECT users.id, COUNT(user_achievements.*) AS achievements_score
-        FROM users
-        LEFT JOIN user_achievements ON user_achievements.user_id = users.id
-        GROUP BY users.id
-      ) 
+    const sql = `${SELECT_USERS_SQL}
+        ORDER BY name, username, users.id`;
+    const { rows, err } = await db.query(sql);
+    return { users: rows, err };
+  },
 
-      SELECT * FROM users
-      JOIN qrshards_count USING (id) 
-      JOIN achievements_count USING (id)
-      ORDER BY name, username, users.id
-    `;
+  getAllByXp: async () => {
+    const sql = `${SELECT_USERS_SQL}
+        ORDER BY xp DESC, name, username, users.id`;
     const { rows, err } = await db.query(sql);
     return { users: rows, err };
   },

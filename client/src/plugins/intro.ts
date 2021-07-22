@@ -106,7 +106,7 @@ setTimeout(() => {
             {
               title: "Delete",
               element: document.querySelector(".user-remove"),
-              intro: "This button will delete all of your data!"
+              intro: "This button will delete your account and all of your data!"
             },
             {
               title: "Help",
