@@ -3,6 +3,10 @@
   -webkit-tap-highlight-color: transparent;
 }
 
+li {
+  list-style-type: none;
+}
+
 .snackbar-container {
   z-index: 1;
   margin: 0;
@@ -89,7 +93,9 @@
 }
 
 .ripple:hover::after {
-  background: rgba(#fff, 0.2) radial-gradient(circle, transparent 1%, rgba(white, 0.1) 1%) center/15000%;
+  background:
+    rgba(#fff, 0.2)
+    radial-gradient(circle, transparent 1%, rgba(white, 0.1) 1%) center/15000%;
 }
 
 .ripple:active::after {
