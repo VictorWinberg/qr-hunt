@@ -5,11 +5,8 @@
     </router-link>
     <div class="header-delimiter"></div>
     <router-link to="/user" class="header-icon">
-      <i class="fas fa-user-secret fa-2x"></i>
+      <i class="fa fa-bars fa-2x"></i>
     </router-link>
-    <a href="/auth/logout" class="header-icon">
-      <i class="far fa-hand-point-right fa-2x"></i>
-    </a>
   </header>
 </template>
 

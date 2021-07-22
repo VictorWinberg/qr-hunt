@@ -33,52 +33,41 @@
       </div>
     </div>
 
-    <h2 class="user-achievements__title">Achievements</h2>
-    <div class="user-achievements">
+    <div class="tabs">
       <div
-        v-for="{ name, title, icon } in achievements"
-        :key="name"
-        class="user-achievements__card"
+        class="tabs__tab-option"
+        :class="{ active: isActiveTab(0) }"
+        @click="showTab(0)"
       >
-        <div class="hex" :style="{ color: hashColor(name) }">
-          <div class="hex hex__inner">
-            <div class="hex hex__inner" :style="{ color: hashColor(name) }">
-              <div class="hex__icon">
-                <i :class="(icon || 'fas fa-question') + ' fa-2x'"></i>
-                <div class="banner">
-                  <div class="banner__text async async--text">
-                    {{ title || name || ". . ." }}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <i class="fa fa-trophy"></i>
+      </div>
+      <div
+        class="tabs__tab-option"
+        :class="{ active: isActiveTab(1) }"
+        @click="showTab(1)"
+      >
+        <i class="fa fa-users"></i>
+      </div>
+      <div
+        class="tabs__tab-option"
+        :class="{ active: isActiveTab(2) }"
+        @click="showTab(2)"
+      >
+        <i class="fa fa-cog"></i>
       </div>
     </div>
+    <div ref="activeTabMarker" class="active-tab-marker"></div>
 
-    <h2 class="friends__title">Friends</h2>
-    <ul>
-      <li v-for="friend in friends" :key="friend.id">
-        <div
-          class="friend__photo"
-          :style="{
-            backgroundImage: `url(${friend.photo})`,
-            marginBottom: '-.5em' // Todo: remove this line!
-          }"
-        ></div>
-        <span>{{ friend.name }} - Lvl: {{ friend.lvl }}</span>
-      </li>
-    </ul>
-
-    <h2 class="settings__title">Settings</h2>
-    <div class="bottom-buttons">
-      <a href="/?intro=start" class="help-me">
-        <i class="fas fa-question-circle fa-2x"></i> HELP
-      </a>
-      <a class="user-remove" @click="deleteMe">
-        <i class="fas fa-trash-alt fa-2x"></i> DELETE ACCOUNT
-      </a>
+    <div ref="tabContent" class="tab-content wrapper">
+      <div class="tab-content content-1">
+        <UserAchievments />
+      </div>
+      <div class="tab-content content-2">
+        <UserFriends />
+      </div>
+      <div class="tab-content content-3">
+        <UserSettings />
+      </div>
     </div>
   </div>
 </template>
@@ -86,25 +75,36 @@
 <script>
 import Vue from "vue";
 import { mapState, mapMutations } from "vuex";
-import { api, md5 } from "@/utils";
+import { md5 } from "@/utils";
+import UserAchievments from "../components/UserAchievments";
+import UserFriends from "../components/UserFriends";
+import UserSettings from "../components/UserSettings";
 
 export default Vue.extend({
-  computed: {
-    ...mapState("user", ["isAuthenticated", "user"]),
-    ...mapState("friends", ["friends"]),
-    ...mapState("achievements", ["achievements"])
+  components: {
+    UserAchievments,
+    UserFriends,
+    UserSettings
   },
-  async created() {
-    const achievements = await api.get("/api/achievements");
-    if (!achievements.err) this.setAchievements(achievements.data);
-
-    const friends = await api.get("/api/users");
-    if (!friends.err) this.setFriends(friends.data);
+  data() {
+    return {
+      activeTab: 0
+    };
+  },
+  computed: {
+    ...mapState("user", ["isAuthenticated", "user"])
   },
   methods: {
     ...mapMutations("user", ["setAuth"]),
-    ...mapMutations("friends", ["setFriends"]),
-    ...mapMutations("achievements", ["setAchievements"]),
+    isActiveTab(nbr) {
+      return nbr === this.activeTab;
+    },
+    showTab(nbr) {
+      this.activeTab = nbr;
+      this.$refs.tabContent.style.transform = "translateX(" + -100 * nbr + "%)";
+      this.$refs.activeTabMarker.style.transform =
+        "translateX(" + 100 * nbr + "%)";
+    },
     xpTextStyle(level) {
       return {
         color: this.hashColor(level + 1)
@@ -119,34 +119,6 @@ export default Vue.extend({
         colour += ("00" + value.toString(16)).substr(-2);
       }
       return colour;
-    },
-    async deleteMe() {
-      this.$store.commit("popup/setPopup", {
-        title: "Delete account",
-        subtitle: "Are you sure you want to delete your account?",
-        options: [
-          {
-            name: "Cancel",
-            type: "disabled",
-            action: async () => {
-              this.$store.commit("popup/setPopup", false);
-            }
-          },
-          {
-            name: "Delete",
-            type: "danger",
-            action: async () => {
-              this.$store.commit("popup/setPopup", false);
-
-              const { err } = await api.delete("/api/user");
-              if (err) return;
-
-              this.setAuth({ isAuthenticated: false });
-              this.$router.push("/");
-            }
-          }
-        ]
-      });
     }
   }
 });
@@ -161,6 +133,7 @@ export default Vue.extend({
   width: 100%;
   padding: 2rem 0;
   margin: auto;
+  overflow-x: hidden;
   overflow-y: scroll;
   background-color: $seconday-color;
 }
@@ -224,111 +197,6 @@ export default Vue.extend({
   -webkit-text-stroke-color: $black;
 }
 
-.user-achievements {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(100px, max-content));
-  grid-gap: 0.5rem;
-  justify-content: center;
-}
-
-.user-achievements__card {
-  display: flex;
-  justify-content: center;
-  width: 100px;
-}
-
-.hex {
-  position: relative;
-  display: flex;
-  width: 70px;
-  height: 40px;
-  margin: 20px 10px;
-  font-size: 0.8rem;
-  font-weight: bold;
-  color: $white;
-  background-color: currentColor;
-
-  &::before,
-  &::after {
-    position: absolute;
-    content: "";
-    border-right: 35px solid transparent;
-    border-left: 35px solid transparent;
-  }
-
-  &::before {
-    top: -20px;
-    border-bottom: 20px solid currentColor;
-  }
-
-  &::after {
-    bottom: -20px;
-    border-top: 20px solid currentColor;
-  }
-}
-
-.hex__inner {
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  margin: 0;
-  transform: scale(0.85, 0.85);
-}
-
-.hex__icon {
-  z-index: 1;
-  margin-bottom: 1rem;
-  color: $text-color;
-}
-
-.banner {
-  position: absolute;
-  top: 75%;
-  left: 50%;
-  display: block;
-  width: 110px;
-  margin-left: -55px;
-  line-height: 2;
-  text-align: center;
-  background: #9b2;
-  border: 1px solid #8a1;
-  border-radius: 4px;
-  box-shadow: 0 0 30px rgba(0, 0, 0, 0.15) inset, 0 6px 10px rgba(0, 0, 0, 0.15);
-
-  &::before,
-  &::after {
-    position: absolute;
-    top: 16px;
-    left: -15px;
-    z-index: -1;
-    display: block;
-    width: 10px;
-    height: 0;
-    content: "";
-    border: 8px solid #9b2;
-    border-right: 6px solid #791;
-    border-bottom-color: #94b81e;
-    border-left-color: transparent;
-    transform: rotate(-5deg);
-  }
-
-  &::after {
-    right: -15px;
-    left: auto;
-    border-right: 8px solid transparent;
-    border-left: 6px solid #791;
-    transform: rotate(5deg);
-  }
-}
-
-.banner__text {
-  padding-left: 5px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
 .user-header {
   margin-bottom: 1rem;
 }
@@ -352,41 +220,53 @@ export default Vue.extend({
   border-radius: 50%;
 }
 
-.friend__photo {
-  display: inline-block;
-  width: 32px;
-  height: 32px;
-  margin-right: 0.5em;
-  background-position: center;
-  background-size: cover;
-  border-radius: 50%;
+.tabs {
+  display: flex;
+  padding: 1em 0;
 }
 
-.bottom-buttons {
-  margin-top: auto;
-  margin-bottom: 20px;
+.tabs__tab-option {
+  width: calc(100% / 3);
 }
 
-.user-remove,
-.help-me {
-  display: block;
-  padding: 1rem 2rem;
-  margin: 1rem;
-  color: white;
-  text-decoration: none;
-  cursor: pointer;
-
-  i.fas {
-    vertical-align: sub;
-  }
+.tabs__tab-option i {
+  color: $grey-400;
 }
 
-.help-me {
-  background: $grey-800;
+.tabs__tab-option.active i {
+  color: $text-color;
 }
 
-.user-remove {
-  background: $danger;
+.active-tab-marker {
+  width: calc(100% / 3);
+  height: 5px;
+  background-color: white;
+}
+
+.tab-content.wrapper {
+  display: flex;
+  transition-duration: 200ms;
+  transform: translateX(0%);
+}
+
+.tab-content {
+  width: 100%;
+  margin-bottom: 50px;
+}
+
+.tab-content .content-1 {
+  position: absolute;
+  transform: translateX(0%);
+}
+
+.tab-content .content-2 {
+  position: absolute;
+  transform: translateX(100%);
+}
+
+.tab-content .content-3 {
+  position: absolute;
+  transform: translateX(200%);
 }
 
 @media screen and (min-width: 500px) {
