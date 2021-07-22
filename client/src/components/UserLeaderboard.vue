@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2 class="friends__title">Leaderboard</h2>
+    <h2 class="">Leaderboard</h2>
     To be defined
   </div>
 </template>
@@ -22,19 +22,3 @@ export default {
   }
 };
 </script>
-
-<style lang="scss">
-.friend__photo {
-  display: inline-block;
-  width: 32px;
-  height: 32px;
-  margin-right: 0.5em;
-  background-position: center;
-  background-size: cover;
-  border-radius: 50%;
-}
-
-li {
-  list-style-type: none;
-}
-</style>

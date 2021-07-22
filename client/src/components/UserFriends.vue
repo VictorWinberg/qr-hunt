@@ -44,8 +44,4 @@ export default {
   background-size: cover;
   border-radius: 50%;
 }
-
-li {
-  list-style-type: none;
-}
 </style>

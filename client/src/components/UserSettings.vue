@@ -66,7 +66,7 @@ export default {
   text-decoration: none;
   cursor: pointer;
 
-  i.fas {
+  i {
     vertical-align: sub;
   }
 }
