@@ -1,8 +1,8 @@
 import Snackbar from "node-snackbar";
 import store from "@/store/store";
+import { EVENT_TYPE } from "@/constants";
 import { api } from "@/utils";
 import EventBus from "./event-bus";
-import { EVENT_TYPE } from "@/constants";
 
 export const newAchievements = async () => {
   // Don't show achievements when in intro mode

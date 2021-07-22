@@ -14,36 +14,6 @@ export function isJson(str): boolean {
   return true;
 }
 
-function _sortBy(attr) {
-    var sortOrder = 1;
-    if(attr[0] === "-") {
-        sortOrder = -1;
-        attr = attr.substr(1);
-    }
-    return function (a,b) {
-        if (a[attr] < b[attr]) {
-          return -1 * sortOrder;
-        }
-        if (a[attr] > b[attr]) {
-          return 1 * sortOrder;
-        }
-        return 0;
-    }
-}
-
-export function sortBy() {
-    var props = arguments;
-    return function (obj1, obj2) {
-        let i = 0;
-        let result = 0;
-        while(result === 0 && i < props.length) {
-            result = _sortBy(props[i])(obj1, obj2);
-            i++;
-        }
-        return result;
-    }
-}
-
 const apiFetch = (method?: string) => async (
   input: RequestInfo,
   init: RequestInit = {}

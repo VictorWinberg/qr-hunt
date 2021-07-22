@@ -59,15 +59,32 @@
 
     <h2 class="friends__title">Friends</h2>
     <ul>
-      <li v-for="friend in friends.sort(sortBy('xp'))" :key="friend.id">
+      <li v-for="friend in friends" :key="friend.id">
         <div
-          class="friend__photo"
+          class="user__photo"
           :style="{
             backgroundImage: `url(${friend.photo})`,
             marginBottom: '-.5em' // Todo: remove this line!
           }"
         ></div>
-        <span>{{ friend.name || friend.username}} - Lvl: {{ friend.lvl }}</span>
+        <span>
+          {{ friend.name || friend.username }} - Lvl: {{ friend.lvl }}
+        </span>
+      </li>
+    </ul>
+
+    <h2 class="leaderboard__title">Leaderboard</h2>
+    <ul>
+      <li v-for="user in leaderboard" :key="user.id">
+        <b>{{ user.rank }}</b>
+        <div
+          class="user__photo"
+          :style="{
+            backgroundImage: `url(${user.photo})`,
+            marginBottom: '-.5em' // Todo: remove this line!
+          }"
+        ></div>
+        <span> {{ user.name || user.username }} - Lvl: {{ user.lvl }} </span>
       </li>
     </ul>
 
@@ -86,26 +103,32 @@
 <script>
 import Vue from "vue";
 import { mapState, mapMutations } from "vuex";
-import { api, md5, sortBy } from "@/utils";
+import { api, md5 } from "@/utils";
+import { EVENT_TYPE } from "@/constants";
+import EventBus from "@/plugins/event-bus";
 
 export default Vue.extend({
   computed: {
-    ...mapState("user", ["isAuthenticated", "user"]),
-    ...mapState("friends", ["friends"]),
+    ...mapState("user", ["isAuthenticated", "user", "friends", "leaderboard"]),
     ...mapState("achievements", ["achievements"])
   },
   async created() {
-    const achievements = await api.get("/api/achievements");
-    if (!achievements.err) this.setAchievements(achievements.data);
-
-    const friends = await api.get("/api/users");
-    if (!friends.err) this.setFriends(friends.data);
+    this.init();
+    EventBus.$on(EVENT_TYPE.API_REQUEST_UPDATE, this.init);
   },
   methods: {
-    sortBy,
-    ...mapMutations("user", ["setAuth"]),
-    ...mapMutations("friends", ["setFriends"]),
+    ...mapMutations("user", ["setAuth", "setFriends", "setLeaderboard"]),
     ...mapMutations("achievements", ["setAchievements"]),
+    async init() {
+      const achievements = await api.get("/api/achievements");
+      if (!achievements.err) this.setAchievements(achievements.data);
+
+      const friends = await api.get("/api/users");
+      if (!friends.err) this.setFriends(friends.data);
+
+      const leaderboard = await api.get("/api/leaderboard");
+      if (!leaderboard.err) this.setLeaderboard(leaderboard.data);
+    },
     xpTextStyle(level) {
       return {
         color: this.hashColor(level + 1)
@@ -353,7 +376,7 @@ export default Vue.extend({
   border-radius: 50%;
 }
 
-.friend__photo {
+.user__photo {
   display: inline-block;
   width: 32px;
   height: 32px;
