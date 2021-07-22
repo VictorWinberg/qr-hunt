@@ -7,13 +7,20 @@
 - Node v12
 - Postgres v11.9
 
+## Environment variables
+
+There are two env-files needed ...
+- one in root dir `.env` (backend) 
+- one in client dir `client/.env` (frontend)
+> Please copy the `.env.example` and fill in the correct env vars for each .env-file
+
 ## Database Setup
 ```
 createdb qrhunt
 psql qrhunt < server/schema.sql
 ```
 
-### Database clone production
+### Database clone production (optional)
 ```
 npm run db:pull
 ```
