@@ -39,7 +39,7 @@
         :class="{ active: isActiveTab(0) }"
         @click="showTab(0)"
       >
-        <i class="fa fa-trophy"></i>
+        <i class="fa fa-award"></i>
       </div>
       <div
         class="tabs__tab-option"
@@ -53,6 +53,13 @@
         :class="{ active: isActiveTab(2) }"
         @click="showTab(2)"
       >
+        <i class="fa fa-trophy"></i>
+      </div>
+      <div
+        class="tabs__tab-option"
+        :class="{ active: isActiveTab(3) }"
+        @click="showTab(3)"
+      >
         <i class="fa fa-cog"></i>
       </div>
     </div>
@@ -60,12 +67,15 @@
 
     <div ref="tabContent" class="tab-content wrapper">
       <div class="tab-content content-1">
-        <UserAchievments />
+        <UserAchievements />
       </div>
       <div class="tab-content content-2">
         <UserFriends />
       </div>
       <div class="tab-content content-3">
+        <UserLeaderboard />
+      </div>
+      <div class="tab-content content-4">
         <UserSettings />
       </div>
     </div>
@@ -76,14 +86,16 @@
 import Vue from "vue";
 import { mapState, mapMutations } from "vuex";
 import { md5 } from "@/utils";
-import UserAchievments from "../components/UserAchievments";
+import UserAchievements from "../components/UserAchievements";
 import UserFriends from "../components/UserFriends";
+import UserLeaderboard from "../components/UserLeaderboard";
 import UserSettings from "../components/UserSettings";
 
 export default Vue.extend({
   components: {
-    UserAchievments,
+    UserAchievements,
     UserFriends,
+    UserLeaderboard,
     UserSettings
   },
   data() {
@@ -222,24 +234,21 @@ export default Vue.extend({
 
 .tabs {
   display: flex;
-  padding: 1em 0;
 }
 
 .tabs__tab-option {
-  width: calc(100% / 3);
-}
-
-.tabs__tab-option i {
+  flex: 1;
+  padding: 1em 0;
   color: $grey-400;
-}
 
-.tabs__tab-option.active i {
-  color: $text-color;
+  &.active {
+    color: $text-color;
+  }
 }
 
 .active-tab-marker {
-  width: calc(100% / 3);
-  height: 5px;
+  width: calc(100% / 4);
+  height: 3px;
   background-color: white;
 }
 
@@ -251,7 +260,7 @@ export default Vue.extend({
 
 .tab-content {
   width: 100%;
-  margin-bottom: 50px;
+  padding-top: 0.5em;
 }
 
 .tab-content .content-1 {
@@ -267,6 +276,11 @@ export default Vue.extend({
 .tab-content .content-3 {
   position: absolute;
   transform: translateX(200%);
+}
+
+.tab-content .content-4 {
+  position: absolute;
+  transform: translateX(300%);
 }
 
 @media screen and (min-width: 500px) {
