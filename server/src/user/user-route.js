@@ -16,6 +16,21 @@ module.exports = ({ app, db, isLoggedIn }) => {
     return user;
   };
 
+  /**
+   * @swagger
+   * /user:
+   *   get:
+   *     summary: Get your user
+   *     tags:
+   *       - User
+   *     responses:
+   *       200:
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/User'
+   */
+
   app.get("/api/user", (req, res) => {
     const { user } = req;
     if (!req.isAuthenticated()) return res.send({ isAuthenticated: false });
@@ -25,6 +40,15 @@ module.exports = ({ app, db, isLoggedIn }) => {
     );
   });
 
+  /**
+   * @swagger
+   * /user:
+   *   delete:
+   *     summary: Delete your user
+   *     tags:
+   *       - User
+   */
+
   app.delete("/api/user", isLoggedIn, async (req, res) => {
     const { user, err } = await User.delete(req.user.id);
     if (err) return res.status(400).send(err);
@@ -32,11 +56,50 @@ module.exports = ({ app, db, isLoggedIn }) => {
     return res.send(user);
   });
 
+  /**
+   * @swagger
+   * /users:
+   *   get:
+   *     summary: Get all users
+   *     tags:
+   *       - User
+   *     responses:
+   *       200:
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: array
+   *               items:
+   *                 $ref: '#/components/schemas/User'
+   *               minItems: 3
+   */
+
   app.get("/api/users", isLoggedIn, async (_, res) => {
     const { users, err } = await User.getAll();
     if (err) return res.status(400).send(err);
     return res.send(users.map(setProps(["lvl"])));
   });
+
+  /**
+   * @swagger
+   * /users/{id}:
+   *   get:
+   *     summary: Get a user
+   *     tags:
+   *       - User
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         schema:
+   *           type: integer
+   *         required: true
+   *     responses:
+   *       200:
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/User'
+   */
 
   app.get("/api/users/:id", isLoggedIn, async (req, res) => {
     const { user, err } = await User.getById(req.params.id);
@@ -44,6 +107,24 @@ module.exports = ({ app, db, isLoggedIn }) => {
     if (!user) return res.sendStatus(404);
     return res.send(setProps(["lvl"])(user));
   });
+
+  /**
+   * @swagger
+   * /leaderboard:
+   *   get:
+   *     summary: Get the leaderboard users
+   *     tags:
+   *       - User
+   *     responses:
+   *       200:
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: array
+   *               items:
+   *                 $ref: '#/components/schemas/User'
+   *               minItems: 3
+   */
 
   app.get("/api/leaderboard", isLoggedIn, async (_, res) => {
     const { users, err } = await User.getAllByXp();
