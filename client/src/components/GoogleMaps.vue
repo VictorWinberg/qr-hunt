@@ -75,8 +75,8 @@
 import Vue from "vue";
 import { mapState, mapMutations, mapActions } from "vuex";
 import { EVENT_TYPE, QR_SPOT_MODE, QR_SPOT_PANEL } from "@/constants";
-import EventBus from "@/plugins/event-bus";
 import { api, isToday } from "@/utils";
+import EventBus from "@/plugins/event-bus";
 
 export default Vue.extend({
   data() {
@@ -129,6 +129,9 @@ export default Vue.extend({
     this.fetchQRSpots();
     EventBus.$on(EVENT_TYPE.QR_SPOTS_UPDATE, this.fetchQRSpots);
   },
+  beforeDestroy() {
+    EventBus.$off(EVENT_TYPE.QR_SPOTS_UPDATE, this.fetchQRSpots);
+  },
   async mounted() {
     const map = await this.$refs.mapRef.$mapPromise;
     this.setMap(map);
@@ -145,8 +148,8 @@ export default Vue.extend({
     ...mapMutations("user", ["setCoords"]),
     ...mapActions("qrSpot", ["select", "deselect"]),
     async fetchQRSpots() {
-      const { err, data } = await api.get("/api/qrspots");
-      if (!err) this.markers = data;
+      const qrspots = await api.get("/api/qrspots");
+      if (!qrspots.err) this.markers = qrspots.data;
     },
     createMapElements() {
       /** Create button for centering position at user */
@@ -191,6 +194,7 @@ export default Vue.extend({
     },
     centerMapToUser() {
       this.map.panTo(new google.maps.LatLng(this.userCoords));
+      localStorage.mapCoords = JSON.stringify(this.userCoords);
       if (this.map.zoom < 15) this.map.setZoom(15);
     }
   }

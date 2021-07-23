@@ -12,18 +12,27 @@
 <script>
 import Vue from "vue";
 import { mapState, mapMutations } from "vuex";
-import SignInGoogle from "@/components/SignInGoogle.vue";
+import { EVENT_TYPE } from "@/constants";
 import { api } from "@/utils";
+import EventBus from "@/plugins/event-bus";
+import SignInGoogle from "@/components/SignInGoogle.vue";
 
 export default Vue.extend({
   components: { SignInGoogle },
   computed: mapState("user", ["status", "isAuthenticated"]),
   async created() {
-    const { data, err } = await api.get("/api/user");
-    if (!err) this.setAuth(data);
+    this.fetchUser();
+    EventBus.$on(EVENT_TYPE.API_REQUEST_UPDATE, this.fetchUser);
+  },
+  beforeDestroy() {
+    EventBus.$off(EVENT_TYPE.API_REQUEST_UPDATE, this.fetchUser);
   },
   methods: {
-    ...mapMutations("user", ["setAuth"])
+    ...mapMutations("user", ["setAuth"]),
+    async fetchUser() {
+      const user = await api.get("/api/user");
+      if (!user.err) this.setAuth(user.data);
+    }
   }
 });
 </script>

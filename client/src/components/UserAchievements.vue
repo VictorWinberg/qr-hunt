@@ -28,6 +28,8 @@
 
 <script>
 import { mapState, mapMutations } from "vuex";
+import EventBus from "@/plugins/event-bus";
+import { EVENT_TYPE } from "@/constants";
 import { api, md5 } from "@/utils";
 
 export default {
@@ -35,12 +37,18 @@ export default {
     ...mapState("achievements", ["achievements"])
   },
   async created() {
-    const achievements = await api.get("/api/achievements");
-    if (!achievements.err) this.setAchievements(achievements.data);
+    this.fetchAchievements();
+    EventBus.$on(EVENT_TYPE.API_REQUEST_UPDATE, this.fetchAchievements);
+  },
+  beforeDestroy() {
+    EventBus.$off(EVENT_TYPE.API_REQUEST_UPDATE, this.fetchAchievements);
   },
   methods: {
     ...mapMutations("achievements", ["setAchievements"]),
-
+    async fetchAchievements() {
+      const achievements = await api.get("/api/achievements");
+      if (!achievements.err) this.setAchievements(achievements.data);
+    },
     hashColor(str) {
       if (!str) return "#dfdfdf";
       const h = md5(String(str));

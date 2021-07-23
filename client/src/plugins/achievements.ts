@@ -1,8 +1,7 @@
 import Snackbar from "node-snackbar";
-import store from "@/store/store";
+import { EVENT_TYPE } from "@/constants";
 import { api } from "@/utils";
 import EventBus from "./event-bus";
-import { EVENT_TYPE } from "@/constants";
 
 export const newAchievements = async () => {
   // Don't show achievements when in intro mode
@@ -32,15 +31,7 @@ export const newAchievements = async () => {
         await api.post("/api/achievements/new", {
           body: JSON.stringify({ name })
         });
-        const user = await api.get("/api/user");
-        if (!user.err) {
-          store.commit("user/setAuth", user.data);
-        }
 
-        const achievements = await api.get("/api/achievements");
-        if (!achievements.err) {
-          store.commit("achievements/setAchievements", achievements.data);
-        }
         // @ts-ignore
         Snackbar.close();
 

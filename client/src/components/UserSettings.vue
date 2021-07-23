@@ -36,8 +36,8 @@ export default {
             action: async () => {
               this.$store.commit("popup/setPopup", false);
 
-              const { err } = await api.delete("/api/user");
-              if (err) return;
+              const user = await api.delete("/api/user");
+              if (user.err) return;
 
               this.setAuth({ isAuthenticated: false });
               this.$router.push("/");
