@@ -56,21 +56,14 @@ setTimeout(() => {
               intro: "This button redirects to the map page (you are here now)"
             },
             {
-              title: "User page",
+              title: "User and Settings",
               element: document.querySelector(".header-icon[href='/user']"),
-              intro: "This button redirects to the user page"
+              intro: "This button redirects to the user and settings page"
             },
             {
-              title: "Logout",
-              element: document.querySelector(
-                ".header-icon[href='/auth/logout']"
-              ),
-              intro: "Click here to log out"
-            },
-            {
-              title: "User page",
+              title: "Proceed?",
               element: document.querySelector(".header-icon[href='/user']"),
-              intro: "Ready to proceed to the user page?"
+              intro: "Ready to proceed to the user and settings page?"
             }
           ]
         })
@@ -80,7 +73,7 @@ setTimeout(() => {
         .oncomplete(() => {
           setTimeout(() => {
             window.location.href = "/user/?intro=user";
-          }, 0);
+          }, 10);
         })
         .start();
     case "user":
@@ -99,6 +92,12 @@ setTimeout(() => {
                 "achievements, friends, settings and more"
             },
             {
+              title: "User profile",
+              element: document.querySelector(".user-header"),
+              intro: "Here is your user profile. Say hello to yourself! 👋",
+              position: "bottom-middle-aligned"
+            },
+            {
               title: "User level",
               element: document.querySelector(".user-xp"),
               intro: "Here is your user level and xp shown",
@@ -106,31 +105,25 @@ setTimeout(() => {
             },
             {
               title: "Achievements",
-              element: document.querySelector(".user-achievements__title"),
-              intro: "Here will all your achievements be shown"
+              element: document.querySelector(".tabs__tab-option:nth-child(1)"),
+              intro: "Click here to see your achievements (currently active)"
             },
             {
               title: "Friends",
-              element: document.querySelector(".friends__title"),
-              intro: "Here will all your friends and their levels be shown"
+              element: document.querySelector(".tabs__tab-option:nth-child(2)"),
+              intro: "Click here to see your friends and their stats"
+            },
+            {
+              title: "Leaderboard",
+              element: document.querySelector(".tabs__tab-option:nth-child(3)"),
+              intro: "Click here to see the current leaderboard and their stats"
             },
             {
               title: "Settings",
-              element: document.querySelector(".settings__title"),
-              intro: "Here is are all settings shown"
-            },
-            {
-              title: "Delete",
-              element: document.querySelector(".user-remove"),
+              element: document.querySelector(".tabs__tab-option:nth-child(4)"),
               intro:
-                "This button will delete your account " +
-                "and all of your data!"
-            },
-            {
-              title: "Help",
-              element: document.querySelector(".help-me"),
-              intro:
-                "If your want this guide again, please press this help button"
+                "Click here to see user settings - " +
+                "help, log out and delete account"
             },
             {
               title: "That's all! 👋",
@@ -145,7 +138,7 @@ setTimeout(() => {
         .oncomplete(() => {
           setTimeout(() => {
             window.location.href = "/";
-          }, 0);
+          }, 10);
         })
         .start();
   }
