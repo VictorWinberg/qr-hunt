@@ -1,5 +1,5 @@
 <template>
-  <header>
+  <header id="header">
     <router-link to="/" class="header-title">
       <img alt="Logo" height="50" :src="require('@/assets/logo.svg')" />
     </router-link>

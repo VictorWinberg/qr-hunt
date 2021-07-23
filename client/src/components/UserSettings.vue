@@ -3,13 +3,13 @@
     <h2 class="settings__title">Settings</h2>
     <div class="bottom-buttons">
       <a href="/?intro=start" class="help-me">
-        <i class="fas fa-question-circle fa-2x"></i> HELP
+        HELP
       </a>
       <a href="/auth/logout" class="log-out">
-        <i class="far fa-hand-point-right fa-2x"></i> LOG OUT
+        LOG OUT
       </a>
       <a class="user-remove" @click="deleteMe">
-        <i class="fas fa-trash-alt fa-2x"></i> DELETE ACCOUNT
+        DELETE ACCOUNT
       </a>
     </div>
   </div>

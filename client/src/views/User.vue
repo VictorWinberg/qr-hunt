@@ -1,82 +1,73 @@
 <template>
-  <div class="user-wrapper">
-    <div class="user-header">
-      <div
-        class="user-header__photo async async--img"
-        :style="{ backgroundImage: `url(${user.photo})` }"
-      ></div>
-      <h1 class="user-header__title async async--text">{{ user.name }}</h1>
-      <p class="user-header__email async async--text">{{ user.email }}</p>
-    </div>
-
-    <div :key="user.lvl" class="user-xp">
-      <i
-        class="user-xp__level fas fa-star"
-        :style="{ color: hashColor(user.lvl) }"
-      >
-        <span class="user-xp__text">
-          {{ user.lvl != null ? user.lvl : "?" }}
-        </span>
-      </i>
-      <div class="user-xp__bar">
-        <span class="user-xp__text" :style="xpTextStyle(user.lvl)">
-          {{ user.lvlXp != null ? user.lvlXp : "-" }} /
-          {{ user.reqLvlXp != null ? user.reqLvlXp : "-" }} xp
-        </span>
+  <div ref="userWrapper" class="user-wrapper">
+    <div ref="userProfile">
+      <div class="user-header">
         <div
-          class="user-xp__bar--fill"
-          :style="{
-            background: hashColor(user.lvl),
-            maxWidth: `${(user.lvlXp / user.reqLvlXp) * 100}%`
-          }"
+          class="user-header__photo async async--img"
+          :style="{ backgroundImage: `url(${user.photo})` }"
         ></div>
+        <h1 class="user-header__title async async--text">{{ user.name }}</h1>
+        <p class="user-header__email async async--text">{{ user.email }}</p>
+      </div>
+
+      <div :key="user.lvl" class="user-xp">
+        <i
+          class="user-xp__level fas fa-star"
+          :style="{ color: hashColor(user.lvl) }"
+        >
+          <span class="user-xp__text">
+            {{ user.lvl != null ? user.lvl : "?" }}
+          </span>
+        </i>
+        <div class="user-xp__bar">
+          <span class="user-xp__text" :style="xpTextStyle(user.lvl)">
+            {{ user.lvlXp != null ? user.lvlXp : "-" }} /
+            {{ user.reqLvlXp != null ? user.reqLvlXp : "-" }} xp
+          </span>
+          <div
+            class="user-xp__bar--fill"
+            :style="{
+              background: hashColor(user.lvl),
+              maxWidth: `${(user.lvlXp / user.reqLvlXp) * 100}%`
+            }"
+          />
+        </div>
       </div>
     </div>
 
-    <div class="tabs">
-      <div
-        class="tabs__tab-option"
-        :class="{ active: isActiveTab(0) }"
-        @click="showTab(0)"
-      >
-        <i class="fa fa-award"></i>
+    <div ref="tabs" class="tabs">
+      <div class="tab-options">
+        <div
+          v-for="tab in tabs"
+          :key="tab.id"
+          class="tabs__tab-option"
+          :class="{ active: isActiveTab(tab.id) }"
+          @click="showTab(tab.id)"
+        >
+          <i :class="tab.icon"></i>
+        </div>
       </div>
       <div
-        class="tabs__tab-option"
-        :class="{ active: isActiveTab(1) }"
-        @click="showTab(1)"
-      >
-        <i class="fa fa-users"></i>
-      </div>
-      <div
-        class="tabs__tab-option"
-        :class="{ active: isActiveTab(2) }"
-        @click="showTab(2)"
-      >
-        <i class="fa fa-trophy"></i>
-      </div>
-      <div
-        class="tabs__tab-option"
-        :class="{ active: isActiveTab(3) }"
-        @click="showTab(3)"
-      >
-        <i class="fa fa-cog"></i>
-      </div>
+        ref="activeTabMarker"
+        class="active-tab-marker"
+        :style="{
+          width: `calc(${100 / tabs.length}%`
+        }"
+      />
     </div>
-    <div ref="activeTabMarker" class="active-tab-marker"></div>
 
-    <div ref="tabContent" class="tab-content wrapper">
-      <div class="tab-content content-1">
-        <UserAchievements />
-      </div>
-      <div class="tab-content content-2">
-        <UserFriends />
-      </div>
-      <div class="tab-content content-3">
-        <UserLeaderboard />
-      </div>
-      <div class="tab-content content-4">
-        <UserSettings />
+    <div ref="tabContainer" class="tab-container">
+      <div
+        v-for="tab in tabs"
+        :key="tab.id"
+        class="tab-content"
+        :class="{ active: isActiveTab(tab.id) }"
+        :style="{
+          transform: `translateX(${tab.id * 100}%`,
+          minHeight: `${tabContentHeight}px`
+        }"
+      >
+        <component :is="tab.component" class="tab-component"></component>
       </div>
     </div>
   </div>
@@ -100,11 +91,22 @@ export default Vue.extend({
   },
   data() {
     return {
-      activeTab: 0
+      activeTab: 0,
+      tabContentHeight: 0,
+      tabs: [
+        { id: 0, icon: "fa fa-award", component: "user-achievements" },
+        { id: 1, icon: "fa fa-users", component: "user-friends" },
+        { id: 2, icon: "fa fa-trophy", component: "user-leaderboard" },
+        { id: 3, icon: "fa fa-cog", component: "user-settings" }
+      ]
     };
   },
   computed: {
     ...mapState("user", ["user"])
+  },
+  mounted() {
+    this.tabContentHeight =
+      this.$refs.userWrapper?.clientHeight - this.$refs.tabs?.clientHeight;
   },
   methods: {
     isActiveTab(nbr) {
@@ -112,7 +114,8 @@ export default Vue.extend({
     },
     showTab(nbr) {
       this.activeTab = nbr;
-      this.$refs.tabContent.style.transform = "translateX(" + -100 * nbr + "%)";
+      this.$refs.tabContainer.style.transform =
+        "translateX(" + -100 * nbr + "%)";
       this.$refs.activeTabMarker.style.transform =
         "translateX(" + 100 * nbr + "%)";
     },
@@ -142,7 +145,6 @@ export default Vue.extend({
   flex: 1;
   flex-direction: column;
   width: 100%;
-  padding: 2rem 0;
   margin: auto;
   overflow-x: hidden;
   overflow-y: scroll;
@@ -209,7 +211,7 @@ export default Vue.extend({
 }
 
 .user-header {
-  margin-bottom: 1rem;
+  margin: 1rem 0;
 }
 
 .user-header__title {
@@ -232,12 +234,23 @@ export default Vue.extend({
 }
 
 .tabs {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  height: 3.5em;
+  background-color: $seconday-color;
+}
+
+.tab-options {
   display: flex;
+  height: inherit;
 }
 
 .tabs__tab-option {
+  display: flex;
   flex: 1;
-  padding: 1em 0;
+  align-items: center;
+  justify-content: center;
   color: $grey-400;
 
   &.active {
@@ -246,40 +259,32 @@ export default Vue.extend({
 }
 
 .active-tab-marker {
-  width: calc(100% / 4);
   height: 3px;
-  background-color: white;
+  background-color: $text-color;
+  transition-duration: 200ms;
 }
 
-.tab-content.wrapper {
-  display: flex;
+.tab-container {
   transition-duration: 200ms;
   transform: translateX(0%);
 }
 
 .tab-content {
+  position: absolute;
+  display: flex;
   width: 100%;
-  padding-top: 0.5em;
+  height: 0;
+  overflow: hidden;
+
+  &.active {
+    height: auto;
+    overflow: scroll;
+  }
 }
 
-.tab-content .content-1 {
-  position: absolute;
-  transform: translateX(0%);
-}
-
-.tab-content .content-2 {
-  position: absolute;
-  transform: translateX(100%);
-}
-
-.tab-content .content-3 {
-  position: absolute;
-  transform: translateX(200%);
-}
-
-.tab-content .content-4 {
-  position: absolute;
-  transform: translateX(300%);
+.tab-component {
+  width: 100%;
+  padding: 1em 1em 3em 1em;
 }
 
 @media screen and (min-width: 500px) {
