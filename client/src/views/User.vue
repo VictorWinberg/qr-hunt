@@ -1,6 +1,6 @@
 <template>
   <div ref="userWrapper" class="user-wrapper">
-    <div ref="userProfile">
+    <div>
       <div class="user-header">
         <div
           class="user-header__photo async async--img"
