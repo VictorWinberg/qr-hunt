@@ -1,17 +1,15 @@
 module.exports = ({ app, db, isLoggedIn }) => {
   const User = require("./user-model")(db);
 
-  const setProps = keys => ({
-    qrshards_score = 0,
-    achievements_score = 0,
-    ...user
-  }) => {
+  const setProps = keys => (user, idx = 0, users = []) => {
+    const prevUser = idx === 0 ? {} : users[idx - 1];
+
     let props = {};
     props.isAuthenticated = true;
-    props.xp = Number(qrshards_score) + Number(achievements_score) * 5;
-    props.lvl = Math.floor(Math.sqrt(props.xp));
-    props.lvlXp = props.xp - Math.pow(props.lvl, 2);
+    props.lvl = Math.floor(Math.sqrt(user.xp));
+    props.lvlXp = user.xp - Math.pow(props.lvl, 2);
     props.reqLvlXp = Math.pow(props.lvl + 1, 2) - Math.pow(props.lvl, 2);
+    props.rank = user.xp === prevUser.xp ? prevUser.rank : idx + 1;
 
     keys.forEach(key => (user[key] = props[key]));
 
@@ -23,7 +21,7 @@ module.exports = ({ app, db, isLoggedIn }) => {
     if (!req.isAuthenticated()) return res.send({ isAuthenticated: false });
 
     return res.send(
-      setProps(["isAuthenticated", "xp", "lvl", "lvlXp", "reqLvlXp"])(user)
+      setProps(["isAuthenticated", "lvl", "lvlXp", "reqLvlXp"])(user)
     );
   });
 
@@ -37,7 +35,7 @@ module.exports = ({ app, db, isLoggedIn }) => {
   app.get("/api/users", isLoggedIn, async (_, res) => {
     const { users, err } = await User.getAll();
     if (err) return res.status(400).send(err);
-    return res.send(users.map(setProps(["xp", "lvl"])));
+    return res.send(users.map(setProps(["lvl"])));
   });
 
   app.get("/api/users/:id", isLoggedIn, async (req, res) => {
@@ -45,5 +43,11 @@ module.exports = ({ app, db, isLoggedIn }) => {
     if (err) return res.status(400).send(err);
     if (!user) return res.sendStatus(404);
     return res.send(setProps(["lvl"])(user));
+  });
+
+  app.get("/api/leaderboard", isLoggedIn, async (_, res) => {
+    const { users, err } = await User.getAllByXp();
+    if (err) return res.status(400).send(err);
+    return res.send(users.map(setProps(["lvl", "rank"])));
   });
 };

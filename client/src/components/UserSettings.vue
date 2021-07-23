@@ -16,8 +16,12 @@
 </template>
 
 <script>
+import { mapMutations } from "vuex";
+import { api } from "@/utils";
+
 export default {
   methods: {
+    ...mapMutations("user", ["setAuth"]),
     async deleteMe() {
       this.$store.commit("popup/setPopup", {
         title: "Delete account",

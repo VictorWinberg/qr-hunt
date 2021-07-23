@@ -84,7 +84,7 @@
 
 <script>
 import Vue from "vue";
-import { mapState, mapMutations } from "vuex";
+import { mapState } from "vuex";
 import { md5 } from "@/utils";
 import UserAchievements from "../components/UserAchievements";
 import UserFriends from "../components/UserFriends";
@@ -104,10 +104,9 @@ export default Vue.extend({
     };
   },
   computed: {
-    ...mapState("user", ["isAuthenticated", "user"])
+    ...mapState("user", ["user"])
   },
   methods: {
-    ...mapMutations("user", ["setAuth"]),
     isActiveTab(nbr) {
       return nbr === this.activeTab;
     },
