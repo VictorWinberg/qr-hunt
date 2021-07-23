@@ -9,10 +9,10 @@
 
 ## Environment variables
 
-There are two env-files needed ...
-- one in root dir `.env` (backend) 
-- one in client dir `client/.env` (frontend)
-> Please copy the `.env.example` and fill in the correct env vars for each .env-file
+There are two env-files that you need to create locally:
+- one in root dir (path: `.env`) for backend
+- one in client dir (path: `client/.env`) for frontend
+> You can copy the `.env.example` to `.env` and modify the variables as needed
 
 ## Database Setup
 ```
