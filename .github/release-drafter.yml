@@ -4,13 +4,15 @@ categories:
   - title: '🚀 Features'
     label: 'Type: Feature'
   - title: '🐛 Bug Fixes'
-    labels: 'Type: Bug'
+    label: 'Type: Bug'
   - title: ':octocat: Github Actions'
-    labels: 'Type: Action'
+    label: 'Type: Action'
   - title: '📚 Dependencies'
-    labels: 'Type: Dependencies'
+    label: 'Type: Dependencies'
+  - title: '📁 Miscellaneous'
+    label: ''
 template: |
-  ## What’s Changed
+  **Changelog**
 
   $CHANGES
 change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
