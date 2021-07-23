@@ -9,8 +9,6 @@ categories:
     label: 'Type: Action'
   - title: '📚 Dependencies'
     label: 'Type: Dependencies'
-  - title: '📁 Miscellaneous'
-    label: ''
 template: |
   **Changelog**
 
