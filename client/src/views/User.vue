@@ -104,10 +104,9 @@ export default Vue.extend({
     };
   },
   computed: {
-    ...mapState("user", ["isAuthenticated", "user"])
+    ...mapState("user", ["user"])
   },
   methods: {
-    ...mapMutations("user", ["setAuth"]),
     isActiveTab(nbr) {
       return nbr === this.activeTab;
     },
