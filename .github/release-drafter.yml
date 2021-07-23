@@ -11,6 +11,8 @@ categories:
     label: 'Type: Dependencies'
   - title: '📁 Miscellaneous'
     label: ''
+  - title: '📁 MiscellaneousStar'
+    label: '*'
 template: |
   **Changelog**
 
