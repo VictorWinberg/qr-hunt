@@ -55,7 +55,8 @@ export default {
 
 <style lang="scss">
 .leaderboard__table {
-  min-width: 500px;
+  min-width: 100%;
+  max-width: 800px;
   margin: auto;
 
   tr {
