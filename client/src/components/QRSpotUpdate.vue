@@ -8,7 +8,7 @@
         Change your spot
       </div>
     </div>
-    <form class="form">
+    <form>
       <label for="title">
         Select an awesome title for your spot
       </label>
@@ -60,11 +60,11 @@
         type="button"
         class="saveBtn"
         :class="{ disabled: !valid }"
-        @click="save"
+        @click="saveSpot"
       >
         Save Spot
       </button>
-      <button type="button" class="deleteBtn" @click="destroy">
+      <button type="button" class="deleteBtn" @click="deleteSpot">
         Delete Spot
       </button>
     </form>
@@ -94,17 +94,17 @@ export default Vue.extend({
   methods: {
     ...mapMutations("qrSpot", ["setQRSpot", "setModalState"]),
     ...mapActions("qrSpot", ["create", "edit"]),
-    save() {
+    saveSpot() {
       if (this.mode === QR_SPOT_MODE.CREATE) {
         this.create();
       } else if (this.mode === QR_SPOT_MODE.EDIT) {
         this.edit();
       }
     },
-    destroy() {
+    deleteSpot() {
       this.$store.commit("popup/setPopup", {
-        title: "Delete qrspot",
-        subtitle: "Are you sure you want to delete your qrspot?",
+        title: "Delete QR Spot",
+        subtitle: "Are you sure you want to delete your QR Spot?",
         options: [
           {
             name: "Cancel",
