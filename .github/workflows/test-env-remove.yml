@@ -29,4 +29,4 @@ jobs:
       with:
         header: test-env
         append: true
-        message: \n\n_Environment has been shut down._
+        message: _Environment has been shut down._
