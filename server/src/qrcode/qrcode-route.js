@@ -23,7 +23,7 @@ module.exports = ({ app, db, isLoggedIn }) => {
 
   app.get("/api/qrcodes", isLoggedIn, async (_, res) => {
     const { qrcodes, err } = await QRCode.getAll();
-    if (err) return res.status(400).send(err);
+    if (err) return res.status(500).send(err);
     return res.send(qrcodes);
   });
 
@@ -45,7 +45,7 @@ module.exports = ({ app, db, isLoggedIn }) => {
   app.post("/api/qrcodes", isLoggedIn, async (req, res) => {
     const { user = {} } = req;
     const { qrcode, err } = await QRCode.create(user.id, { uuid: uuidv4() });
-    if (err) return res.status(400).send(err);
+    if (err) return res.status(500).send(err);
     return res.send(qrcode);
   });
 };

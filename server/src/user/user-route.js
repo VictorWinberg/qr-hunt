@@ -51,7 +51,7 @@ module.exports = ({ app, db, isLoggedIn }) => {
 
   app.delete("/api/user", isLoggedIn, async (req, res) => {
     const { user, err } = await User.delete(req.user.id);
-    if (err) return res.status(400).send(err);
+    if (err) return res.status(500).send(err);
     if (!user) return res.sendStatus(404);
     return res.send(user);
   });
@@ -76,7 +76,7 @@ module.exports = ({ app, db, isLoggedIn }) => {
 
   app.get("/api/users", isLoggedIn, async (_, res) => {
     const { users, err } = await User.getAll();
-    if (err) return res.status(400).send(err);
+    if (err) return res.status(500).send(err);
     return res.send(users.map(setProps(["lvl"])));
   });
 
@@ -103,7 +103,7 @@ module.exports = ({ app, db, isLoggedIn }) => {
 
   app.get("/api/users/:id", isLoggedIn, async (req, res) => {
     const { user, err } = await User.getById(req.params.id);
-    if (err) return res.status(400).send(err);
+    if (err) return res.status(500).send(err);
     if (!user) return res.sendStatus(404);
     return res.send(setProps(["lvl"])(user));
   });
@@ -128,7 +128,7 @@ module.exports = ({ app, db, isLoggedIn }) => {
 
   app.get("/api/leaderboard", isLoggedIn, async (_, res) => {
     const { users, err } = await User.getAllByXp();
-    if (err) return res.status(400).send(err);
+    if (err) return res.status(500).send(err);
     return res.send(users.map(setProps(["lvl", "rank"])));
   });
 };

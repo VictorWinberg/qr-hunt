@@ -96,7 +96,7 @@ module.exports = ({ pg, db }) => async (req, res, next) => {
         WHERE popup = 't' AND user_id = $1`;
 
       const { rows: achievements, err } = await db.query(sql, [req.user.id]);
-      if (err) return res.status(400).send(err);
+      if (err) return res.status(500).send(err);
       return res.send(achievements);
     }
     case method === "GET" && Boolean(url.match("^/api/achievements/new/?$")): {
@@ -112,7 +112,7 @@ module.exports = ({ pg, db }) => async (req, res, next) => {
         rows: [achievement],
         err
       } = await db.query(sql, [req.user.id]);
-      if (err) return res.status(400).send(err);
+      if (err) return res.status(500).send(err);
       if (!achievement) return res.sendStatus(204);
       return res.send(achievement);
     }
@@ -129,7 +129,7 @@ module.exports = ({ pg, db }) => async (req, res, next) => {
         rows: [achievement],
         err
       } = await db.query(sql, [req.user.id, name]);
-      if (err) return res.status(400).send(err);
+      if (err) return res.status(500).send(err);
       if (!achievement) return res.sendStatus(404);
       return res.send(achievement);
     }
@@ -147,7 +147,7 @@ module.exports = ({ pg, db }) => async (req, res, next) => {
         rows: [achievement],
         err
       } = await db.query(sql, [req.user.id, name.toUpperCase()]);
-      if (err) return res.status(400).send(err);
+      if (err) return res.status(500).send(err);
       if (!achievement) return res.sendStatus(204);
       return res.send(achievement);
     }
