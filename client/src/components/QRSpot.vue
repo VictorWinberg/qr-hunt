@@ -20,7 +20,7 @@
             </div>
           </div>
           <div v-if="panel === QR_SPOT_PANEL.SHOW_DETAILS">
-            <div class="edit-button" @click="edit()">
+            <div v-if="qrSpot.isOwner" class="edit-button" @click="edit()">
               <i class="fas fa-pencil-alt fa-2x"></i>
             </div>
             <QRSpotView />
@@ -117,7 +117,7 @@ export default Vue.extend({
 .qrspot-container {
   box-sizing: border-box;
   height: 100%;
-  padding: 1em 1em 1em;
+  padding: 1em;
   overflow: scroll;
   color: $text-color;
   cursor: pointer;

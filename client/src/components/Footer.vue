@@ -67,8 +67,8 @@ footer {
 
 #qrcode {
   position: absolute;
-  bottom: 1rem;
-  width: 100px;
+  bottom: 1em;
+  width: 5.5em;
   cursor: pointer;
   filter: drop-shadow(0 -4px 4px rgba($black, 0.75));
 }

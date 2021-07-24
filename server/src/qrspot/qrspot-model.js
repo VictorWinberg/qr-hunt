@@ -27,10 +27,22 @@
 
 const { keyValuePairs } = require("../utils");
 
-module.exports = (db) => ({
+module.exports = db => ({
   create: async (userId, qrspot) => {
-    const valid = ["title", "lat", "lng", "note", "hint", "score", "qrcode", "owner_id"];
-    const { keys, values, indices } = keyValuePairs(valid, { ...qrspot, owner_id: userId });
+    const valid = [
+      "title",
+      "lat",
+      "lng",
+      "note",
+      "hint",
+      "score",
+      "qrcode",
+      "owner_id"
+    ];
+    const { keys, values, indices } = keyValuePairs(valid, {
+      ...qrspot,
+      owner_id: userId
+    });
     const sql = `INSERT INTO qrspots ( ${keys} ) VALUES ( ${indices} ) RETURNING *`;
 
     const { rows, err } = await db.query(sql, values);
@@ -49,19 +61,33 @@ module.exports = (db) => ({
     return { qrspot: rows[0], err };
   },
 
-  getAll: async (userId) => {
+  deactivate: async (userId, id) => {
     const sql = `
-      SELECT DISTINCT ON (qrspots.id) qrspots.*, qrshards.created_at as collected_at
-      FROM qrspots LEFT JOIN qrshards ON qrspots.id = qrshards.qrspot_id AND user_id = $1
+      UPDATE qrspots SET active = FALSE
+      WHERE id = ${id} AND owner_id = ${userId}
+      RETURNING *`;
+
+    const { rows, err } = await db.query(sql);
+    return { qrspot: rows[0], err };
+  },
+
+  getAll: async userId => {
+    const sql = `
+      SELECT DISTINCT ON (qrspots.id)
+        qrspots.*, owner_id = user_id AS is_owner,
+        qrshards.created_at AS collected_at
+      FROM qrspots
+      LEFT JOIN qrshards ON qrspots.id = qrshards.qrspot_id AND user_id = $1
+      WHERE active = TRUE
       ORDER BY qrspots.id, qrshards.created_at DESC`;
 
     const { rows, err } = await db.query(sql, [userId]);
     return { qrspots: rows, err };
   },
 
-  getByQRCode: async (qrcode) => {
+  getByQRCode: async qrcode => {
     const sql = "SELECT * FROM qrspots WHERE qrcode = $1";
     const { rows, err } = await db.query(sql, [qrcode]);
     return { qrspot: rows[0], err };
-  },
+  }
 });

@@ -77,10 +77,10 @@
 import Vue from "vue";
 import { mapState } from "vuex";
 import { md5 } from "@/utils";
-import UserAchievements from "../components/UserAchievements";
-import UserFriends from "../components/UserFriends";
-import UserLeaderboard from "../components/UserLeaderboard";
-import UserSettings from "../components/UserSettings";
+import UserAchievements from "@/components/UserAchievements";
+import UserFriends from "@/components/UserFriends";
+import UserLeaderboard from "@/components/UserLeaderboard";
+import UserSettings from "@/components/UserSettings";
 
 export default Vue.extend({
   components: {

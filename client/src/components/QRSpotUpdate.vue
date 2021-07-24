@@ -8,7 +8,7 @@
         Change your spot
       </div>
     </div>
-    <form lass="form">
+    <form>
       <label for="title">
         Select an awesome title for your spot
       </label>
@@ -55,15 +55,19 @@
           :src="require('@/assets/spinner.svg')"
         />
       </div>
-
+      <br />
       <button
         type="button"
         class="saveBtn"
         :class="{ disabled: !valid }"
-        @click="save"
+        @click="saveSpot"
       >
         Save Spot
       </button>
+      <button type="button" class="deleteBtn" @click="deleteSpot">
+        Delete Spot
+      </button>
+      <br /><br />
     </form>
   </div>
 </template>
@@ -71,7 +75,9 @@
 <script>
 import Vue from "vue";
 import { mapState, mapMutations, mapActions } from "vuex";
-import { QR_SPOT_MODE } from "@/constants";
+import { QR_SPOT_MODE, QR_SPOT_PANEL, EVENT_TYPE } from "@/constants";
+import { api } from "@/utils";
+import EventBus from "@/plugins/event-bus";
 
 export default Vue.extend({
   data() {
@@ -87,14 +93,43 @@ export default Vue.extend({
     }
   },
   methods: {
-    ...mapMutations("qrSpot", ["setQRSpot"]),
+    ...mapMutations("qrSpot", ["setQRSpot", "setMode", "setModalState"]),
     ...mapActions("qrSpot", ["create", "edit"]),
-    save() {
+    saveSpot() {
       if (this.mode === QR_SPOT_MODE.CREATE) {
         this.create();
       } else if (this.mode === QR_SPOT_MODE.EDIT) {
         this.edit();
       }
+    },
+    deleteSpot() {
+      this.$store.commit("popup/setPopup", {
+        title: "Delete QR Spot",
+        subtitle: "Are you sure you want to delete your QR Spot?",
+        options: [
+          {
+            name: "Cancel",
+            type: "disabled",
+            action: async () => {
+              this.$store.commit("popup/setPopup", false);
+            }
+          },
+          {
+            name: "Delete",
+            type: "danger",
+            action: async () => {
+              this.$store.commit("popup/setPopup", false);
+
+              const qrspot = await api.delete("/api/qrspots/" + this.qrSpot.id);
+              if (qrspot.err) return;
+
+              this.setMode(QR_SPOT_MODE.VIEW);
+              this.setModalState(QR_SPOT_PANEL.HIDE);
+              EventBus.$emit(EVENT_TYPE.QR_SPOTS_UPDATE);
+            }
+          }
+        ]
+      });
     }
   }
 });
@@ -112,6 +147,7 @@ form {
 }
 
 .saveBtn,
+.deleteBtn,
 input[type="text"],
 textarea {
   box-sizing: border-box;
@@ -125,7 +161,8 @@ textarea {
   transition: height 200ms;
 }
 
-input[type="text"] {
+input[type="text"],
+textarea {
   color: $text-color;
   background-color: $primary-color;
 }
@@ -135,8 +172,6 @@ textarea:focus {
 }
 
 .saveBtn {
-  margin-top: 1em;
-  margin-bottom: 3em;
   color: white;
   background-color: $dark-brand-color;
 
@@ -144,6 +179,11 @@ textarea:focus {
     pointer-events: none;
     opacity: 0.5;
   }
+}
+
+.deleteBtn {
+  color: white;
+  background-color: $danger;
 }
 
 .spinner-icon {

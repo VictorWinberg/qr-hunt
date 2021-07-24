@@ -1,5 +1,5 @@
 module.exports = ({ app, passport }) => {
-  const callback = (req) => {
+  const callback = req => {
     const host = req.get("host");
     const protocol = req.headers["x-forwarded-proto"] || req.protocol;
     return `${protocol}://${host}/auth/google/callback`;
@@ -8,7 +8,7 @@ module.exports = ({ app, passport }) => {
   app.get("/auth/google", (req, res, next) => {
     passport.authenticate("google", {
       scope: ["profile", "email"],
-      callbackURL: callback(req),
+      callbackURL: callback(req)
     })(req, res, next);
   });
 

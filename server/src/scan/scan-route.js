@@ -1,4 +1,4 @@
-const { isToday } = require("../utils")
+const { isToday } = require("../utils");
 
 module.exports = ({ app, db, isLoggedIn }) => {
   const QRCode = require("../qrcode/qrcode-model")(db);
@@ -40,11 +40,11 @@ module.exports = ({ app, db, isLoggedIn }) => {
     const results = await Promise.all([
       QRCode.getByUUID(params.id),
       QRSpot.getByQRCode(params.id),
-      QRShard.getByQRCode(user.id, params.id),
+      QRShard.getByQRCode(user.id, params.id)
     ]);
 
     const { err } = results.find(({ err }) => Boolean(err)) || {};
-    if (err) return res.status(400).send(err);
+    if (err) return res.status(500).send(err);
 
     const [{ qrcode }, { qrspot }, { qrshard }] = results;
     return res.send({

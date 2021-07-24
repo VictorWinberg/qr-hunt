@@ -90,20 +90,20 @@ module.exports = ({ pg, db }) => async (req, res, next) => {
       if (!req.isAuthenticated()) return res.sendStatus(401);
 
       const sql = `
-        SELECT achievement_name as name, title, icon, score, level, user_achievements.created_at
+        SELECT achievement_name AS name, title, icon, score, level, user_achievements.created_at
         FROM user_achievements
         FULL JOIN achievements ON user_achievements.achievement_name = achievements.name
         WHERE popup = 't' AND user_id = $1`;
 
       const { rows: achievements, err } = await db.query(sql, [req.user.id]);
-      if (err) return res.status(400).send(err);
+      if (err) return res.status(500).send(err);
       return res.send(achievements);
     }
     case method === "GET" && Boolean(url.match("^/api/achievements/new/?$")): {
       if (!req.isAuthenticated()) return res.sendStatus(401);
 
       const sql = `
-        SELECT achievement_name as name, title, icon, score, level, user_achievements.created_at
+        SELECT achievement_name AS name, title, icon, score, level, user_achievements.created_at
         FROM user_achievements
         FULL JOIN achievements ON user_achievements.achievement_name = achievements.name
         WHERE popup = 'f' AND user_id = $1 LIMIT 1`;
@@ -112,7 +112,7 @@ module.exports = ({ pg, db }) => async (req, res, next) => {
         rows: [achievement],
         err
       } = await db.query(sql, [req.user.id]);
-      if (err) return res.status(400).send(err);
+      if (err) return res.status(500).send(err);
       if (!achievement) return res.sendStatus(204);
       return res.send(achievement);
     }
@@ -129,7 +129,7 @@ module.exports = ({ pg, db }) => async (req, res, next) => {
         rows: [achievement],
         err
       } = await db.query(sql, [req.user.id, name]);
-      if (err) return res.status(400).send(err);
+      if (err) return res.status(500).send(err);
       if (!achievement) return res.sendStatus(404);
       return res.send(achievement);
     }
@@ -138,7 +138,7 @@ module.exports = ({ pg, db }) => async (req, res, next) => {
 
       const name = req.url.match("^/api/achievements/(.+)/?$")[1];
       const sql = `
-        SELECT achievement_name as name, title, icon, score, level, user_achievements.created_at
+        SELECT achievement_name AS name, title, icon, score, level, user_achievements.created_at
         FROM user_achievements
         FULL JOIN achievements ON user_achievements.achievement_name = achievements.name
         WHERE user_id = $1 AND achievement_name = $2 LIMIT 1`;
@@ -147,7 +147,7 @@ module.exports = ({ pg, db }) => async (req, res, next) => {
         rows: [achievement],
         err
       } = await db.query(sql, [req.user.id, name.toUpperCase()]);
-      if (err) return res.status(400).send(err);
+      if (err) return res.status(500).send(err);
       if (!achievement) return res.sendStatus(204);
       return res.send(achievement);
     }
