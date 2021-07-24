@@ -73,7 +73,9 @@ module.exports = db => ({
 
   getAll: async userId => {
     const sql = `
-      SELECT DISTINCT ON (qrspots.id) qrspots.*, qrshards.created_at as collected_at
+      SELECT DISTINCT ON (qrspots.id)
+        qrspots.*, owner_id = user_id AS is_owner,
+        qrshards.created_at AS collected_at
       FROM qrspots
       LEFT JOIN qrshards ON qrspots.id = qrshards.qrspot_id AND user_id = $1
       WHERE active = TRUE

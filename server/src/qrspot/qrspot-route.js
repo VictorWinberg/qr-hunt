@@ -93,7 +93,6 @@ module.exports = ({ app, db, isLoggedIn }) => {
   app.delete("/api/qrspots/:id", isLoggedIn, async (req, res) => {
     const { params, user = {} } = req;
     const { qrspot, err } = await QRSpot.deactivate(user.id, params.id);
-    console.log(qrspot, err);
     if (err) return res.status(400).send(err);
     if (!qrspot) return res.sendStatus(403);
     return res.send(qrspot);

@@ -90,7 +90,7 @@ module.exports = ({ pg, db }) => async (req, res, next) => {
       if (!req.isAuthenticated()) return res.sendStatus(401);
 
       const sql = `
-        SELECT achievement_name as name, title, icon, score, level, user_achievements.created_at
+        SELECT achievement_name AS name, title, icon, score, level, user_achievements.created_at
         FROM user_achievements
         FULL JOIN achievements ON user_achievements.achievement_name = achievements.name
         WHERE popup = 't' AND user_id = $1`;
@@ -103,7 +103,7 @@ module.exports = ({ pg, db }) => async (req, res, next) => {
       if (!req.isAuthenticated()) return res.sendStatus(401);
 
       const sql = `
-        SELECT achievement_name as name, title, icon, score, level, user_achievements.created_at
+        SELECT achievement_name AS name, title, icon, score, level, user_achievements.created_at
         FROM user_achievements
         FULL JOIN achievements ON user_achievements.achievement_name = achievements.name
         WHERE popup = 'f' AND user_id = $1 LIMIT 1`;
@@ -138,7 +138,7 @@ module.exports = ({ pg, db }) => async (req, res, next) => {
 
       const name = req.url.match("^/api/achievements/(.+)/?$")[1];
       const sql = `
-        SELECT achievement_name as name, title, icon, score, level, user_achievements.created_at
+        SELECT achievement_name AS name, title, icon, score, level, user_achievements.created_at
         FROM user_achievements
         FULL JOIN achievements ON user_achievements.achievement_name = achievements.name
         WHERE user_id = $1 AND achievement_name = $2 LIMIT 1`;
