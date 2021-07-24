@@ -67,6 +67,7 @@
       <button type="button" class="deleteBtn" @click="deleteSpot">
         Delete Spot
       </button>
+      <br /><br />
     </form>
   </div>
 </template>
@@ -92,7 +93,7 @@ export default Vue.extend({
     }
   },
   methods: {
-    ...mapMutations("qrSpot", ["setQRSpot", "setModalState"]),
+    ...mapMutations("qrSpot", ["setQRSpot", "setMode", "setModalState"]),
     ...mapActions("qrSpot", ["create", "edit"]),
     saveSpot() {
       if (this.mode === QR_SPOT_MODE.CREATE) {
@@ -122,6 +123,7 @@ export default Vue.extend({
               const qrspot = await api.delete("/api/qrspots/" + this.qrSpot.id);
               if (qrspot.err) return;
 
+              this.setMode(QR_SPOT_MODE.VIEW);
               this.setModalState(QR_SPOT_PANEL.HIDE);
               EventBus.$emit(EVENT_TYPE.QR_SPOTS_UPDATE);
             }

@@ -117,7 +117,7 @@ export default Vue.extend({
 .qrspot-container {
   box-sizing: border-box;
   height: 100%;
-  padding: 1em 1em 4em 1em;
+  padding: 1em;
   overflow: scroll;
   color: $text-color;
   cursor: pointer;
