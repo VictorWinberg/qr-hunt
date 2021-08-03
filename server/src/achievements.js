@@ -36,7 +36,7 @@ const achievements = {
   COLLECT_AT_MORNING: ({ req, res }) => {
     const hours = new Date().getHours();
     return [
-      hours >= 3 && hours < 6,
+      hours >= 10 && hours < 12,
       req.method === "POST",
       req.path.toLowerCase() === "/api/qrshards",
       res.statusCode === 200
