@@ -42,6 +42,15 @@ const achievements = {
       res.statusCode === 200
     ];
   },
+  COLLECT_AT_LUNCH: ({ req, res }) => {
+    const hours = new Date().getHours();
+    return [
+      hours >= 12 && hours < 13,
+      req.method === "POST",
+      req.path.toLowerCase() === "/api/qrshards",
+      res.statusCode === 200
+    ];
+  },
   COLLECT_AT_NIGHT: ({ req, res }) => {
     const hours = new Date().getHours();
     return [
