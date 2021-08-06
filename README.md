@@ -20,6 +20,11 @@ createdb qrhunt
 psql qrhunt < server/schema.sql
 ```
 
+### Database migrations
+```
+npm run db:migrate
+```
+
 ### Database clone production (optional)
 ```
 npm run db:pull
