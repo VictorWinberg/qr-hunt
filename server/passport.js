@@ -1,6 +1,8 @@
-const { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } = process.env;
+const { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, HA_BEARER_TOKEN } = process.env;
 
 const GoogleStrategy = require("passport-google-oauth").OAuth2Strategy;
+const fetch = require("node-fetch");
+const notify = "https://home.zolly.ml/api/services/notify/mobile_app_mr"
 
 const get = (p, o) => p.reduce((xs, x) => (xs && xs[x] ? xs[x] : null), o);
 
@@ -48,6 +50,20 @@ module.exports = (passport, db) => {
           };
 
           const dbCreate = await User.create(newUser);
+
+          if (HA_BEARER_TOKEN) {
+            fetch(notify, {
+              method: "POST",
+              headers: {
+                Authorization: "Bearer " + HA_BEARER_TOKEN,
+              },
+              body: JSON.stringify({
+                "title": "QR-Hunt",
+                "message": `New user: ${email}`
+              })
+            });
+          }
+
           return done(dbCreate.err, { ...newUser, ...dbCreate.user });
         });
       }
