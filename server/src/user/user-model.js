@@ -49,13 +49,13 @@ module.exports = db => ({
 
   getById: async userId => {
     const sql = `${SELECT_USERS_SQL}
-        WHERE id = $1`;
+        WHERE id = $1 LIMIT 1`;
     const { rows, err } = await db.query(sql, [userId]);
     return { user: rows[0], err };
   },
 
   getByEmail: async email => {
-    const sql = "SELECT * FROM users WHERE email = $1";
+    const sql = "SELECT * FROM users WHERE email = $1 LIMIT 1";
     const { rows, err } = await db.query(sql, [email]);
     return { user: rows[0], err };
   },
@@ -67,7 +67,7 @@ module.exports = db => ({
     return { users: rows, err };
   },
 
-  getAllByXp: async () => {
+  getAllOrderByXp: async () => {
     const sql = `${SELECT_USERS_SQL}
         ORDER BY xp DESC, name, username, id`;
     const { rows, err } = await db.query(sql);

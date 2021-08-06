@@ -18,17 +18,16 @@ export default {
   },
   actions: {
     async handleQR({ commit, dispatch }, qrcode): Promise<void> {
-      if (!qrcode) return Snackbar.err("QR Code not found");
+      if (!qrcode) return Snackbar.warn("Warn: QR Code not caught on camera");
 
       const scanUrl = "/api/scan/" + encodeURIComponent(qrcode);
       const { data, err } = await api.get(scanUrl);
-      if (err) return Snackbar.err(err);
-      if (!data.qrcode)
-        return Snackbar.err("Error: 404 - QR Code not available");
+      if (err) return;
+      if (!data.qrcode) return Snackbar.err("Error: 404 - Not found (QR Code)");
 
       // Create QR Spot
       if (!data.qrspot) {
-        return dispatch("qrSpot/init", { qrcode }, { root: true });
+        return dispatch("qrSpot/prompt", { qrcode }, { root: true });
       }
 
       // QR Spot exists
@@ -47,9 +46,13 @@ export default {
                 type: "success",
                 action: async () => {
                   const { err } = await api.post("/api/qrshards", {
-                    body: JSON.stringify({ qrspotId: data.qrspot.id })
+                    body: JSON.stringify({
+                      qrspotId: data.qrspot.id,
+                      userCoords: JSON.parse(localStorage.userCoords || null)
+                    })
                   });
-                  if (err) return Snackbar.err(err);
+
+                  if (err) return;
                   EventBus.$emit(EVENT_TYPE.QR_SPOTS_UPDATE);
                   commit("popup/setPopup", false, { root: true });
                   commit("qrSpot/setModalState", QR_SPOT_PANEL.SHOW_DETAILS, {

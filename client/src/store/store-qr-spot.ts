@@ -44,7 +44,7 @@ export default {
     }
   },
   actions: {
-    async init({ state, commit }, { qrcode }) {
+    async prompt({ state, commit }, { qrcode }) {
       commit("setQRSpot", { qrcode });
       commit(
         "popup/setPopup",
@@ -80,7 +80,7 @@ export default {
       const { data: qrspot, err } = await api.post("/api/qrspots", {
         body: JSON.stringify(state.qrSpot)
       });
-      if (err) return Snackbar.err(err);
+      if (err) return;
       EventBus.$emit(EVENT_TYPE.QR_SPOTS_UPDATE);
       commit("setQRSpot", qrspot);
       commit("setMode", QR_SPOT_MODE.VIEW);
@@ -92,7 +92,7 @@ export default {
           body: JSON.stringify(state.qrSpot)
         }
       );
-      if (err) return Snackbar.err(err);
+      if (err) return;
       EventBus.$emit(EVENT_TYPE.QR_SPOTS_UPDATE);
       commit("setQRSpot", qrspot);
       commit("setMode", QR_SPOT_MODE.VIEW);

@@ -32,7 +32,7 @@ module.exports = ({ app, db, isLoggedIn }) => {
    */
 
   app.get("/api/user", (req, res) => {
-    const { user } = req;
+    const { user = {} } = req;
     if (!req.isAuthenticated()) return res.send({ isAuthenticated: false });
 
     return res.send(
@@ -50,7 +50,8 @@ module.exports = ({ app, db, isLoggedIn }) => {
    */
 
   app.delete("/api/user", isLoggedIn, async (req, res) => {
-    const { user, err } = await User.delete(req.user.id);
+    const { user: req_user = {} } = req
+    const { user, err } = await User.delete(req_user.id);
     if (err) return res.status(500).send(err);
     if (!user) return res.sendStatus(404);
     return res.send(user);
@@ -127,7 +128,7 @@ module.exports = ({ app, db, isLoggedIn }) => {
    */
 
   app.get("/api/leaderboard", isLoggedIn, async (_, res) => {
-    const { users, err } = await User.getAllByXp();
+    const { users, err } = await User.getAllOrderByXp();
     if (err) return res.status(500).send(err);
     return res.send(users.map(setProps(["lvl", "rank"])));
   });

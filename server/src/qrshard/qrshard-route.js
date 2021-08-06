@@ -1,5 +1,10 @@
+const { distance } = require("../utils");
+
+const qr_spot_distance = 100; // in meters
+
 module.exports = ({ app, db, isLoggedIn }) => {
   const QRShard = require("./qrshard-model")(db);
+  const QRSpot = require("../qrspot/qrspot-model")(db);
 
   /**
    * @swagger
@@ -23,6 +28,15 @@ module.exports = ({ app, db, isLoggedIn }) => {
 
   app.post("/api/qrshards", isLoggedIn, async (req, res) => {
     const { body, user = {} } = req;
+
+    if (process.env.NODE_ENV === "production") {
+      const { qrspot, err } = await QRSpot.getById(body.qrspot_id);
+      if (err) return res.status(500).send(err);
+      if (distance(body.user_coords, qrspot) > qr_spot_distance) {
+        return res.status(403).send(`Forbidden, distance to location is greater than ${qr_spot_distance}m`);
+      }
+    }
+
     const { qrshard, err } = await QRShard.create(user.id, body);
     if (err) return res.status(500).send(err);
     return res.send(qrshard);

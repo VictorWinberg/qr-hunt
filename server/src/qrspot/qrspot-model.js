@@ -85,8 +85,14 @@ module.exports = db => ({
     return { qrspots: rows, err };
   },
 
+  getById: async id => {
+    const sql = "SELECT * FROM qrspots WHERE id = $1 LIMIT 1";
+    const { rows, err } = await db.query(sql, [id]);
+    return { qrspot: rows[0], err };
+  },
+
   getByQRCode: async qrcode => {
-    const sql = "SELECT * FROM qrspots WHERE qrcode = $1";
+    const sql = "SELECT * FROM qrspots WHERE qrcode = $1 LIMIT 1";
     const { rows, err } = await db.query(sql, [qrcode]);
     return { qrspot: rows[0], err };
   }
