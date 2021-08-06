@@ -29,10 +29,10 @@ const apiFetch = (method?: string) => async (
       ...init
     });
     if (method !== "GET") EventBus.$emit(EVENT_TYPE.API_REQUEST_UPDATE);
-    if (!response.ok) {
-      throw new Error(`${response.status} - ${response.statusText}`);
-    }
     const data = await response.text();
+    if (!response.ok) {
+      throw new Error(`${response.status} - ${data || response.statusText}`);
+    }
     return { data: isJson(data) ? JSON.parse(data) : data, err: false };
   } catch (err) {
     Snackbar.err(err);

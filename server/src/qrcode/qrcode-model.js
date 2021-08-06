@@ -25,7 +25,7 @@ module.exports = (db) => ({
   },
 
   getByUUID: async (uuid) => {
-    const sql = "SELECT * FROM qrcodes WHERE uuid = $1";
+    const sql = "SELECT * FROM qrcodes WHERE uuid = $1 LIMIT 1";
     const { rows, err } = await db.query(sql, [uuid]);
     return { qrcode: rows[0], err };
   },

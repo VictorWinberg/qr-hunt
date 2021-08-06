@@ -27,10 +27,10 @@ const achievements = {
       res.statusCode === 200
     ];
   },
-  COLLECT_THREE_IN_DAY: ({ req }) => {
+  COLLECT_THREE_IN_DAY: () => {
     return false;
   },
-  COLLECT_MANY_IN_DAY: ({ req }) => {
+  COLLECT_MANY_IN_DAY: () => {
     return false;
   },
   COLLECT_AT_MORNING: ({ req, res }) => {
@@ -60,15 +60,17 @@ const achievements = {
       res.statusCode === 200
     ];
   },
-  FIRST_RECOLLECT: ({ req }) => {
+  FIRST_RECOLLECT: () => {
     return false;
   },
-  FIRST_HINT_USED: ({ req }) => {
+  FIRST_HINT_USED: () => {
     return false;
   }
 };
 
 module.exports = ({ pg, db }) => async (req, res, next) => {
+  const { method, url, user = {} } = req;
+
   var fnJson = res.json.bind(res);
   res.json = json => {
     res.body = json;
@@ -87,13 +89,12 @@ module.exports = ({ pg, db }) => async (req, res, next) => {
           INSERT INTO user_achievements (user_id, achievement_name) VALUES ($1, $2)
           ON CONFLICT DO NOTHING RETURNING *`;
 
-        const { err } = await db.query(sql, [req.user.id, key]);
+        const { err } = await db.query(sql, [user.id, key]);
         if (err) console.error(err);
       }
     });
   });
 
-  const { method, url } = req;
   switch (true) {
     case method === "GET" && Boolean(url.match("^/api/achievements/?$")): {
       if (!req.isAuthenticated()) return res.sendStatus(401);
@@ -104,7 +105,7 @@ module.exports = ({ pg, db }) => async (req, res, next) => {
         FULL JOIN achievements ON user_achievements.achievement_name = achievements.name
         WHERE popup = 't' AND user_id = $1`;
 
-      const { rows: achievements, err } = await db.query(sql, [req.user.id]);
+      const { rows: achievements, err } = await db.query(sql, [user.id]);
       if (err) return res.status(500).send(err);
       return res.send(achievements);
     }
@@ -120,7 +121,7 @@ module.exports = ({ pg, db }) => async (req, res, next) => {
       const {
         rows: [achievement],
         err
-      } = await db.query(sql, [req.user.id]);
+      } = await db.query(sql, [user.id]);
       if (err) return res.status(500).send(err);
       if (!achievement) return res.sendStatus(204);
       return res.send(achievement);
@@ -137,7 +138,7 @@ module.exports = ({ pg, db }) => async (req, res, next) => {
       const {
         rows: [achievement],
         err
-      } = await db.query(sql, [req.user.id, name]);
+      } = await db.query(sql, [user.id, name]);
       if (err) return res.status(500).send(err);
       if (!achievement) return res.sendStatus(404);
       return res.send(achievement);
@@ -155,7 +156,7 @@ module.exports = ({ pg, db }) => async (req, res, next) => {
       const {
         rows: [achievement],
         err
-      } = await db.query(sql, [req.user.id, name.toUpperCase()]);
+      } = await db.query(sql, [user.id, name.toUpperCase()]);
       if (err) return res.status(500).send(err);
       if (!achievement) return res.sendStatus(204);
       return res.send(achievement);
