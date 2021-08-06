@@ -46,9 +46,39 @@ EventBus.$on(EVENT_TYPE.API_REQUEST_UPDATE, () => {
   setTimeout(newAchievements, 1000);
 });
 
-const isThankful = async () => {
-  if (Math.random() > 0.1) return;
+const levelUp = async (lvl: number) => {
+  Snackbar.show({
+    text: `
+    <div class="achievement-top"><p>Level up!</p></div>
+    <p style="color: #a67b1e">
+      <i class="fas fa-star"></i>
+      <i class="fas fa-star fa-2x"></i>
+      <i class="fas fa-star"></i>
+    </p>
+    <h2>Level ${lvl}</h2>
+    Congratulations! You achieved a new level!
+  `,
+    textColor: "black",
+    actionText: "ok",
+    actionTextColor: "white",
+    backgroundColor: "rgba(36,36,36,0.9)",
+    duration: 0,
+    pos: undefined,
+    customClass: "achievement-popup",
+    onActionClick: async () => {
+      // @ts-ignore
+      Snackbar.close();
 
+      setTimeout(newAchievements, 3 * 1000);
+    }
+  });
+};
+
+EventBus.$on(EVENT_TYPE.LEVEL_UP, (lvl: number) => {
+  setTimeout(() => levelUp(lvl), 1000);
+});
+
+const isThankful = async () => {
   const thankful = await api.get("/api/achievements/thankful");
   if (!thankful.err && !thankful.data) {
     Snackbar.show({
@@ -61,4 +91,6 @@ const isThankful = async () => {
   }
 };
 
-isThankful();
+if (Math.random() < 0.1) {
+  setTimeout(isThankful, 30 * 1000);
+}
