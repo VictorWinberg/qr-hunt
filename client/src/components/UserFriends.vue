@@ -1,18 +1,26 @@
 <template>
   <div>
     <h2 class="friends__title">Friends</h2>
-    <ul>
-      <li v-for="user in friends" :key="user.id">
-        <div
-          class="friend__photo"
-          :style="{
-            backgroundImage: `url(${user.photo})`,
-            marginBottom: '-.5em' // Todo: change this fixed margin!
-          }"
-        ></div>
-        <span>{{ user.name || user.username }} - Lvl: {{ user.lvl }}</span>
-      </li>
-    </ul>
+    <table class="leaderboard__table">
+      <tr>
+        <th style="width: 0;"></th>
+        <th>User</th>
+        <th align="right">Lvl</th>
+      </tr>
+      <tr v-for="user in friends" :key="user.id">
+        <td style="width: 0;">
+          <div
+            class="friend__photo"
+            :style="{
+              backgroundImage: `url(${user.photo})`,
+              marginBottom: '-.5em' // Todo: change this fixed margin!
+            }"
+          ></div>
+        </td>
+        <td>{{ user.name || user.username }}</td>
+        <td align="right">{{ user.lvl }}</td>
+      </tr>
+    </table>
   </div>
 </template>
 

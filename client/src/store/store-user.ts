@@ -1,3 +1,6 @@
+import { EVENT_TYPE } from "@/constants";
+import EventBus from "@/plugins/event-bus";
+
 const { userCoords } = localStorage;
 
 export default {
@@ -13,9 +16,18 @@ export default {
   mutations: {
     setAuth(state, payload) {
       const { isAuthenticated = false, ...user } = payload;
-      state.isAuthenticated = isAuthenticated;
-      state.status = isAuthenticated ? "success" : "unauthenticated";
-      state.user = isAuthenticated ? user : state.user;
+      if (user.lvl > state.user.lvl)
+        EventBus.$emit(EVENT_TYPE.LEVEL_UP, user.lvl);
+
+      if (isAuthenticated) {
+        state.isAuthenticated = true;
+        state.status = "success";
+        state.user = user;
+      } else {
+        state.isAuthenticated = false;
+        state.status = "unauthenticated";
+        state.user = {};
+      }
     },
     setCoords(state, { latitude, longitude }) {
       state.coords = { lat: latitude, lng: longitude };

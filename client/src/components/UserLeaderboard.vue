@@ -6,7 +6,7 @@
         <th>Rank</th>
         <th style="width: 0;"></th>
         <th>User</th>
-        <th>Lvl</th>
+        <th align="right">Lvl</th>
       </tr>
       <tr v-for="user in leaderboard" :key="user.id">
         <td>{{ user.rank }}</td>
@@ -20,7 +20,7 @@
           ></div>
         </td>
         <td>{{ user.name || user.username }}</td>
-        <td>{{ user.lvl }}</td>
+        <td align="right">{{ user.lvl }}</td>
       </tr>
     </table>
   </div>

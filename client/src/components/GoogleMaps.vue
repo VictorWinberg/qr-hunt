@@ -106,10 +106,10 @@ export default Vue.extend({
   },
   watch: {
     mapCoords(newCoords) {
-      localStorage.mapCoords = JSON.stringify(newCoords);
+      localStorage.setItem("mapCoords", JSON.stringify(newCoords));
     },
     mapZoom(newZoom) {
-      localStorage.mapZoom = newZoom;
+      localStorage.setItem("mapZoom", newZoom);
     },
     panel() {
       if (this.panel === QR_SPOT_PANEL.SHOW_DETAILS) {
@@ -194,7 +194,7 @@ export default Vue.extend({
     },
     centerMapToUser() {
       this.map.panTo(new google.maps.LatLng(this.userCoords));
-      localStorage.mapCoords = JSON.stringify(this.userCoords);
+      localStorage.setItem("mapCoords", JSON.stringify(this.userCoords));
       if (this.map.zoom < 15) this.map.setZoom(15);
     }
   }
