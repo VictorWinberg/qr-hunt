@@ -9,10 +9,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: hmarr/auto-approve-action@v2.1.0
-        if: github.event.action == 'labeled' && github.event.label.name == 'Plz Approve!'
+        if: github.event.action == 'labeled' && github.event.label.name == 'Approve'
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions-ecosystem/action-remove-labels@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          labels: Plz Approve!
+          labels: Approve
