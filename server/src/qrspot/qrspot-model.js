@@ -63,7 +63,7 @@ module.exports = db => ({
 
   deactivate: async (userId, id) => {
     const sql = `
-      UPDATE qrspots SET active = FALSE
+      UPDATE qrspots SET active = FALSE, qrcode = NULL
       WHERE id = ${id} AND owner_id = ${userId}
       RETURNING *`;
 
@@ -86,13 +86,13 @@ module.exports = db => ({
   },
 
   getById: async id => {
-    const sql = "SELECT * FROM qrspots WHERE id = $1 LIMIT 1";
+    const sql = "SELECT * FROM qrspots WHERE id = $1 AND active = TRUE LIMIT 1";
     const { rows, err } = await db.query(sql, [id]);
     return { qrspot: rows[0], err };
   },
 
   getByQRCode: async qrcode => {
-    const sql = "SELECT * FROM qrspots WHERE qrcode = $1 LIMIT 1";
+    const sql = "SELECT * FROM qrspots WHERE qrcode = $1 AND active = TRUE LIMIT 1";
     const { rows, err } = await db.query(sql, [qrcode]);
     return { qrspot: rows[0], err };
   }
