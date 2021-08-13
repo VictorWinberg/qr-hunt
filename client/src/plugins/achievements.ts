@@ -3,6 +3,8 @@ import { EVENT_TYPE } from "@/constants";
 import { api } from "@/utils";
 import EventBus from "./event-bus";
 
+const delay = 3 * 1000;
+
 export const newAchievements = async () => {
   // Don't show achievements when in intro mode
   if (new URLSearchParams(window.location.search).get("intro")) return;
@@ -35,15 +37,15 @@ export const newAchievements = async () => {
         // @ts-ignore
         Snackbar.close();
 
-        setTimeout(newAchievements, 3 * 1000);
+        setTimeout(newAchievements, delay);
       }
     });
   }
 };
 
-setTimeout(newAchievements, 2 * 1000);
+setTimeout(newAchievements, delay);
 EventBus.$on(EVENT_TYPE.API_REQUEST_UPDATE, () => {
-  setTimeout(newAchievements, 1000);
+  setTimeout(newAchievements, delay);
 });
 
 const levelUp = async (lvl: number) => {
@@ -69,13 +71,13 @@ const levelUp = async (lvl: number) => {
       // @ts-ignore
       Snackbar.close();
 
-      setTimeout(newAchievements, 3 * 1000);
+      setTimeout(newAchievements, delay);
     }
   });
 };
 
 EventBus.$on(EVENT_TYPE.LEVEL_UP, (lvl: number) => {
-  setTimeout(() => levelUp(lvl), 1000);
+  setTimeout(() => levelUp(lvl), delay);
 });
 
 const isThankful = async () => {
