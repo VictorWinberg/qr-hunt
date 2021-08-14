@@ -1,5 +1,6 @@
 import { EVENT_TYPE } from "@/constants";
-import Snackbar from "@/plugins/snackbar";
+import Snackbar from "node-snackbar";
+import CustomSnackbar from "@/plugins/snackbar";
 import EventBus from "@/plugins/event-bus";
 
 export const isToday = date =>
@@ -35,7 +36,7 @@ const apiFetch = (method?: string) => async (
     }
     return { data: isJson(data) ? JSON.parse(data) : data, err: false };
   } catch (err) {
-    Snackbar.err(err);
+    CustomSnackbar.err(err);
     return { data: null, err };
   }
 };
@@ -250,4 +251,53 @@ export function distance({ lat: lat1, lng: lng1 }, { lat: lat2, lng: lng2 }) {
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   const d = R * c;
   return d;
+}
+
+export function notifyAppUpdate(store, appVersion) {
+  if (localStorage.appVersion !== appVersion) {
+    Snackbar.show({
+      text: "App has been updated - " + appVersion,
+      pos: "top-center",
+      actionText: "Read <i class='fas fa-file-alt'></i>",
+      actionTextColor: "",
+      duration: 60 * 1000,
+      onClose: () => {
+        localStorage.setItem("appVersion", appVersion);
+      },
+      onActionClick: async () => {
+        // @ts-ignore
+        Snackbar.close();
+
+        const url =
+          "//api.github.com/repos/VictorWinberg/qr-hunt/releases/latest";
+        const res = await fetch(url);
+        const json = await res.json();
+        store.commit("popup/setPopup", {
+          title: "Release " + appVersion,
+          subtitle: json.body
+            .replace(/##([^\r\n]+)/g, "<h3>$1</h3>")
+            .replace(/(\*\*|__)(?=\S)([^\r]*?\S[*_]*)\1/g, "<b>$2</b>")
+            .replace(/\r\n\r\n/g, "<br/>")
+            .replace(/<\/h3><br\/>/g, "</h3>"),
+          options: [
+            {
+              name: "Close",
+              type: "disabled",
+              action: async () => {
+                store.commit("popup/setPopup", false);
+              }
+            },
+            {
+              name: "Read More",
+              type: "success",
+              action: async () => {
+                store.commit("popup/setPopup", false);
+                location.href = "//github.com/VictorWinberg/qr-hunt/releases";
+              }
+            }
+          ]
+        });
+      }
+    });
+  }
 }

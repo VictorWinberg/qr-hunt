@@ -8,9 +8,8 @@
         <div class="popup__title">
           {{ popup.title }}
         </div>
-        <div class="popup__subtitle">
-          {{ popup.subtitle }}
-        </div>
+        <!-- eslint-disable-next-line vue/no-v-html -->
+        <div class="popup__subtitle" v-html="popup.subtitle"></div>
         <div class="popup__options">
           <div
             v-for="(option, index) in popup.options"
@@ -42,7 +41,7 @@ export default {
 <style lang="scss">
 .popup-overlay {
   position: absolute;
-  z-index: 1;
+  z-index: 10;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -55,6 +54,8 @@ export default {
   position: relative;
   width: 100%;
   max-width: 500px;
+  max-height: 100%;
+  overflow-y: scroll;
   margin: 20px;
   color: $text-color;
   background-color: $primary-color;

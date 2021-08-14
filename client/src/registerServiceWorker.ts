@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 
 import { register } from "register-service-worker";
-import Snackbar from "node-snackbar";
+import Snackbar from "@/plugins/snackbar";
 
 if (process.env.NODE_ENV === "production") {
   register(`${process.env.BASE_URL}service-worker.js`, {
@@ -22,17 +22,12 @@ if (process.env.NODE_ENV === "production") {
     },
     updated(): void {
       console.log("New content is available; please refresh.");
-      Snackbar.show({
-        text: "An update is available, please log out and in again!",
-        pos: "top-center",
-        actionText: "<i class='fas fa-times-circle'></i>",
-        actionTextColor: ""
-      });
     },
     offline(): void {
       console.log(
         "No internet connection found. App is running in offline mode."
       );
+      Snackbar.warn("No internet connection found. App is offline.");
     },
     error(error): void {
       console.error("Error during service worker registration:", error);

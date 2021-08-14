@@ -14,6 +14,7 @@
 <script>
 import Vue from "vue";
 import { mapState } from "vuex";
+import { notifyAppUpdate } from "@/utils";
 import Header from "@/components/Header.vue";
 import Footer from "@/components/Footer.vue";
 import SignIn from "@/components/SignIn.vue";
@@ -26,6 +27,9 @@ export default Vue.extend({
   computed: {
     ...mapState("scan", ["scanning"]),
     ...mapState("popup", ["popup"])
+  },
+  created() {
+    notifyAppUpdate(this.$store, APP_VERSION);
   }
 });
 </script>
