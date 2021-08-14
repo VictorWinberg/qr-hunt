@@ -31,7 +31,8 @@ export default Vue.extend({
     ...mapMutations("user", ["setAuth"]),
     async fetchUser() {
       const user = await api.get("/api/user");
-      if (!user.err) this.setAuth(user.data);
+      if (user.err) return;
+      this.setAuth(user.data);
     }
   }
 });

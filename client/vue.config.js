@@ -2,7 +2,8 @@
 const webpack = require("webpack");
 const appVersion = require("child_process")
   .execSync("git describe --tags --abbrev=0")
-  .toString();
+  .toString()
+  .trim();
 
 module.exports = {
   configureWebpack: {
