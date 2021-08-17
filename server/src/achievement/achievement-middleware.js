@@ -1,76 +1,8 @@
-const achievements = {
-  USER_HAS_SIGNED_UP: ({ req }) => {
-    return req.path === "/auth/google/callback";
-  },
-  THANKFUL: ({ req }) => {
-    return [
-      req.method === "POST",
-      req.path.toLowerCase() === "/api/achievements/thankful"
-    ];
-  },
-  FIRST_QRSPOT_FOUND: ({ req, res }) => {
-    return [
-      (req.route || {}).path === "/api/scan/:id",
-      (res.body || {}).qrspot
-    ];
-  },
-  QR_CODE_NOT_FOUND: ({ req, res }) => {
-    return [
-      (req.route || {}).path === "/api/scan/:id",
-      !(res.body || {}).qrcode
-    ];
-  },
-  FIRST_QRSPOT_CREATED: ({ req, res }) => {
-    return [
-      req.method === "POST",
-      req.path.toLowerCase() === "/api/qrspots",
-      res.statusCode === 200
-    ];
-  },
-  COLLECT_THREE_IN_DAY: () => {
-    return false;
-  },
-  COLLECT_MANY_IN_DAY: () => {
-    return false;
-  },
-  COLLECT_AT_MORNING: ({ req, res }) => {
-    const hours = new Date().getHours();
-    return [
-      hours >= 3 && hours < 6,
-      req.method === "POST",
-      req.path.toLowerCase() === "/api/qrshards",
-      res.statusCode === 200
-    ];
-  },
-  COLLECT_AT_LUNCH: ({ req, res }) => {
-    const hours = new Date().getHours();
-    return [
-      hours >= 12 && hours < 13,
-      req.method === "POST",
-      req.path.toLowerCase() === "/api/qrshards",
-      res.statusCode === 200
-    ];
-  },
-  COLLECT_AT_NIGHT: ({ req, res }) => {
-    const hours = new Date().getHours();
-    return [
-      hours >= 22 && hours < 3,
-      req.method === "POST",
-      req.path.toLowerCase() === "/api/qrshards",
-      res.statusCode === 200
-    ];
-  },
-  FIRST_RECOLLECT: () => {
-    return false;
-  },
-  FIRST_HINT_USED: () => {
-    return false;
-  }
-};
+const achievements = require("./achievement-list");
+const achievementsCal = require("./achievement-cal");
+const { haveCalled } = require("../utils");
 
 module.exports = ({ pg, db }) => async (req, res, next) => {
-  const { method, url, user = {} } = req;
-
   var fnJson = res.json.bind(res);
   res.json = json => {
     res.body = json;
@@ -78,6 +10,7 @@ module.exports = ({ pg, db }) => async (req, res, next) => {
   };
 
   res.on("finish", async () => {
+    const { user = {} } = req;
     if (!req.isAuthenticated()) return;
 
     Object.entries(achievements).forEach(async ([key, fn]) => {
@@ -93,8 +26,19 @@ module.exports = ({ pg, db }) => async (req, res, next) => {
         if (err) console.error(err);
       }
     });
+
+    const achievement = achievementsCal[new Date().toISOString().slice(5, 10)];
+    if (haveCalled(req, res)("/api/qrshards", "POST")) {
+      const sql = `
+        INSERT INTO user_achievements (user_id, achievement_name) VALUES ($1, $2)
+        ON CONFLICT DO NOTHING RETURNING *`;
+
+      const { err } = await db.query(sql, [user.id, achievement]);
+      if (err) console.error(err);
+    }
   });
 
+  const { method, url, user = {} } = req;
   switch (true) {
     case method === "GET" && Boolean(url.match("^/api/achievements/?$")): {
       if (!req.isAuthenticated()) return res.sendStatus(401);

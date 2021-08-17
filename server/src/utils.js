@@ -4,8 +4,8 @@ const snakecaseKeys = require("snakecase-keys");
 const camelcaseKeys = require("camelcase-keys");
 
 function keyValuePairs(valid, obj) {
-  const keys = Object.keys(obj).filter((key) => valid.includes(key));
-  const values = keys.map((key) => obj[key]);
+  const keys = Object.keys(obj).filter(key => valid.includes(key));
+  const values = keys.map(key => obj[key]);
   const indices = keys.map((_, i) => `$${i + 1}`);
   const keyIndices = keys.map((key, i) => `${key} = $${i + 1}`);
   return { keys, values, indices, keyIndices };
@@ -18,7 +18,7 @@ function isLoggedIn(req, res, next) {
   return next();
 }
 
-const makeDbQuery = (pg) => async (query, values) => {
+const makeDbQuery = pg => async (query, values) => {
   try {
     const { rows } = await pg.query(query, values);
     return { rows };
@@ -30,7 +30,7 @@ const makeDbQuery = (pg) => async (query, values) => {
 const camelcaseMiddleware = options => [
   (_req, res, next) => {
     const send = res.send;
-    res.send = function (body) {
+    res.send = function(body) {
       if (typeof body === "object" && body != null) {
         body = camelcaseKeys(body, options);
       }
@@ -49,7 +49,8 @@ const camelcaseMiddleware = options => [
   }
 ];
 
-const isToday = (date) => new Date(date).toDateString() === new Date().toDateString();
+const isToday = date =>
+  new Date(date).toDateString() === new Date().toDateString();
 
 function distance({ lat: lat1, lng: lng1 }, { lat: lat2, lng: lng2 }) {
   const R = 6371e3;
@@ -66,11 +67,19 @@ function distance({ lat: lat1, lng: lng1 }, { lat: lat2, lng: lng2 }) {
   return d;
 }
 
+const haveCalled = (req, res) => (url, method = "GET", status = 200) =>
+  [
+    (req.route || {}).path === url,
+    req.method === method,
+    res.statusCode === status
+  ].every(Boolean);
+
 module.exports = {
   keyValuePairs,
   isLoggedIn,
   makeDbQuery,
   isToday,
   camelcaseMiddleware,
-  distance
+  distance,
+  haveCalled
 };
