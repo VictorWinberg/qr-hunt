@@ -93,8 +93,8 @@ export default Vue.extend({
       tabContentHeight: 0,
       tabs: [
         { id: 0, icon: "fa fa-award", component: "user-achievements" },
-        { id: 2, icon: "fa fa-trophy", component: "user-leaderboard" },
-        { id: 3, icon: "fa fa-cog", component: "user-settings" }
+        { id: 1, icon: "fa fa-trophy", component: "user-leaderboard" },
+        { id: 2, icon: "fa fa-cog", component: "user-settings" }
       ]
     };
   },
