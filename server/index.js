@@ -7,7 +7,6 @@ const { Client: PGClient } = require("pg");
 const passport = require("passport");
 
 const swagger = require("./swagger");
-const achievements = require("./src/achievements");
 const utils = require("./src/utils");
 
 dotenv.config({ path: path.resolve(__dirname, "..", ".env") });
@@ -61,7 +60,7 @@ const props = {
 };
 
 // achievements
-app.use(achievements(props));
+app.use(require("./src/achievement/achievement-middleware")(props));
 
 // routes
 require("./src/auth/auth")(props);

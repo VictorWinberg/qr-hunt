@@ -1,0 +1,13 @@
+module.exports = {
+  "01-01": "NEW_YEAR",
+  "02-14": "VALENTINES_DAY",
+  "03-08": "INTERNATIONAL_WOMEN_DAY",
+  "03-14": "PI_DAY",
+  "04-30": "VALBORG",
+  "06-06": "SWEDEN_NATIONAL_DAY",
+  "10-31": "HALLOWEEN",
+  "12-24": "CHRISTMAS",
+  "12-25": "CHRISTMAS",
+  "12-26": "CHRISTMAS",
+  "12-31": "NEW_YEAR"
+};
