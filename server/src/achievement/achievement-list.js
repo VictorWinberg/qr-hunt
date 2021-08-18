@@ -40,7 +40,7 @@ module.exports = {
     const hours = new Date().getHours();
     return [
       haveCalled(req, res)("/api/qrshards", "POST"),
-      hours >= 22 && hours < 3
+      hours >= 22 || hours < 3
     ];
   },
   FIRST_RECOLLECT: () => {
