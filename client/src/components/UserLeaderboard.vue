@@ -12,7 +12,7 @@
         <td>{{ user.rank }}</td>
         <td style="width: 0;">
           <div
-            class="friend__photo"
+            class="user__photo"
             :style="{
               backgroundImage: `url(${user.photo})`,
               marginBottom: '-.5em' // Todo: remove this line!
@@ -62,5 +62,15 @@ export default {
   tr {
     text-align: left;
   }
+}
+
+.user__photo {
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  margin-right: 0.5em;
+  background-position: center;
+  background-size: cover;
+  border-radius: 50%;
 }
 </style>

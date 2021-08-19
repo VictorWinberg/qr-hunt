@@ -78,14 +78,12 @@ import Vue from "vue";
 import { mapState } from "vuex";
 import { md5 } from "@/utils";
 import UserAchievements from "@/components/UserAchievements";
-import UserFriends from "@/components/UserFriends";
 import UserLeaderboard from "@/components/UserLeaderboard";
 import UserSettings from "@/components/UserSettings";
 
 export default Vue.extend({
   components: {
     UserAchievements,
-    UserFriends,
     UserLeaderboard,
     UserSettings
   },
@@ -95,9 +93,8 @@ export default Vue.extend({
       tabContentHeight: 0,
       tabs: [
         { id: 0, icon: "fa fa-award", component: "user-achievements" },
-        { id: 1, icon: "fa fa-users", component: "user-friends" },
-        { id: 2, icon: "fa fa-trophy", component: "user-leaderboard" },
-        { id: 3, icon: "fa fa-cog", component: "user-settings" }
+        { id: 1, icon: "fa fa-trophy", component: "user-leaderboard" },
+        { id: 2, icon: "fa fa-cog", component: "user-settings" }
       ]
     };
   },
