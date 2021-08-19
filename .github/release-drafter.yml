@@ -5,7 +5,7 @@ categories:
     label: 'Type: Feature'
   - title: '🐛 Bug Fixes'
     label: 'Type: Bug'
-  - title: ':octocat: Github Actions'
+  - title: '🤖 Github Actions'
     label: 'Type: Action'
   - title: '📚 Dependencies'
     label: 'Type: Dependencies'
