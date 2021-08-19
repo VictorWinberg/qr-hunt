@@ -278,6 +278,7 @@ export function notifyAppUpdate(store, appVersion) {
             .replace(/##([^\r\n]+)/g, "<h3>$1</h3>")
             .replace(/(\*\*|__)(?=\S)([^\r]*?\S[*_]*)\1/g, "<b>$2</b>")
             .replace(/\r\n\r\n/g, "<br/>")
+            .replace(/\r\n/g, "<br/>")
             .replace(/<\/h3><br\/>/g, "</h3>"),
           options: [
             {
