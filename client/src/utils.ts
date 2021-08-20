@@ -254,6 +254,9 @@ export function distance({ lat: lat1, lng: lng1 }, { lat: lat2, lng: lng2 }) {
 }
 
 export function notifyAppUpdate(store, appVersion) {
+  // Don't show app updates when in intro mode
+  if (new URLSearchParams(window.location.search).get("intro")) return;
+
   if (localStorage.appVersion !== appVersion) {
     Snackbar.show({
       text: "App has been updated - " + appVersion,
