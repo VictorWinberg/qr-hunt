@@ -40,7 +40,8 @@ setTimeout(() => {
               intro:
                 "Click down here to scan a QR code you found. <br/><br/>" +
                 "<i>They look like image below, with a magnet attached to a metal object:</i> <br/><br/>" +
-                "<img width='50%' src='/print-qr-code.png' style='display: block; margin: auto;'/>"
+                "<img width='50%' src='/print-qr-code.png' style='display: block; margin: auto;'/>",
+              position: "top"
             },
             {
               title: "You",
@@ -48,7 +49,7 @@ setTimeout(() => {
               intro:
                 "Tip: click on the position button to center your location<br/><br/>" +
                 `<i>This icon: <img src='${require("@/assets/position-button.svg")}' style='vertical-align: middle'/>`,
-              position: "left"
+              position: "top"
             },
             {
               title: "Map page",
@@ -94,36 +95,57 @@ setTimeout(() => {
             {
               title: "User profile",
               element: document.querySelector(".user-header"),
-              intro: "Here is your user profile. Say hello to yourself! 👋",
-              position: "bottom-middle-aligned"
+              intro: "Here is your user profile. Say hello to yourself! 👋"
             },
             {
               title: "User level",
               element: document.querySelector(".user-xp"),
-              intro: "Here is your user level and xp shown",
-              position: "bottom-middle-aligned"
+              intro: "Here is your user level and xp shown"
             },
             {
               title: "Achievements",
-              element: document.querySelector(".tabs__tab-option:nth-child(1)"),
-              intro: "Click here to see your achievements (currently active)"
+              element: document.querySelector(".tabs .fa.fa-award"),
+              intro: "Click here to see your achievements",
+              position: "top"
             },
-            {
-              title: "Friends",
-              element: document.querySelector(".tabs__tab-option:nth-child(2)"),
-              intro: "Click here to see your friends and their stats"
-            },
+            // {
+            //   title: "Friends",
+            //   element: document.querySelector(".tabs ..?"),
+            //   intro: "Click here to see your friends and their stats",
+            //   position: "top"
+            // },
             {
               title: "Leaderboard",
-              element: document.querySelector(".tabs__tab-option:nth-child(3)"),
-              intro: "Click here to see the current leaderboard and their stats"
+              element: document.querySelector(".tabs .fa.fa-trophy"),
+              intro:
+                "Click here to see the current leaderboard and their stats",
+              position: "top"
             },
             {
               title: "Settings",
-              element: document.querySelector(".tabs__tab-option:nth-child(4)"),
+              element: document.querySelector(".tabs .fa.fa-cog"),
               intro:
                 "Click here to see user settings - " +
-                "help, log out and delete account"
+                "help, log out and delete account",
+              position: "top"
+            },
+            {
+              title: "Help",
+              element: document.querySelector(".help-me"),
+              intro:
+                "If your want this guide again, please press this help button"
+            },
+            {
+              title: "Logout",
+              element: document.querySelector(".log-out"),
+              intro: "Click here to log out"
+            },
+            {
+              title: "Delete",
+              element: document.querySelector(".user-remove"),
+              intro:
+                "This button will delete your account " +
+                "and all of your data!"
             },
             {
               title: "That's all! 👋",
@@ -139,6 +161,12 @@ setTimeout(() => {
           setTimeout(() => {
             window.location.href = "/";
           }, 10);
+        })
+        .onchange(el => {
+          const doClick = ["fa-award", "fa-trophy", "fa-cog"];
+          if (doClick.some(cl => el.className.includes(cl))) {
+            el.click();
+          }
         })
         .start();
   }
