@@ -2,7 +2,7 @@ const { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, HA_BEARER_TOKEN } = process.env;
 
 const GoogleStrategy = require("passport-google-oauth").OAuth2Strategy;
 const fetch = require("node-fetch");
-const notify = "https://home.zolly.ml/api/services/notify/notify"
+const notify = "https://home.zolly.ml/api/services/notify/notify";
 
 const get = (p, o) => p.reduce((xs, x) => (xs && xs[x] ? xs[x] : null), o);
 
@@ -24,18 +24,22 @@ module.exports = (passport, db) => {
     new GoogleStrategy(
       {
         clientID: GOOGLE_CLIENT_ID,
-        clientSecret: GOOGLE_CLIENT_SECRET,
+        clientSecret: GOOGLE_CLIENT_SECRET
       },
       (token, refreshToken, profile, done) => {
         // make the code asynchronous
         // User.findOne won't fire until we have all our data back from Google
         process.nextTick(async () => {
           const email = get(["emails", 0, "value"], profile); // pull the first email
+          const username = email.split("@").shift();
+          const name = get(["displayName"], profile);
+          const photo = get(["photos", 0, "value"], profile);
 
           const { user, err } = await User.getByEmail(email);
           if (err) return done(err);
 
           if (user) {
+            await User.update(user.id, {name, photo});
             // all is well, return successful user
             return done(null, user);
           }
@@ -43,10 +47,10 @@ module.exports = (passport, db) => {
           // create the user
           const newUser = {
             email,
-            username: email.split("@").shift(),
-            name: get(["displayName"], profile),
-            photo: get(["photos", 0, "value"], profile),
-            isNew: true,
+            username,
+            name,
+            photo,
+            isNew: true
           };
 
           const dbCreate = await User.create(newUser);
@@ -55,11 +59,11 @@ module.exports = (passport, db) => {
             fetch(notify, {
               method: "POST",
               headers: {
-                Authorization: "Bearer " + HA_BEARER_TOKEN,
+                Authorization: "Bearer " + HA_BEARER_TOKEN
               },
               body: JSON.stringify({
-                "title": "QR-Hunt",
-                "message": `New user: ${email}`
+                title: "QR-Hunt",
+                message: `New user: ${email}`
               })
             });
           }

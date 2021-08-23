@@ -69,6 +69,7 @@ export default {
   width: 32px;
   height: 32px;
   margin-right: 0.5em;
+  background-color: $grey-200;
   background-position: center;
   background-size: cover;
   border-radius: 50%;
