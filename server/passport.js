@@ -39,19 +39,13 @@ module.exports = (passport, db) => {
           if (err) return done(err);
 
           if (user) {
-            await User.update(user.id, {name, photo});
+            await User.update(user.id, { name, photo });
             // all is well, return successful user
             return done(null, user);
           }
           // if there is no user with that email
           // create the user
-          const newUser = {
-            email,
-            username,
-            name,
-            photo,
-            isNew: true
-          };
+          const newUser = { email, username, name, photo, isNew: true };
 
           const dbCreate = await User.create(newUser);
 
