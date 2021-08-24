@@ -47,6 +47,14 @@ module.exports = db => ({
     return { user: rows[0], err };
   },
 
+  update: async (id, { name, photo }) => {
+    const sql = `
+        UPDATE users SET (name, photo) = ($2, $3)
+        WHERE id = $1 RETURNING *`;
+    const { rows, err } = await db.query(sql, [id, name, photo]);
+    return { user: rows[0], err };
+  },
+
   getById: async userId => {
     const sql = `${SELECT_USERS_SQL}
         WHERE id = $1 LIMIT 1`;
