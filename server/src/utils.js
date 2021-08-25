@@ -69,7 +69,7 @@ function distance({ lat: lat1, lng: lng1 }, { lat: lat2, lng: lng2 }) {
 
 const haveCalled = (req, res) => (url, method = "GET", status = 200) =>
   [
-    (req.route || {}).path === url,
+    ((req.route || {}).path || req.path) === url,
     req.method === method,
     res.statusCode === status
   ].every(Boolean);
