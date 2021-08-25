@@ -67,7 +67,7 @@ module.exports = ({ pg, db }) => async (req, res, next) => {
         err
       } = await db.query(sql, [user.id]);
       if (err) return res.status(500).send(err);
-      if (!achievement) return res.sendStatus(200);
+      if (!achievement) return res.sendStatus(204);
       return res.send(achievement);
     }
     case method === "POST" && Boolean(url.match("^/api/achievements/new/?$")): {
@@ -102,7 +102,7 @@ module.exports = ({ pg, db }) => async (req, res, next) => {
         err
       } = await db.query(sql, [user.id, name.toUpperCase()]);
       if (err) return res.status(500).send(err);
-      if (!achievement) return res.sendStatus(200);
+      if (!achievement) return res.sendStatus(204);
       return res.send(achievement);
     }
   }

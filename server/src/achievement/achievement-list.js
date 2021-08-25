@@ -5,7 +5,7 @@ module.exports = {
     return haveCalled(req, res)("/auth/google/callback", "GET", 302);
   },
   THANKFUL: ({ req, res }) => {
-    return haveCalled(req, res)("/api/achievements/thankful", "POST");
+    return haveCalled(req, res)("/api/achievements/thankful", "POST", 204);
   },
   FIRST_QRSPOT_FOUND: ({ req, res }) => {
     return [haveCalled(req, res)("/api/scan/:id"), (res.body || {}).qrspot];
