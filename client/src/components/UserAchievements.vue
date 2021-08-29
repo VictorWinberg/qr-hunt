@@ -46,7 +46,11 @@ export default {
   methods: {
     ...mapMutations("achievements", ["setAchievements"]),
     async fetchAchievements() {
-      const achievements = await api.get("/api/achievements");
+      const { params } = this.$route;
+      const achievements = params.id
+        ? await api.get("/api/user_achievements/" + params.id)
+        : await api.get("/api/achievements");
+
       if (!achievements.err) this.setAchievements(achievements.data);
     },
     hashColor(str) {

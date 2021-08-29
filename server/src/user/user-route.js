@@ -1,5 +1,6 @@
 module.exports = ({ app, db, isLoggedIn }) => {
   const User = require("./user-model")(db);
+  const Achievement = require("../achievement/achievement-model")(db);
 
   const setProps = keys => (user, idx = 0, users = []) => {
     const prevUser = idx === 0 ? {} : users[idx - 1];
@@ -50,7 +51,7 @@ module.exports = ({ app, db, isLoggedIn }) => {
    */
 
   app.delete("/api/user", isLoggedIn, async (req, res) => {
-    const { user: req_user = {} } = req
+    const { user: req_user = {} } = req;
     const { user, err } = await User.delete(req_user.id);
     if (err) return res.status(500).send(err);
     if (!user) return res.sendStatus(404);
@@ -103,7 +104,9 @@ module.exports = ({ app, db, isLoggedIn }) => {
    */
 
   app.get("/api/users/:id", isLoggedIn, async (req, res) => {
-    const { user, err } = await User.getById(req.params.id);
+    const { params = {} } = req;
+    const { user, err } = await User.getById(params.id);
+
     if (err) return res.status(500).send(err);
     if (!user) return res.sendStatus(404);
     return res.send(setProps(["lvl"])(user));

@@ -19,6 +19,12 @@ const defaultRoutes: RouteConfig[] = [
     component: User
   },
   {
+    path: "/users/:id",
+    name: "Users",
+    component: User,
+    props: true
+  },
+  {
     path: "*",
     component: NotFound
   }

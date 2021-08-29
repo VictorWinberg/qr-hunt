@@ -101,6 +101,12 @@ export default Vue.extend({
   computed: {
     ...mapState("user", ["user"])
   },
+  created() {
+    const { params } = this.$route;
+    if (params.id != null) {
+      this.tabs.pop();
+    }
+  },
   mounted() {
     this.tabContentHeight =
       this.$refs.userWrapper?.clientHeight - this.$refs.tabs?.clientHeight;
