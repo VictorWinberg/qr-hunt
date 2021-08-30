@@ -4,7 +4,7 @@
     <table class="leaderboard__table">
       <tr>
         <th>Rank</th>
-        <th style="width: 0;"></th>
+        <th></th>
         <th>User</th>
         <th align="right">Lvl</th>
       </tr>
@@ -17,13 +17,10 @@
       >
         <tr role="link" @click="navigate">
           <td>{{ user.rank }}</td>
-          <td style="width: 0;">
+          <td :style="{ width: 0, padding: 0 }">
             <div
               class="user__photo"
-              :style="{
-                backgroundImage: `url(${user.photo})`,
-                marginBottom: '-.5em' // Todo: remove this line!
-              }"
+              :style="{ backgroundImage: `url(${user.photo})` }"
             ></div>
           </td>
           <td>{{ user.name || user.username }}</td>
@@ -83,10 +80,8 @@ export default {
 }
 
 .user__photo {
-  display: inline-block;
   width: 32px;
   height: 32px;
-  margin-right: 0.5em;
   background-color: $grey-200;
   background-position: center;
   background-size: cover;
