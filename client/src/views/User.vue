@@ -75,8 +75,7 @@
 
 <script>
 import Vue from "vue";
-import { mapState } from "vuex";
-import { md5 } from "@/utils";
+import { api, hashColor } from "@/utils";
 import UserAchievements from "@/components/UserAchievements";
 import UserLeaderboard from "@/components/UserLeaderboard";
 import UserSettings from "@/components/UserSettings";
@@ -89,25 +88,51 @@ export default Vue.extend({
   },
   data() {
     return {
+      user: {},
       activeTab: 0,
       tabContentHeight: 0,
-      tabs: [
-        { id: 0, icon: "fa fa-award", component: "user-achievements" },
-        { id: 1, icon: "fa fa-trophy", component: "user-leaderboard" },
-        { id: 2, icon: "fa fa-cog", component: "user-settings" }
-      ]
+      tabs: []
     };
   },
-  computed: {
-    ...mapState("user", ["user"])
+  watch: {
+    $route: ["setTabs", "fetchUser"]
+  },
+  created() {
+    this.fetchUser();
   },
   mounted() {
     this.tabContentHeight =
       this.$refs.userWrapper?.clientHeight - this.$refs.tabs?.clientHeight;
+    this.setTabs();
   },
   methods: {
+    hashColor,
     isActiveTab(nbr) {
       return nbr === this.activeTab;
+    },
+    async fetchUser() {
+      const { params } = this.$route;
+      const user = params.id
+        ? await api.get("/api/users/" + params.id)
+        : await api.get("/api/user");
+
+      if (user.err) return;
+      this.user = user.data;
+    },
+    setTabs() {
+      const { params } = this.$route;
+      this.tabs = [
+        { id: 0, icon: "fa fa-award", component: "user-achievements" },
+        { id: 1, icon: "fa fa-trophy", component: "user-leaderboard" }
+      ];
+      if (params.id == null) {
+        this.tabs.push({
+          id: 2,
+          icon: "fa fa-cog",
+          component: "user-settings"
+        });
+      }
+      this.showTab(0);
     },
     showTab(nbr) {
       this.activeTab = nbr;
@@ -120,16 +145,6 @@ export default Vue.extend({
       return {
         color: this.hashColor(level + 1)
       };
-    },
-    hashColor(str) {
-      if (!str) return "#dfdfdf";
-      const h = md5(String(str));
-      let colour = "#";
-      for (let i = 0; i < 3; i++) {
-        const value = (h >> (i * 8)) & 0xff;
-        colour += ("00" + value.toString(16)).substr(-2);
-      }
-      return colour;
     }
   }
 });

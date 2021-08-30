@@ -27,16 +27,20 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from "vuex";
 import EventBus from "@/plugins/event-bus";
 import { EVENT_TYPE } from "@/constants";
-import { api, md5 } from "@/utils";
+import { api, hashColor } from "@/utils";
 
 export default {
-  computed: {
-    ...mapState("achievements", ["achievements"])
+  data() {
+    return {
+      achievements: [{}, {}]
+    };
   },
-  async created() {
+  watch: {
+    $route: ["fetchAchievements"]
+  },
+  created() {
     this.fetchAchievements();
     EventBus.$on(EVENT_TYPE.API_REQUEST_UPDATE, this.fetchAchievements);
   },
@@ -44,20 +48,15 @@ export default {
     EventBus.$off(EVENT_TYPE.API_REQUEST_UPDATE, this.fetchAchievements);
   },
   methods: {
-    ...mapMutations("achievements", ["setAchievements"]),
+    hashColor,
     async fetchAchievements() {
-      const achievements = await api.get("/api/achievements");
-      if (!achievements.err) this.setAchievements(achievements.data);
-    },
-    hashColor(str) {
-      if (!str) return "#dfdfdf";
-      const h = md5(String(str));
-      let colour = "#";
-      for (let i = 0; i < 3; i++) {
-        const value = (h >> (i * 8)) & 0xff;
-        colour += ("00" + value.toString(16)).substr(-2);
-      }
-      return colour;
+      const { params } = this.$route;
+      const achievements = params.id
+        ? await api.get("/api/user_achievements/" + params.id)
+        : await api.get("/api/achievements");
+
+      if (achievements.err) return;
+      this.achievements = achievements.data;
     }
   }
 };

@@ -4,24 +4,29 @@
     <table class="leaderboard__table">
       <tr>
         <th>Rank</th>
-        <th style="width: 0;"></th>
+        <th></th>
         <th>User</th>
         <th align="right">Lvl</th>
       </tr>
-      <tr v-for="user in leaderboard" :key="user.id">
-        <td>{{ user.rank }}</td>
-        <td style="width: 0;">
-          <div
-            class="user__photo"
-            :style="{
-              backgroundImage: `url(${user.photo})`,
-              marginBottom: '-.5em' // Todo: remove this line!
-            }"
-          ></div>
-        </td>
-        <td>{{ user.name || user.username }}</td>
-        <td align="right">{{ user.lvl }}</td>
-      </tr>
+      <router-link
+        v-for="user in leaderboard"
+        v-slot="{ navigate }"
+        :key="user.id"
+        :to="`/users/${user.id}`"
+        custom
+      >
+        <tr role="link" @click="navigate">
+          <td>{{ user.rank }}</td>
+          <td :style="{ width: 0, padding: 0 }">
+            <div
+              class="user__photo"
+              :style="{ backgroundImage: `url(${user.photo})` }"
+            ></div>
+          </td>
+          <td>{{ user.name || user.username }}</td>
+          <td align="right">{{ user.lvl }}</td>
+        </tr>
+      </router-link>
     </table>
   </div>
 </template>
@@ -58,17 +63,25 @@ export default {
   min-width: 100%;
   max-width: 800px;
   margin: auto;
+  border-collapse: collapse;
 
   tr {
     text-align: left;
   }
+
+  tr:nth-child(even) {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+
+  th,
+  td {
+    padding: 0.5rem;
+  }
 }
 
 .user__photo {
-  display: inline-block;
   width: 32px;
   height: 32px;
-  margin-right: 0.5em;
   background-color: $grey-200;
   background-position: center;
   background-size: cover;

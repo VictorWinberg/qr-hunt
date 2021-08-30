@@ -30,7 +30,7 @@ export const newAchievements = async () => {
       pos: undefined,
       customClass: "achievement-popup",
       onActionClick: async () => {
-        await api.post("/api/achievements/new", {
+        await api.put("/api/achievements/new", {
           body: JSON.stringify({ name })
         });
 
