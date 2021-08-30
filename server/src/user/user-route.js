@@ -1,6 +1,5 @@
 module.exports = ({ app, db, isLoggedIn }) => {
   const User = require("./user-model")(db);
-  const Achievement = require("../achievement/achievement-model")(db);
 
   const setProps = keys => (user, idx = 0, users = []) => {
     const prevUser = idx === 0 ? {} : users[idx - 1];
