@@ -238,6 +238,17 @@ export function md5(str) {
   return a;
 }
 
+export function hashColor(str) {
+  if (!str) return "#dfdfdf";
+  const h = md5(String(str));
+  let colour = "#";
+  for (let i = 0; i < 3; i++) {
+    const value = (h >> (i * 8)) & 0xff;
+    colour += ("00" + value.toString(16)).substr(-2);
+  }
+  return colour;
+}
+
 export function distance({ lat: lat1, lng: lng1 }, { lat: lat2, lng: lng2 }) {
   const R = 6371e3;
   const φ1 = (lat1 * Math.PI) / 180;

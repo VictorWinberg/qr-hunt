@@ -33,9 +33,6 @@ export default {
       state.coords = { lat: latitude, lng: longitude };
       localStorage.userCoords = JSON.stringify(state.coords);
     },
-    setFriends(state, friends) {
-      state.friends = friends;
-    },
     setLeaderboard(state, leaderboard) {
       state.leaderboard = leaderboard;
     }

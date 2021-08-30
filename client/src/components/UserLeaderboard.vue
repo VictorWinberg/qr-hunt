@@ -8,20 +8,28 @@
         <th>User</th>
         <th align="right">Lvl</th>
       </tr>
-      <tr v-for="user in leaderboard" :key="user.id">
-        <td>{{ user.rank }}</td>
-        <td style="width: 0;">
-          <div
-            class="user__photo"
-            :style="{
-              backgroundImage: `url(${user.photo})`,
-              marginBottom: '-.5em' // Todo: remove this line!
-            }"
-          ></div>
-        </td>
-        <td>{{ user.name || user.username }}</td>
-        <td align="right">{{ user.lvl }}</td>
-      </tr>
+      <router-link
+        v-for="user in leaderboard"
+        v-slot="{ navigate }"
+        :key="user.id"
+        :to="`/users/${user.id}`"
+        custom
+      >
+        <tr role="link" @click="navigate">
+          <td>{{ user.rank }}</td>
+          <td style="width: 0;">
+            <div
+              class="user__photo"
+              :style="{
+                backgroundImage: `url(${user.photo})`,
+                marginBottom: '-.5em' // Todo: remove this line!
+              }"
+            ></div>
+          </td>
+          <td>{{ user.name || user.username }}</td>
+          <td align="right">{{ user.lvl }}</td>
+        </tr>
+      </router-link>
     </table>
   </div>
 </template>

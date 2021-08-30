@@ -109,7 +109,7 @@ module.exports = ({ app, db, isLoggedIn }) => {
 
     if (err) return res.status(500).send(err);
     if (!user) return res.sendStatus(404);
-    return res.send(setProps(["lvl"])(user));
+    return res.send(setProps(["lvl", "lvlXp", "reqLvlXp"])(user));
   });
 
   /**
