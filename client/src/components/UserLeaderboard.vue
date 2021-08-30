@@ -66,9 +66,19 @@ export default {
   min-width: 100%;
   max-width: 800px;
   margin: auto;
+  border-collapse: collapse;
 
   tr {
     text-align: left;
+  }
+
+  tr:nth-child(even) {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+
+  th,
+  td {
+    padding: 0.5rem;
   }
 }
 

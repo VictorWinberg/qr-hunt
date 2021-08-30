@@ -37,6 +37,9 @@ export default {
       achievements: [{}, {}]
     };
   },
+  watch: {
+    $route: ["fetchAchievements"]
+  },
   created() {
     this.fetchAchievements();
     EventBus.$on(EVENT_TYPE.API_REQUEST_UPDATE, this.fetchAchievements);
