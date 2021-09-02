@@ -137,6 +137,7 @@ export default Vue.extend({
     this.setMap(map);
     this.watchCurrentPosition();
     this.createMapElements();
+    // @ts-ignore
     console.log('map', map);
   },
   methods: {
