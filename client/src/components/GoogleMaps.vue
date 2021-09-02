@@ -137,6 +137,7 @@ export default Vue.extend({
     this.setMap(map);
     this.watchCurrentPosition();
     this.createMapElements();
+    console.log('map', map);
   },
   methods: {
     ...mapMutations("qrSpot", [
