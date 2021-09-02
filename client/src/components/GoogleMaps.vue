@@ -5,12 +5,12 @@
     :zoom="mapZoom"
     :options="{
       gestureHandling: 'greedy',
-      zoomControl: false,
-      scaleControl: false,
-      rotateControl: false,
-      mapTypeControl: false,
-      fullscreenControl: false,
-      clickableIcons: false,
+      zoomControl: true,
+      scaleControl: true,
+      rotateControl: true,
+      mapTypeControl: true,
+      fullscreenControl: true,
+      clickableIcons: true,
       draggable: panel !== QR_SPOT_PANEL.SHOW_DETAILS,
       styles: [
         { featureType: 'poi.business', stylers: [{ visibility: 'off' }] }
