@@ -3,4 +3,4 @@
   <circle cx="12" cy="12" r="9" fill="#4285f4">
     <animate attributeName="r" dur="3s" repeatCount="indefinite" animationDirection= "alternate"  values="9 ; 8 ; 9" keyTimes="0 ; 0.5 ; 1.0"/>
 	</circle>
-</svg> 
+</svg>
