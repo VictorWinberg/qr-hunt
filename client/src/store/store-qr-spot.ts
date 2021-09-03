@@ -68,11 +68,19 @@ export default {
       );
     },
     select({ state, commit }, qrspot) {
+      state.map.panTo(new google.maps.LatLng(qrspot.lat, qrspot.lng));
+      if (state.panel !== QR_SPOT_PANEL.SHOW_INFO) {
+        state.map.setZoom(state.map.getZoom() + 2);
+        state.map.setTilt(45);
+      }
       commit("setQRSpot", qrspot);
       commit("setModalState", QR_SPOT_PANEL.SHOW_INFO);
-      state.map.panTo(new google.maps.LatLng(qrspot.lat, qrspot.lng));
     },
-    deselect({ commit }) {
+    deselect({ state, commit }) {
+      if (state.panel !== QR_SPOT_PANEL.HIDE) {
+        state.map.setZoom(state.map.getZoom() - 2);
+        state.map.setTilt(0);
+      }
       commit("setModalState", QR_SPOT_PANEL.HIDE);
       commit("setMode", QR_SPOT_MODE.VIEW);
     },
