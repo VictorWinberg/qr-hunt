@@ -4,6 +4,7 @@
     :center="mapCoords"
     :zoom="mapZoom"
     :options="{
+      mapId: '153063bbe11287f1',
       gestureHandling: 'greedy',
       zoomControl: false,
       scaleControl: false,
@@ -11,10 +12,7 @@
       mapTypeControl: false,
       fullscreenControl: false,
       clickableIcons: false,
-      draggable: panel !== QR_SPOT_PANEL.SHOW_DETAILS,
-      styles: [
-        { featureType: 'poi.business', stylers: [{ visibility: 'off' }] }
-      ]
+      draggable: panel !== QR_SPOT_PANEL.SHOW_DETAILS
     }"
     :class="
       panel == QR_SPOT_PANEL.SHOW_DETAILS ? 'collapsed-map' : 'expanded-map'
@@ -97,7 +95,8 @@ export default Vue.extend({
       mapZoom: mapZoom ? Number(mapZoom) : 15,
       QR_SPOT_MODE,
       QR_SPOT_PANEL,
-      markers: []
+      markers: [],
+      zoomChange: -1
     };
   },
   computed: {
@@ -163,7 +162,10 @@ export default Vue.extend({
       this.mapCoords = { lat: center.lat(), lng: center.lng() };
     },
     handleZoom(zoom) {
-      this.mapZoom = zoom;
+      clearTimeout(this.zoomChange);
+      this.zoomChange = setTimeout(() => {
+        this.mapZoom = zoom;
+      }, 1000);
     },
     watchCurrentPosition() {
       const watchOptions = {
