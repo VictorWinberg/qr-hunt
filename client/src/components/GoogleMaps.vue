@@ -21,6 +21,7 @@
     @dragend="handleDrag"
     @zoom_changed="handleZoom"
     @heading_changed="heading => (mapHeading = heading)"
+    @tilt_changed="tilt => (mapTilt = tilt)"
   >
     <GmapInfoWindow
       :options="infoWindow.options"
@@ -69,12 +70,17 @@
     </div>
 
     <div id="compass-button" class="control-button" @click="resetHeading">
-      <img
-        :style="`transform: rotate(-${mapHeading}deg)`"
-        alt="Compass"
-        class="control-button__icon"
-        :src="require('@/assets/compass.svg')"
-      />
+      <div
+        class="control-button__inner"
+        :style="`transform: rotateX(-${mapTilt}deg)`"
+      >
+        <img
+          :style="`transform: rotate(-${mapHeading}deg)`"
+          alt="Compass"
+          class="control-button__icon"
+          :src="require('@/assets/compass.svg')"
+        />
+      </div>
     </div>
   </GmapMap>
 </template>
@@ -104,6 +110,7 @@ export default Vue.extend({
       mapCoords: mapCoords ? JSON.parse(mapCoords) : { lat: 0, lng: 0 },
       mapZoom: mapZoom ? Number(mapZoom) : 15,
       mapHeading: 0,
+      mapTilt: 0,
       QR_SPOT_MODE,
       QR_SPOT_PANEL,
       markers: [],
@@ -214,8 +221,12 @@ export default Vue.extend({
       if (this.map.zoom < 15) this.map.setZoom(15);
     },
     resetHeading() {
-      this.map.setHeading(0);
-      this.map.setTilt(0);
+      if (this.mapHeading === 0 && this.mapTilt === 0) {
+        this.map.setTilt(45);
+      } else {
+        this.map.setHeading(0);
+        this.map.setTilt(0);
+      }
     }
   }
 });
@@ -233,6 +244,10 @@ export default Vue.extend({
   background-color: $white;
   border-radius: 2px;
   box-shadow: $shadow-color;
+}
+
+.control-button__inner {
+  transition: transform 500ms;
 }
 
 .control-button__icon {
