@@ -215,6 +215,7 @@ export default Vue.extend({
     },
     resetHeading() {
       this.map.setHeading(0);
+      this.map.setTilt(0);
     }
   }
 });
