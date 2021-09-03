@@ -4,13 +4,14 @@
     :center="mapCoords"
     :zoom="mapZoom"
     :options="{
+      mapId: '90f87356969d889c',
       gestureHandling: 'greedy',
-      zoomControl: true,
-      scaleControl: true,
-      rotateControl: true,
-      mapTypeControl: true,
-      fullscreenControl: true,
-      clickableIcons: true,
+      zoomControl: false,
+      scaleControl: false,
+      rotateControl: false,
+      mapTypeControl: false,
+      fullscreenControl: false,
+      clickableIcons: false,
       draggable: panel !== QR_SPOT_PANEL.SHOW_DETAILS,
       styles: [
         { featureType: 'poi.business', stylers: [{ visibility: 'off' }] }
