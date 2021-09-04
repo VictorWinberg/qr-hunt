@@ -20,6 +20,8 @@
     @click="deselect"
     @dragend="handleDrag"
     @zoom_changed="handleZoom"
+    @heading_changed="heading => (mapHeading = heading)"
+    @tilt_changed="tilt => (mapTilt = tilt)"
   >
     <GmapInfoWindow
       :options="infoWindow.options"
@@ -59,12 +61,26 @@
       @click="() => select(marker)"
     />
 
-    <div id="position-button" @click="centerMapToUser">
+    <div id="position-button" class="control-button" @click="centerMapToUser">
       <img
         alt="My Location"
-        class="position-icon"
+        class="control-button__icon"
         :src="require('@/assets/position-button.svg')"
       />
+    </div>
+
+    <div id="compass-button" class="control-button" @click="resetHeading">
+      <div
+        class="control-button__inner"
+        :style="`transform: rotateX(-${mapTilt}deg)`"
+      >
+        <img
+          :style="`transform: rotate(-${mapHeading}deg)`"
+          alt="Compass"
+          class="control-button__icon"
+          :src="require('@/assets/compass.svg')"
+        />
+      </div>
     </div>
   </GmapMap>
 </template>
@@ -93,6 +109,8 @@ export default Vue.extend({
       },
       mapCoords: mapCoords ? JSON.parse(mapCoords) : { lat: 0, lng: 0 },
       mapZoom: mapZoom ? Number(mapZoom) : 15,
+      mapHeading: 0,
+      mapTilt: 0,
       QR_SPOT_MODE,
       QR_SPOT_PANEL,
       markers: [],
@@ -152,9 +170,12 @@ export default Vue.extend({
     },
     createMapElements() {
       /** Create button for centering position at user */
-      const centerControlDiv = document.getElementById("position-button");
-      const { RIGHT_BOTTOM } = google.maps.ControlPosition;
-      this.map.controls[RIGHT_BOTTOM].push(centerControlDiv);
+      const { TOP_RIGHT, RIGHT_BOTTOM } = google.maps.ControlPosition;
+      const positionControl = document.getElementById("position-button");
+      const compassControl = document.getElementById("compass-button");
+
+      this.map.controls[RIGHT_BOTTOM].push(positionControl);
+      this.map.controls[TOP_RIGHT].push(compassControl);
     },
     handleDrag() {
       if (!this.map) return;
@@ -198,27 +219,39 @@ export default Vue.extend({
       this.map.panTo(new google.maps.LatLng(this.userCoords));
       localStorage.setItem("mapCoords", JSON.stringify(this.userCoords));
       if (this.map.zoom < 15) this.map.setZoom(15);
+    },
+    resetHeading() {
+      if (this.mapHeading === 0 && this.mapTilt === 0) {
+        this.map.setTilt(45);
+      } else {
+        this.map.setHeading(0);
+        this.map.setTilt(0);
+      }
     }
   }
 });
 </script>
 
 <style lang="scss">
-#position-button {
+.control-button {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 40px;
   height: 40px;
-  margin-right: 10px;
+  margin: 10px 10px 0 10px;
   cursor: pointer;
   background-color: $white;
   border-radius: 2px;
   box-shadow: $shadow-color;
+}
 
-  .position-icon {
-    width: 70%;
-  }
+.control-button__inner {
+  transition: transform 500ms;
+}
+
+.control-button__icon {
+  width: 70%;
 }
 
 .vue-map-container {
