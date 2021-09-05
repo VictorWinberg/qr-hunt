@@ -31,6 +31,7 @@
     />
 
     <GmapMarker
+      v-if="userCoords"
       :position="userCoords"
       :icon="{
         url: require('@/assets/position-marker.svg'),
@@ -38,8 +39,20 @@
       }"
       @click="centerMapToUser"
     />
+    <GmapMarker
+      v-else
+      :position="{ lat: 0, lng: 0 }"
+      :icon="{
+        url: require('@/assets/spinner.svg'),
+        anchor: { x: 20, y: 20 },
+        scaledSize: { width: 40, height: 40 }
+      }"
+      label="Loading coordinates..."
+      @click="centerMapToUser"
+    />
 
     <GmapCircle
+      v-if="userCoords"
       :center="userCoords"
       :radius="20"
       :options="{
@@ -135,7 +148,7 @@ export default Vue.extend({
   async mounted() {
     const map = await this.$refs.mapRef.$mapPromise;
     this.setMap(map);
-    this.watchCurrentPosition();
+    // this.watchCurrentPosition();
     this.createMapElements();
   },
   methods: {

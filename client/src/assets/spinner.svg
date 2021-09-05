@@ -1,4 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 496">
+  <!-- TODO Add spinning animation! -->
   <circle cx="248" cy="24" r="24" fill="#383a39"/>
   <circle cx="248" cy="472" r="24" fill="#eceeee"/>
   <circle cx="136" cy="53.6" r="24" fill="#77807f"/>
