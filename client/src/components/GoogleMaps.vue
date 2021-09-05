@@ -218,7 +218,7 @@ export default Vue.extend({
     centerMapToUser() {
       this.map.panTo(new google.maps.LatLng(this.userCoords));
       localStorage.setItem("mapCoords", JSON.stringify(this.userCoords));
-      if (this.map.zoom < 15) this.map.setZoom(15);
+      if (this.map.zoom < 13) this.map.setZoom(14);
     },
     resetHeading() {
       if (this.mapHeading === 0 && this.mapTilt === 0) {
