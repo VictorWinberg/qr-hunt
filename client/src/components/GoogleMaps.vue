@@ -108,7 +108,7 @@ export default Vue.extend({
         }
       },
       mapCoords: mapCoords ? JSON.parse(mapCoords) : { lat: 0, lng: 0 },
-      mapZoom: mapZoom ? Number(mapZoom) : 15,
+      mapZoom: mapZoom ? Number(mapZoom) : 14,
       mapHeading: 0,
       mapTilt: 0,
       QR_SPOT_MODE,
@@ -197,7 +197,7 @@ export default Vue.extend({
 
       navigator.geolocation.getCurrentPosition(({ coords }) => {
         this.setCoords(coords);
-        this.centerMapToUser();
+        this.centerMapToUser({ zoom: false });
       });
       navigator.geolocation.watchPosition(
         ({ coords }) => this.setCoords(coords),
@@ -215,10 +215,10 @@ export default Vue.extend({
       }
       return require("@/assets/qr-spot-marker--free.svg");
     },
-    centerMapToUser() {
+    centerMapToUser({ zoom = true }) {
       this.map.panTo(new google.maps.LatLng(this.userCoords));
       localStorage.setItem("mapCoords", JSON.stringify(this.userCoords));
-      if (this.map.zoom < 15) this.map.setZoom(15);
+      if (zoom && this.map.zoom < 15) this.map.setZoom(15);
     },
     resetHeading() {
       if (this.mapHeading === 0 && this.mapTilt === 0) {
