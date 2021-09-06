@@ -10,8 +10,7 @@ export default {
     coords: userCoords ? JSON.parse(userCoords) : null,
     isAuthenticated: false,
     status: "pending",
-    friends: [],
-    leaderboard: []
+    leaderboard: null
   }),
   mutations: {
     setAuth(state, payload) {

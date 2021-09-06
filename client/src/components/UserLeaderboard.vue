@@ -1,8 +1,16 @@
 <template>
   <div>
     <h2 class="leaderboard__title">Leaderboard</h2>
-    <h3 class="leaderboard__subtitle">{{ month }}</h3>
-    <table class="leaderboard__table">
+    <div class="leaderboard__nav">
+      <h3 @click="togglePeriod">{{ week }} {{ month }} {{ year }}</h3>
+      <a class="nav--left" @click="nav(-1)">
+        <i class="fas fa-caret-left"></i>
+      </a>
+      <a :class="['nav--right', last ? 'disabled' : '']" @click="nav(1)">
+        <i class="fas fa-caret-right"></i>
+      </a>
+    </div>
+    <table v-if="leaderboard" class="leaderboard__table">
       <tr>
         <th>Rank</th>
         <th></th>
@@ -33,17 +41,36 @@
 </template>
 
 <script>
+import Vue from "vue";
 import { mapState, mapMutations } from "vuex";
 import { EVENT_TYPE } from "@/constants";
 import { api } from "@/utils";
 import EventBus from "@/plugins/event-bus";
-import dayjs from "dayjs";
+import dayjs from "@/plugins/dayjs";
 
-export default {
+export default Vue.extend({
+  data() {
+    return {
+      date: dayjs().startOf("month"),
+      period: "month"
+    };
+  },
   computed: {
     ...mapState("user", ["leaderboard"]),
+    week() {
+      if (this.period !== "week") return;
+      return "w " + this.date.week();
+    },
     month() {
-      return dayjs().format("MMMM");
+      if (this.period !== "month") return;
+      return this.date.format("MMMM");
+    },
+    year() {
+      if (this.period !== "year" && dayjs().isSame(this.date, "year")) return;
+      return this.date.format("YYYY");
+    },
+    last() {
+      return this.date.add(1, this.period).isAfter(dayjs());
     }
   },
   created() {
@@ -56,16 +83,54 @@ export default {
   methods: {
     ...mapMutations("user", ["setLeaderboard"]),
     async fetchLeaderboard() {
-      const leaderboard = await api.get(
-        "/api/leaderboard/2021-09-01/2021-10-01"
-      );
+      const from = this.date.format("YYYY-MM-DD");
+      const to = this.date.add(1, this.period).format("YYYY-MM-DD");
+
+      const leaderboard = await api.get(`/api/leaderboard/${from}/${to}`);
       if (!leaderboard.err) this.setLeaderboard(leaderboard.data);
+    },
+    nav(dir) {
+      this.setLeaderboard(null);
+      this.date = this.date.add(dir, this.period);
+      this.fetchLeaderboard();
+    },
+    togglePeriod() {
+      this.setLeaderboard(null);
+      this.period = { week: "month", month: "year", year: "week" }[this.period];
+      this.date = dayjs().startOf(this.period);
+      this.fetchLeaderboard();
     }
   }
-};
+});
 </script>
 
 <style lang="scss">
+.leaderboard__nav {
+  position: relative;
+
+  h3 {
+    display: inline-block;
+  }
+
+  a {
+    position: absolute;
+    top: 0;
+    background: $dark-brand-color;
+    padding: 0.2rem 1rem;
+    border-radius: 0.2rem;
+    &.nav--left {
+      left: 0;
+    }
+    &.nav--right {
+      right: 0;
+    }
+    &.disabled {
+      color: $grey-400;
+      background: $grey-800;
+    }
+  }
+}
+
 .leaderboard__table {
   min-width: 100%;
   max-width: 800px;
