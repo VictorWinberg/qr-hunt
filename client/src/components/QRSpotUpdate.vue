@@ -188,6 +188,5 @@ textarea:focus {
 
 .spinner-icon {
   width: 50px;
-  animation: spin 1500ms linear infinite;
 }
 </style>

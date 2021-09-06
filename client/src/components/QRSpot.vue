@@ -64,6 +64,7 @@ export default Vue.extend({
       this.setMode(this.QR_SPOT_MODE.EDIT);
     },
     distanceToMarker(pos1, pos2) {
+      if (!pos1 || !pos2) return "N/A";
       const d = distance(pos1, pos2);
       return d < 1000 ? d.toFixed(1) + " meter" : (d / 1000).toFixed(1) + " km";
     }

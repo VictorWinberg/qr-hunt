@@ -44,10 +44,14 @@
       :position="{ lat: 0, lng: 0 }"
       :icon="{
         url: require('@/assets/spinner.svg'),
-        anchor: { x: 20, y: 20 },
-        scaledSize: { width: 40, height: 40 }
+        anchor: { x: 50, y: 50 },
+        scaledSize: { width: 100, height: 100 }
       }"
-      label="Loading coordinates..."
+      :label="{
+        text: 'Loading coordinates...',
+        fontSize: '1rem',
+        color: '#242424'
+      }"
       @click="centerMapToUser"
     />
 
@@ -148,7 +152,7 @@ export default Vue.extend({
   async mounted() {
     const map = await this.$refs.mapRef.$mapPromise;
     this.setMap(map);
-    // this.watchCurrentPosition();
+    this.watchCurrentPosition();
     this.createMapElements();
   },
   methods: {
