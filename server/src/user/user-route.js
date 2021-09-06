@@ -1,3 +1,5 @@
+const { isValidDate } = require("../utils");
+
 module.exports = ({ app, db, isLoggedIn }) => {
   const User = require("./user-model")(db);
 
@@ -9,7 +11,7 @@ module.exports = ({ app, db, isLoggedIn }) => {
     props.lvl = Math.floor(Math.sqrt(user.xp));
     props.lvlXp = user.xp - Math.pow(props.lvl, 2);
     props.reqLvlXp = Math.pow(props.lvl + 1, 2) - Math.pow(props.lvl, 2);
-    props.rank = user.xp === prevUser.xp ? prevUser.rank : idx + 1;
+    props.rank = user.score === prevUser.score ? prevUser.rank : idx + 1;
 
     keys.forEach(key => (user[key] = props[key]));
 
@@ -132,6 +134,35 @@ module.exports = ({ app, db, isLoggedIn }) => {
   app.get("/api/leaderboard", isLoggedIn, async (_, res) => {
     const { users, err } = await User.getAllOrderByXp();
     if (err) return res.status(500).send(err);
-    return res.send(users.map(setProps(["lvl", "rank"])));
+    return res.send(users.map(setProps(["lvl"])));
+  });
+
+  /**
+   * @swagger
+   * /leaderboard/monthly:
+   *   get:
+   *     summary: Get the monthly leaderboard users
+   *     tags:
+   *       - User
+   *     responses:
+   *       200:
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: array
+   *               items:
+   *                 $ref: '#/components/schemas/User'
+   *               minItems: 3
+   */
+
+  app.get("/api/leaderboard/:from/:to", isLoggedIn, async (req, res) => {
+    const { params = {} } = req;
+    const { from, to } = params;
+    if (!isValidDate(from) || !isValidDate(to)) {
+      return res.status(400).send("Incorrect dates");
+    }
+    const { users, err } = await User.getAllScoreDate(from, to);
+    if (err) return res.status(500).send(err);
+    return res.send(users.map(setProps(["rank", "lvl"])));
   });
 };

@@ -74,6 +74,11 @@ const haveCalled = (req, res) => (url, method = "GET", status = 200) =>
     res.statusCode === status
   ].every(Boolean);
 
+  function isValidDate(str) {
+    const date = new Date(str)
+    return new Date(date) instanceof Date && !isNaN(date.getTime())
+  }
+
 module.exports = {
   keyValuePairs,
   isLoggedIn,
@@ -81,5 +86,6 @@ module.exports = {
   isToday,
   camelcaseMiddleware,
   distance,
-  haveCalled
+  haveCalled,
+  isValidDate
 };

@@ -17,25 +17,53 @@
  *           type: string
  */
 
-const SELECT_USERS_SQL = `
+const SELECT_QR_SHARDS_SQL = (where) => `
+  SELECT users.id, CAST(COUNT(qrshards.*) AS int) AS qrshards_score
+  FROM users
+  LEFT JOIN qrshards ON qrshards.user_id = users.id
+  WHERE ${where || "true"}
+  GROUP BY users.id
+`;
+
+const SELECT_ACHIEVEMENTS_SQL = (where) => `
+  SELECT users.id, CAST(COUNT(user_achievements.*) AS int) AS achievements_score
+  FROM users
+  LEFT JOIN user_achievements ON user_achievements.user_id = users.id
+  WHERE popup = 't' AND ${where || "true"}
+  GROUP BY users.id
+`;
+
+const SELECT_USERS_SQL = (args) => `
+  SELECT id, username, name, email, photo, created_at ${args}
+  FROM users
+`;
+
+const SELECT_USERS_SQL_FULL = `
   WITH qrshards_count AS (
-    SELECT users.id, CAST(COUNT(qrshards.*) AS int) AS qrshards_score
-    FROM users
-    LEFT JOIN qrshards ON qrshards.user_id = users.id
-    GROUP BY users.id
+    ${SELECT_QR_SHARDS_SQL()}
   ), achievements_count AS (
-    SELECT users.id, CAST(COUNT(user_achievements.*) AS int) AS achievements_score
-    FROM users
-    LEFT JOIN user_achievements ON user_achievements.user_id = users.id
-    WHERE popup = 't'
-    GROUP BY users.id
+    ${SELECT_ACHIEVEMENTS_SQL()}
   )
 
-  SELECT id, username, name, email, photo, created_at,
-    CAST(COALESCE(qrshards_score + achievements_score * 5, 0) AS int) AS xp
-  FROM users
+  ${SELECT_USERS_SQL(', CAST(COALESCE(qrshards_score + achievements_score * 5, 0) AS int) AS xp')}
   LEFT JOIN qrshards_count USING (id)
   LEFT JOIN achievements_count USING (id)
+`;
+
+const SELECT_USERS_SQL_DATE = (from, to) => `
+  WITH qrshards_count AS (
+    ${SELECT_QR_SHARDS_SQL()}
+  ), achievements_count AS (
+    ${SELECT_ACHIEVEMENTS_SQL()}
+  ), qrshards_date_count AS (
+    ${SELECT_QR_SHARDS_SQL(`qrshards.created_at >= '${from}' AND qrshards.created_at < '${to}'`)}
+  )
+
+  ${SELECT_USERS_SQL(`, COALESCE(qrshards_date_count.qrshards_score, 0) AS score,
+    CAST(COALESCE(qrshards_count.qrshards_score + achievements_score * 5, 0) AS int) AS xp`)}
+  LEFT JOIN qrshards_count USING (id)
+  LEFT JOIN achievements_count USING (id)
+  LEFT JOIN qrshards_date_count USING (id)
 `;
 
 module.exports = db => ({
@@ -56,7 +84,7 @@ module.exports = db => ({
   },
 
   getById: async userId => {
-    const sql = `${SELECT_USERS_SQL}
+    const sql = `${SELECT_USERS_SQL_FULL}
         WHERE id = $1 LIMIT 1`;
     const { rows, err } = await db.query(sql, [userId]);
     return { user: rows[0], err };
@@ -69,15 +97,22 @@ module.exports = db => ({
   },
 
   getAll: async () => {
-    const sql = `${SELECT_USERS_SQL}
+    const sql = `${SELECT_USERS_SQL_FULL}
         ORDER BY name, username, id`;
     const { rows, err } = await db.query(sql);
     return { users: rows, err };
   },
 
   getAllOrderByXp: async () => {
-    const sql = `${SELECT_USERS_SQL}
+    const sql = `${SELECT_USERS_SQL_FULL}
         ORDER BY xp DESC, name, username, id`;
+    const { rows, err } = await db.query(sql);
+    return { users: rows, err };
+  },
+
+  getAllScoreDate: async (from, to) => {
+    const sql = `${SELECT_USERS_SQL_DATE(from, to)}
+        ORDER BY score DESC, name, username, id`;
     const { rows, err } = await db.query(sql);
     return { users: rows, err };
   },
