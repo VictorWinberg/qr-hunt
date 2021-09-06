@@ -7,7 +7,7 @@ export default {
   namespaced: true,
   state: () => ({
     user: {},
-    coords: userCoords ? JSON.parse(userCoords) : { lat: 0, lng: 0 },
+    coords: userCoords ? JSON.parse(userCoords) : null,
     isAuthenticated: false,
     status: "pending",
     friends: [],

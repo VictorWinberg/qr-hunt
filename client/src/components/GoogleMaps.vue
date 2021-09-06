@@ -31,6 +31,7 @@
     />
 
     <GmapMarker
+      v-if="userCoords"
       :position="userCoords"
       :icon="{
         url: require('@/assets/position-marker.svg'),
@@ -38,8 +39,24 @@
       }"
       @click="centerMapToUser"
     />
+    <GmapMarker
+      v-else
+      :position="{ lat: 0, lng: 0 }"
+      :icon="{
+        url: require('@/assets/spinner.svg'),
+        anchor: { x: 50, y: 50 },
+        scaledSize: { width: 100, height: 100 }
+      }"
+      :label="{
+        text: 'Loading coordinates...',
+        fontSize: '1rem',
+        color: '#242424'
+      }"
+      @click="centerMapToUser"
+    />
 
     <GmapCircle
+      v-if="userCoords"
       :center="userCoords"
       :radius="20"
       :options="{
