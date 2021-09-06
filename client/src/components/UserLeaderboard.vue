@@ -1,12 +1,13 @@
 <template>
   <div>
     <h2 class="leaderboard__title">Leaderboard</h2>
+    <h3 class="leaderboard__subtitle">{{ month }}</h3>
     <table class="leaderboard__table">
       <tr>
         <th>Rank</th>
         <th></th>
         <th>User</th>
-        <th align="right">Lvl</th>
+        <th align="right">Score</th>
       </tr>
       <router-link
         v-for="user in leaderboard"
@@ -24,7 +25,7 @@
             ></div>
           </td>
           <td>{{ user.name || user.username }}</td>
-          <td align="right">{{ user.lvl }}</td>
+          <td align="right">{{ user.score }}</td>
         </tr>
       </router-link>
     </table>
@@ -36,10 +37,14 @@ import { mapState, mapMutations } from "vuex";
 import { EVENT_TYPE } from "@/constants";
 import { api } from "@/utils";
 import EventBus from "@/plugins/event-bus";
+import dayjs from "dayjs";
 
 export default {
   computed: {
-    ...mapState("user", ["leaderboard"])
+    ...mapState("user", ["leaderboard"]),
+    month() {
+      return dayjs().format("MMMM");
+    }
   },
   created() {
     this.fetchLeaderboard();
@@ -51,7 +56,9 @@ export default {
   methods: {
     ...mapMutations("user", ["setLeaderboard"]),
     async fetchLeaderboard() {
-      const leaderboard = await api.get("/api/leaderboard");
+      const leaderboard = await api.get(
+        "/api/leaderboard/2021-09-01/2021-10-01"
+      );
       if (!leaderboard.err) this.setLeaderboard(leaderboard.data);
     }
   }
