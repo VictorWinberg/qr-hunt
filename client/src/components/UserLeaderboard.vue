@@ -1,6 +1,7 @@
 <template>
   <div>
     <h2 class="leaderboard__title">Leaderboard</h2>
+    <h3 class="leaderboard__subtitle">{{ month }}</h3>
     <table class="leaderboard__table">
       <tr>
         <th>Rank</th>
@@ -36,10 +37,14 @@ import { mapState, mapMutations } from "vuex";
 import { EVENT_TYPE } from "@/constants";
 import { api } from "@/utils";
 import EventBus from "@/plugins/event-bus";
+import { format } from "date-fns";
 
 export default {
   computed: {
-    ...mapState("user", ["leaderboard"])
+    ...mapState("user", ["leaderboard"]),
+    month() {
+      return format(new Date(), "MMMM");
+    }
   },
   created() {
     this.fetchLeaderboard();
