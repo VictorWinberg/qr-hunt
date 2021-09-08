@@ -2,7 +2,9 @@
   <div id="app">
     <SignIn />
     <Header />
-    <router-view />
+    <keep-alive>
+      <router-view :key="$route.fullPath" />
+    </keep-alive>
     <QRScanner v-if="scanning" />
     <transition name="fade">
       <Popup v-if="popup" />
