@@ -139,6 +139,7 @@ export default Vue.extend({
     ...mapState({ userCoords: state => state.user.coords })
   },
   watch: {
+    $route: "$forceUpdate", 
     mapCoords(newCoords) {
       localStorage.setItem("mapCoords", JSON.stringify(newCoords));
     },
