@@ -20,7 +20,7 @@
             </div>
           </div>
           <div v-if="panel === QR_SPOT_PANEL.SHOW_DETAILS">
-            <div v-if="qrSpot.isOwner" class="edit-button" @click="edit()">
+            <div v-if="qrSpot.isOwner" class="fixed-button" @click="edit()">
               <i class="fas fa-pencil-alt fa-2x"></i>
             </div>
             <QRSpotView />
@@ -61,7 +61,7 @@ export default Vue.extend({
   methods: {
     ...mapMutations("qrSpot", ["setMode", "setModalState"]),
     edit() {
-      this.setMode(this.QR_SPOT_MODE.EDIT);
+      this.setMode(QR_SPOT_MODE.EDIT);
     },
     distanceToMarker(pos1, pos2) {
       if (!pos1 || !pos2) return "N/A";
@@ -143,7 +143,7 @@ export default Vue.extend({
   padding: 0 10px;
 }
 
-.edit-button {
+.fixed-button {
   position: absolute;
   top: 1em;
   right: 1em;

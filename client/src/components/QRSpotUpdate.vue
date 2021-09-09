@@ -1,23 +1,27 @@
 <template>
   <div>
+    <div class="fixed-button" @click="view()">
+      <i class="fas fa-arrow-left fa-2x"></i>
+    </div>
     <div class="update-title">
       <div v-if="mode === QR_SPOT_MODE.CREATE">
         Make your spot
       </div>
       <div v-else>
-        Change your spot
+        {{ qrSpot.title }}
       </div>
     </div>
     <form>
       <label for="title">
-        Select an awesome title for your spot
+        {{ mode === QR_SPOT_MODE.CREATE ? "Select an" : "Update the" }}
+        awesome title for your spot
       </label>
       <input
         id="title"
         type="text"
         autocomplete="off"
-        :value="qrSpot.title"
-        @input="e => setQRSpot({ ...qrSpot, title: e.target.value })"
+        :value="inputQrSpot.title"
+        @input="e => (inputQrSpot.title = e.target.value)"
       />
 
       <label for="note">
@@ -27,18 +31,20 @@
         id="note"
         type="text"
         autocomplete="off"
-        :value="qrSpot.note"
-        @input="e => setQRSpot({ ...qrSpot, note: e.target.value })"
+        :value="inputQrSpot.note"
+        @input="e => (inputQrSpot.note = e.target.value)"
       />
       <label for="hint">
-        Do you want to give a hint of where the spot can be found?
+        Do you want to
+        {{ mode === QR_SPOT_MODE.CREATE ? "give a" : "change the" }}
+        hint of where the spot can be found?
       </label>
       <input
         id="hint"
         type="text"
         autocomplete="off"
-        :value="qrSpot.hint"
-        @input="e => setQRSpot({ ...qrSpot, hint: e.target.value })"
+        :value="inputQrSpot.hint"
+        @input="e => (inputQrSpot.hint = e.target.value)"
       />
       <div v-if="qrSpot.lat && qrSpot.lng">
         Coordinates:
@@ -82,19 +88,44 @@ import EventBus from "@/plugins/event-bus";
 export default Vue.extend({
   data() {
     return {
+      inputQrSpot: JSON.parse(JSON.stringify(this.$store.state.qrSpot.qrSpot)),
       QR_SPOT_MODE
     };
   },
   computed: {
     ...mapState("qrSpot", ["qrSpot", "mode"]),
-    valid: function() {
+    valid() {
       const { title, lat, lng } = this.qrSpot;
       return title && lat && lng;
     }
   },
   methods: {
-    ...mapMutations("qrSpot", ["setQRSpot", "setMode", "setModalState"]),
+    ...mapMutations("qrSpot", ["setMode", "setModalState"]),
     ...mapActions("qrSpot", ["create", "edit"]),
+    view() {
+      this.$store.commit("popup/setPopup", {
+        title: "Are you sure?",
+        subtitle: "All unsaved changes will be lost.",
+        options: [
+          {
+            name: "Cancel",
+            type: "disabled",
+            action: async () => {
+              this.$store.commit("popup/setPopup", false);
+            }
+          },
+          {
+            name: "Yes",
+            type: "success",
+            action: async () => {
+              this.$store.commit("popup/setPopup", false);
+
+              this.setMode(QR_SPOT_MODE.VIEW);
+            }
+          }
+        ]
+      });
+    },
     saveSpot() {
       if (this.mode === QR_SPOT_MODE.CREATE) {
         this.create();
