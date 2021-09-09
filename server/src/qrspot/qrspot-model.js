@@ -43,7 +43,8 @@ module.exports = db => ({
       ...qrspot,
       owner_id: userId
     });
-    const sql = `INSERT INTO qrspots ( ${keys} ) VALUES ( ${indices} ) RETURNING *`;
+    const sql = `INSERT INTO qrspots ( ${keys} ) VALUES ( ${indices} )
+      RETURNING *, owner_id = ${userId} AS is_owner`;
 
     const { rows, err } = await db.query(sql, values);
     return { qrspot: rows[0], err };
@@ -55,7 +56,7 @@ module.exports = db => ({
     const sql = `
       UPDATE qrspots SET ${keyIndices}
       WHERE id = ${id} AND owner_id = ${userId}
-      RETURNING *`;
+      RETURNING *, owner_id = ${userId} AS is_owner`;
 
     const { rows, err } = await db.query(sql, values);
     return { qrspot: rows[0], err };
@@ -74,7 +75,7 @@ module.exports = db => ({
   getAll: async userId => {
     const sql = `
       SELECT DISTINCT ON (qrspots.id)
-        qrspots.*, owner_id = user_id AS is_owner,
+        qrspots.*, owner_id = ${userId} AS is_owner,
         qrshards.created_at AS collected_at
       FROM qrspots
       LEFT JOIN qrshards ON qrspots.id = qrshards.qrspot_id AND user_id = $1
@@ -92,7 +93,10 @@ module.exports = db => ({
   },
 
   getByQRCode: async qrcode => {
-    const sql = "SELECT * FROM qrspots WHERE qrcode = $1 AND active = TRUE LIMIT 1";
+    const sql = `SELECT * FROM qrspots
+      WHERE qrcode = $1 AND active = TRUE
+      LIMIT 1`;
+
     const { rows, err } = await db.query(sql, [qrcode]);
     return { qrspot: rows[0], err };
   }

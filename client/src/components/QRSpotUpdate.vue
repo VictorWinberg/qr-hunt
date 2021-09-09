@@ -87,15 +87,17 @@ import EventBus from "@/plugins/event-bus";
 
 export default Vue.extend({
   data() {
+    const { title, note, hint } = this.$store.state.qrSpot.qrSpot;
     return {
-      inputQrSpot: JSON.parse(JSON.stringify(this.$store.state.qrSpot.qrSpot)),
+      inputQrSpot: { title, note, hint },
       QR_SPOT_MODE
     };
   },
   computed: {
     ...mapState("qrSpot", ["qrSpot", "mode"]),
     valid() {
-      const { title, lat, lng } = this.qrSpot;
+      const { title } = this.inputQrSpot;
+      const { lat, lng } = this.qrSpot;
       return title && lat && lng;
     }
   },
@@ -128,9 +130,9 @@ export default Vue.extend({
     },
     saveSpot() {
       if (this.mode === QR_SPOT_MODE.CREATE) {
-        this.create();
+        this.create(this.inputQrSpot);
       } else if (this.mode === QR_SPOT_MODE.EDIT) {
-        this.edit();
+        this.edit(this.inputQrSpot);
       }
     },
     deleteSpot() {
