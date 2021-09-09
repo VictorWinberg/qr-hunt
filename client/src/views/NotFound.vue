@@ -23,7 +23,7 @@ export default {};
 }
 
 .not-found__code {
-  font-size: 12rem;
+  font-size: 10rem;
 }
 
 .not-found__status {
