@@ -3,9 +3,6 @@ import Snackbar from "node-snackbar";
 import CustomSnackbar from "@/plugins/snackbar";
 import EventBus from "@/plugins/event-bus";
 
-export const isToday = date =>
-  new Date(date).toDateString() === new Date().toDateString();
-
 export function isJson(str): boolean {
   try {
     JSON.parse(str);

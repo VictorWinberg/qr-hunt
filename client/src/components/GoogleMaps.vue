@@ -78,6 +78,33 @@
       @click="() => select(marker)"
     />
 
+    <GmapCircle
+      v-for="(marker, index) in markers"
+      :key="`${index}-c`"
+      :center="{ lat: Number(marker.lat), lng: Number(marker.lng) }"
+      :radius="15"
+      :options="{
+        clickable: false,
+        fillColor: '#54341f',
+        fillOpacity: '0.2',
+        strokeColor: '#54341f',
+        strokeOpacity: '0.5',
+        strokeWeight: '2'
+      }"
+    />
+
+    <GmapMarker
+      v-for="(marker, index) in recent(markers)"
+      :key="`${index}-o`"
+      :position="{ lat: Number(marker.lat), lng: Number(marker.lng) }"
+      :clickable="false"
+      :icon="{
+        url: require('@/assets/puff.svg'),
+        anchor: { x: 32, y: 32 },
+        scaledSize: { width: 64, height: 64 }
+      }"
+    />
+
     <div id="position-button" class="control-button" @click="centerMapToUser">
       <img
         alt="My Location"
@@ -106,8 +133,9 @@
 import Vue from "vue";
 import { mapState, mapMutations, mapActions } from "vuex";
 import { EVENT_TYPE, QR_SPOT_MODE, QR_SPOT_PANEL } from "@/constants";
-import { api, isToday } from "@/utils";
+import { api } from "@/utils";
 import EventBus from "@/plugins/event-bus";
+import dayjs from "@/plugins/dayjs";
 
 export default Vue.extend({
   data() {
@@ -222,7 +250,7 @@ export default Vue.extend({
       if (!collectedAt) {
         return require("@/assets/qr-spot-marker--new.svg");
       }
-      if (isToday(collectedAt)) {
+      if (dayjs().isSame(collectedAt, "day")) {
         return require("@/assets/qr-spot-marker--used.svg");
       }
       return require("@/assets/qr-spot-marker--free.svg");
@@ -239,6 +267,13 @@ export default Vue.extend({
         this.map.setHeading(0);
         this.map.setTilt(0);
       }
+    },
+    recent(markers) {
+      return markers.filter(m =>
+        dayjs()
+          .subtract(1, "day")
+          .isBefore(m.lastVisitedAt)
+      );
     }
   }
 });
