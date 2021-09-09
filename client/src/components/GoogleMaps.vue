@@ -201,12 +201,7 @@ export default Vue.extend({
     this.createMapElements();
   },
   methods: {
-    ...mapMutations("qrSpot", [
-      "setMap",
-      "setQRSpot",
-      "setMode",
-      "setModalState"
-    ]),
+    ...mapMutations("qrSpot", ["setMap"]),
     ...mapMutations("user", ["setCoords"]),
     ...mapActions("qrSpot", ["select", "deselect"]),
     async fetchQRSpots() {

@@ -84,20 +84,20 @@ export default {
       commit("setModalState", QR_SPOT_PANEL.HIDE);
       commit("setMode", QR_SPOT_MODE.VIEW);
     },
-    async create({ state, commit }) {
+    async create({ state, commit }, payload) {
       const { data: qrspot, err } = await api.post("/api/qrspots", {
-        body: JSON.stringify(state.qrSpot)
+        body: JSON.stringify({ ...state.qrSpot, ...payload })
       });
       if (err) return;
       EventBus.$emit(EVENT_TYPE.QR_SPOTS_UPDATE);
       commit("setQRSpot", qrspot);
       commit("setMode", QR_SPOT_MODE.VIEW);
     },
-    async edit({ state, commit }) {
+    async edit({ state, commit }, payload) {
       const { data: qrspot, err } = await api.put(
         "/api/qrspots/" + state.qrSpot.id,
         {
-          body: JSON.stringify(state.qrSpot)
+          body: JSON.stringify({ ...state.qrSpot, ...payload })
         }
       );
       if (err) return;

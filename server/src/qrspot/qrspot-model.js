@@ -43,7 +43,8 @@ module.exports = db => ({
       ...qrspot,
       owner_id: userId
     });
-    const sql = `INSERT INTO qrspots ( ${keys} ) VALUES ( ${indices} ) RETURNING *`;
+    const sql = `INSERT INTO qrspots ( ${keys} ) VALUES ( ${indices} )
+      RETURNING *, owner_id = ${userId} AS is_owner`;
 
     const { rows, err } = await db.query(sql, values);
     return { qrspot: rows[0], err };
@@ -55,7 +56,7 @@ module.exports = db => ({
     const sql = `
       UPDATE qrspots SET ${keyIndices}
       WHERE id = ${id} AND owner_id = ${userId}
-      RETURNING *`;
+      RETURNING *, owner_id = ${userId} AS is_owner`;
 
     const { rows, err } = await db.query(sql, values);
     return { qrspot: rows[0], err };
