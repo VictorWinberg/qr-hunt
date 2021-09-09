@@ -49,7 +49,6 @@ export default Vue.extend({
   display: flex;
   align-items: center;
   justify-content: center;
-  color: $seconday-color;
   background: rgba($seconday-color, 0.8);
 }
 
