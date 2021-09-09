@@ -100,7 +100,7 @@ export default {
   margin-right: 6px;
   margin-left: 6px;
   font-family: Roboto, arial, sans-serif;
-  font-size: 14px;
+  font-size: 1rem;
   font-weight: 500;
   letter-spacing: 0.21px;
   vertical-align: top;

@@ -11,12 +11,12 @@
             <div class="qrspot-info">
               <div class="qrspot-info__distance">
                 <i class="fas fa-route"></i>
-                <span>{{ distanceToMarker(userCoords, qrSpot) }}</span>
+                {{ distanceToMarker(userCoords, qrSpot) }}
               </div>
-              <div class="qrspot-info__rating">
+              <!-- <div class="qrspot-info__rating">
                 <i class="far fa-star"></i>
                 {{ qrSpot.rating || "N/A" }}
-              </div>
+              </div> -->
             </div>
           </div>
           <div v-if="panel === QR_SPOT_PANEL.SHOW_DETAILS">
@@ -66,7 +66,7 @@ export default Vue.extend({
     distanceToMarker(pos1, pos2) {
       if (!pos1 || !pos2) return "N/A";
       const d = distance(pos1, pos2);
-      return d < 1000 ? d.toFixed(1) + " meter" : (d / 1000).toFixed(1) + " km";
+      return d < 1000 ? d.toFixed(1) + " m" : (d / 1000).toFixed(1) + " km";
     }
   }
 });
@@ -132,7 +132,7 @@ export default Vue.extend({
   justify-content: center;
   max-width: 500px;
   margin: 0 auto;
-  font-size: 14px;
+  font-size: 1rem;
 }
 
 .qrspot-info__distance {
