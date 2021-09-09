@@ -73,11 +73,20 @@ module.exports = db => ({
 
   getAll: async userId => {
     const sql = `
+      WITH qrshards_last AS (
+        SELECT DISTINCT ON (qrspot_id)
+          qrspot_id, created_at AS last_visited_at
+        FROM qrshards
+        ORDER BY qrspot_id, created_at DESC
+      )
+
       SELECT DISTINCT ON (qrspots.id)
         qrspots.*, owner_id = user_id AS is_owner,
-        qrshards.created_at AS collected_at
+        qrshards.created_at AS collected_at,
+        last_visited_at
       FROM qrspots
       LEFT JOIN qrshards ON qrspots.id = qrshards.qrspot_id AND user_id = $1
+      LEFT JOIN qrshards_last ON qrspots.id = qrshards_last.qrspot_id
       WHERE active = TRUE
       ORDER BY qrspots.id, qrshards.created_at DESC`;
 
@@ -92,7 +101,8 @@ module.exports = db => ({
   },
 
   getByQRCode: async qrcode => {
-    const sql = "SELECT * FROM qrspots WHERE qrcode = $1 AND active = TRUE LIMIT 1";
+    const sql =
+      "SELECT * FROM qrspots WHERE qrcode = $1 AND active = TRUE LIMIT 1";
     const { rows, err } = await db.query(sql, [qrcode]);
     return { qrspot: rows[0], err };
   }
