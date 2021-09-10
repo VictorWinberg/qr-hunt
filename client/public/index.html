@@ -8,6 +8,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="<%= BASE_URL %>apple-touch-icon.png">
 
     <link rel="stylesheet" href="<%= BASE_URL %>fontawesome/css/all.css">
+    <link rel="stylesheet" type="text/css" href="//raw.githubusercontent.com/cubiq/add-to-homescreen/master/style/addtohomescreen.css">
     <title>QR-Hunt</title>
   </head>
 
@@ -21,4 +22,8 @@
     <div id="app"></div>
     <!-- built files will be auto injected -->
   </body>
+  <script src="//raw.githubusercontent.com/cubiq/add-to-homescreen/master/src/addtohomescreen.min.js"></script>
+  <script>
+    addToHomescreen();
+  </script>
 </html>
