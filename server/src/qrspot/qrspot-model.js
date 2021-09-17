@@ -78,7 +78,7 @@ module.exports = db => ({
         SELECT DISTINCT ON (qrspot_id)
           qrspot_id, created_at AS last_visited_at
         FROM qrshards
-        WHERE user_id != ${userId}
+        WHERE user_id != $1
         ORDER BY qrspot_id, created_at DESC
       )
 
