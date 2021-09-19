@@ -11,6 +11,8 @@
     "db:pull": "pg_dump --format=c -h zolly.ml -U vicnie qrhunt | pg_restore --clean --no-owner -h localhost -d qrhunt"
   },
   "dependencies": {
+    "@sentry/node": "^6.12.0",
+    "@sentry/tracing": "^6.12.0",
     "camelcase-keys": "7.0.0",
     "cookie-parser": "1.4.5",
     "cookie-session": "1.4.0",

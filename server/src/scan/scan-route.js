@@ -34,7 +34,7 @@ module.exports = ({ app, db, isLoggedIn }) => {
    *                   $ref: '#/components/schemas/QRShard'
    */
 
-  app.get("/api/scan/:id", isLoggedIn, async (req, res) => {
+  app.get("/api/scan/:id", isLoggedIn, async (req, res, next) => {
     const { params, user = {} } = req;
 
     const results = await Promise.all([
@@ -44,7 +44,7 @@ module.exports = ({ app, db, isLoggedIn }) => {
     ]);
 
     const { err } = results.find(({ err }) => Boolean(err)) || {};
-    if (err) return res.status(500).send(err);
+    if (err) return next(err);
 
     const [{ qrcode }, { qrspot }, { qrshard }] = results;
     return res.send({

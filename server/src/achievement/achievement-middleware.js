@@ -39,7 +39,7 @@ module.exports = ({ pg, db }) => async (req, res, next) => {
 
       const { achievements, err } = await Achievement.getAll(user.id);
 
-      if (err) return res.status(500).send(err);
+      if (err) return next(err);
       return res.send(achievements);
     }
     case method === "GET" && Boolean(url.match("^/api/achievements/new/?$")): {
@@ -47,7 +47,7 @@ module.exports = ({ pg, db }) => async (req, res, next) => {
 
       const { achievement, err } = await Achievement.getNew(user.id);
 
-      if (err) return res.status(500).send(err);
+      if (err) return next(err);
       if (!achievement) return res.sendStatus(204);
       return res.send(achievement);
     }
@@ -57,7 +57,7 @@ module.exports = ({ pg, db }) => async (req, res, next) => {
 
       const { achievement, err } = await Achievement.update(user.id, name);
 
-      if (err) return res.status(500).send(err);
+      if (err) return next(err);
       if (!achievement) return res.sendStatus(404);
       return res.send(achievement);
     }
@@ -67,7 +67,7 @@ module.exports = ({ pg, db }) => async (req, res, next) => {
       const name = req.url.match("^/api/achievements/(.+)/?$")[1].toUpperCase();
       const { achievement, err } = await Achievement.getByName(user.id, name);
 
-      if (err) return res.status(500).send(err);
+      if (err) return next(err);
       if (!achievement) return res.sendStatus(204);
       return res.send(achievement);
     }
@@ -77,7 +77,7 @@ module.exports = ({ pg, db }) => async (req, res, next) => {
       const id = req.url.match("^/api/user_achievements/(.+)/?$")[1];
       const { achievements, err } = await Achievement.getAll(id);
 
-      if (err) return res.status(500).send(err);
+      if (err) return next(err);
       return res.send(achievements);
     }
   }

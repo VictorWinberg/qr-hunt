@@ -26,19 +26,23 @@ module.exports = ({ app, db, isLoggedIn }) => {
    *               $ref: '#/components/schemas/QRShard'
    */
 
-  app.post("/api/qrshards", isLoggedIn, async (req, res) => {
+  app.post("/api/qrshards", isLoggedIn, async (req, res, next) => {
     const { body, user = {} } = req;
 
     if (process.env.NODE_ENV === "production") {
       const { qrspot, err } = await QRSpot.getById(body.qrspot_id);
-      if (err) return res.status(500).send(err);
+      if (err) return next(err);
       if (distance(body.user_coords, qrspot) > qr_spot_distance) {
-        return res.status(403).send(`Forbidden, distance to location is greater than ${qr_spot_distance}m`);
+        return res
+          .status(403)
+          .send(
+            `Forbidden, distance to location is greater than ${qr_spot_distance}m`
+          );
       }
     }
 
     const { qrshard, err } = await QRShard.create(user.id, body);
-    if (err) return res.status(500).send(err);
+    if (err) return next(err);
     return res.send(qrshard);
   });
 
@@ -73,10 +77,10 @@ module.exports = ({ app, db, isLoggedIn }) => {
    *               $ref: '#/components/schemas/QRShard'
    */
 
-  app.put("/api/qrshards/:id", isLoggedIn, async (req, res) => {
+  app.put("/api/qrshards/:id", isLoggedIn, async (req, res, next) => {
     const { params, body, user = {} } = req;
     const { qrshard, err } = await QRShard.update(user.id, params.id, body);
-    if (err) return res.status(500).send(err);
+    if (err) return next(err);
     return res.send(qrshard);
   });
 };

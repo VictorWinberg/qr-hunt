@@ -77,16 +77,9 @@ module.exports = db => ({
       WITH qrshards_last AS (
         SELECT DISTINCT ON (qrspot_id)
           qrspot_id, created_at AS last_visited_at
-        FROM qrshards
-        WHERE user_id != $1
-        ORDER BY qrspot_id, created_at DESC
-      )
-
-      SELECT DISTINCT ON (qrspots.id)
-        qrspots.*, owner_id = user_id AS is_owner,
-        qrshards.created_at AS collected_at,
-        last_visited_at
-      FROM qrspots
+        ERRORERRORERRORERRORERRORERRORERROR
+        ERRORERRORERRORERRORERRORERRORERROR
+        ERRORERRORERRORERRORERRORERRORERROR
       LEFT JOIN qrshards ON qrspots.id = qrshards.qrspot_id AND user_id = $1
       LEFT JOIN qrshards_last ON qrspots.id = qrshards_last.qrspot_id
       WHERE active = TRUE
