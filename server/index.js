@@ -5,7 +5,6 @@ const dotenv = require("dotenv");
 const path = require("path");
 const { Client: PGClient } = require("pg");
 const passport = require("passport");
-const Sentry = require("@sentry/node");
 
 const swagger = require("./swagger");
 const sentry = require("./sentry");
@@ -22,7 +21,8 @@ const {
 
 const app = express();
 
-sentry(app);
+sentry.init(app);
+sentry.beforeHandlers(app);
 
 // set up our express application
 app.use(cookieParser()); // read cookies (needed for auth)
@@ -86,8 +86,7 @@ app.use((err, req, res, next) => {
   next();
 });
 
-// The error handler must be before any other error middleware and after all controllers
-app.use(Sentry.Handlers.errorHandler());
+sentry.afterHandlers(app);
 
 // eslint-disable-next-line no-unused-vars
 app.use((err, req, res, _next) => {
