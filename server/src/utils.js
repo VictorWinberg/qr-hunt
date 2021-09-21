@@ -3,6 +3,13 @@
 const snakecaseKeys = require("snakecase-keys");
 const camelcaseKeys = require("camelcase-keys");
 
+function pascalCase(str) {
+  return str.replace(
+    /(\w)(\w*)/g,
+    (g0, g1, g2) => g1.toUpperCase() + g2.toLowerCase()
+  );
+}
+
 function keyValuePairs(valid, obj) {
   const keys = Object.keys(obj).filter(key => valid.includes(key));
   const values = keys.map(key => obj[key]);
@@ -23,7 +30,10 @@ const makeDbQuery = pg => async (query, values) => {
     const { rows } = await pg.query(query, values);
     return { rows };
   } catch ({ severity, message }) {
-    return { rows: [], err: { query, severity, message } };
+    return {
+      rows: [],
+      err: `Database ${pascalCase(severity)}: ${message}\n in query: ${query}`
+    };
   }
 };
 
@@ -74,10 +84,10 @@ const haveCalled = (req, res) => (url, method = "GET", status = 200) =>
     res.statusCode === status
   ].every(Boolean);
 
-  function isValidDate(str) {
-    const date = new Date(str)
-    return new Date(date) instanceof Date && !isNaN(date.getTime())
-  }
+function isValidDate(str) {
+  const date = new Date(str);
+  return new Date(date) instanceof Date && !isNaN(date.getTime());
+}
 
 module.exports = {
   keyValuePairs,

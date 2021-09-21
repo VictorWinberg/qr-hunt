@@ -37,5 +37,8 @@ npm install
 npm start
 ```
 
-## Swagger UI
+## Swagger UI | API Documentation
 Visit `/api/docs`
+
+## Sentry | Error Monitoring
+Visit `sentry.io` (ask for invite)

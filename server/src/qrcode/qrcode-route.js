@@ -21,9 +21,9 @@ module.exports = ({ app, db, isLoggedIn }) => {
    *               minItems: 3
    */
 
-  app.get("/api/qrcodes", isLoggedIn, async (_, res) => {
+  app.get("/api/qrcodes", isLoggedIn, async (_, res, next) => {
     const { qrcodes, err } = await QRCode.getAll();
-    if (err) return res.status(500).send(err);
+    if (err) return next(err);
     return res.send(qrcodes);
   });
 
@@ -42,10 +42,10 @@ module.exports = ({ app, db, isLoggedIn }) => {
    *               $ref: '#/components/schemas/QRCode'
    */
 
-  app.post("/api/qrcodes", isLoggedIn, async (req, res) => {
+  app.post("/api/qrcodes", isLoggedIn, async (req, res, next) => {
     const { user = {} } = req;
     const { qrcode, err } = await QRCode.create(user.id, { uuid: uuidv4() });
-    if (err) return res.status(500).send(err);
+    if (err) return next(err);
     return res.send(qrcode);
   });
 };

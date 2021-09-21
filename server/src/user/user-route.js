@@ -51,10 +51,10 @@ module.exports = ({ app, db, isLoggedIn }) => {
    *       - User
    */
 
-  app.delete("/api/user", isLoggedIn, async (req, res) => {
+  app.delete("/api/user", isLoggedIn, async (req, res, next) => {
     const { user: req_user = {} } = req;
     const { user, err } = await User.delete(req_user.id);
-    if (err) return res.status(500).send(err);
+    if (err) return next(err);
     if (!user) return res.sendStatus(404);
     return res.send(user);
   });
@@ -77,9 +77,9 @@ module.exports = ({ app, db, isLoggedIn }) => {
    *               minItems: 3
    */
 
-  app.get("/api/users", isLoggedIn, async (_, res) => {
+  app.get("/api/users", isLoggedIn, async (_, res, next) => {
     const { users, err } = await User.getAll();
-    if (err) return res.status(500).send(err);
+    if (err) return next(err);
     return res.send(users.map(setProps(["lvl"])));
   });
 
@@ -104,11 +104,11 @@ module.exports = ({ app, db, isLoggedIn }) => {
    *               $ref: '#/components/schemas/User'
    */
 
-  app.get("/api/users/:id", isLoggedIn, async (req, res) => {
+  app.get("/api/users/:id", isLoggedIn, async (req, res, next) => {
     const { params = {} } = req;
     const { user, err } = await User.getById(params.id);
 
-    if (err) return res.status(500).send(err);
+    if (err) return next(err);
     if (!user) return res.sendStatus(404);
     return res.send(setProps(["lvl", "lvlXp", "reqLvlXp"])(user));
   });
@@ -131,9 +131,9 @@ module.exports = ({ app, db, isLoggedIn }) => {
    *               minItems: 3
    */
 
-  app.get("/api/leaderboard", isLoggedIn, async (_, res) => {
+  app.get("/api/leaderboard", isLoggedIn, async (_, res, next) => {
     const { users, err } = await User.getAllOrderByXp();
-    if (err) return res.status(500).send(err);
+    if (err) return next(err);
     return res.send(users.map(setProps(["lvl"])));
   });
 
@@ -155,14 +155,14 @@ module.exports = ({ app, db, isLoggedIn }) => {
    *               minItems: 3
    */
 
-  app.get("/api/leaderboard/:from/:to", isLoggedIn, async (req, res) => {
+  app.get("/api/leaderboard/:from/:to", isLoggedIn, async (req, res, next) => {
     const { params = {} } = req;
     const { from, to } = params;
     if (!isValidDate(from) || !isValidDate(to)) {
       return res.status(400).send("Incorrect dates");
     }
     const { users, err } = await User.getAllScoreDate(from, to);
-    if (err) return res.status(500).send(err);
+    if (err) return next(err);
     return res.send(users.map(setProps(["rank", "lvl"])));
   });
 };
