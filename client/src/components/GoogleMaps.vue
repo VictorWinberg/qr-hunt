@@ -240,6 +240,7 @@ export default Vue.extend({
           this.setCoords(coords);
           this.centerMapToUser({ zoom: false });
         },
+        // eslint-disable-next-line no-console
         console.error,
         watchOptions
       );
