@@ -3,7 +3,7 @@
     <SignIn />
     <Header />
     <keep-alive>
-      <router-view :key="$route.fullPath" />
+      <router-view :key="$route.name" />
     </keep-alive>
     <QRScanner v-if="scanning" />
     <transition name="fade">
