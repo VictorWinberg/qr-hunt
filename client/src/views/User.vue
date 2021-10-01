@@ -112,12 +112,15 @@ export default Vue.extend({
     },
     async fetchUser() {
       const { params } = this.$route;
+      var reset = setTimeout(() => (this.user = {}), 200);
+
       const user = params.id
         ? await api.get("/api/users/" + params.id)
         : await api.get("/api/user");
 
-      if (user.err) return;
-      this.user = user.data;
+      clearTimeout(reset);
+
+      this.user = user.err ? {} : user.data;
     },
     setTabs() {
       const { params } = this.$route;
