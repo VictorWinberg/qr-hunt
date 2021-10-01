@@ -235,10 +235,14 @@ export default Vue.extend({
         enableHighAccuracy: true
       };
 
-      navigator.geolocation.getCurrentPosition(({ coords }) => {
-        this.setCoords(coords);
-        this.centerMapToUser({ zoom: false });
-      });
+      navigator.geolocation.getCurrentPosition(
+        ({ coords }) => {
+          this.setCoords(coords);
+          this.centerMapToUser({ zoom: false });
+        },
+        console.error,
+        watchOptions
+      );
       navigator.geolocation.watchPosition(
         ({ coords }) => this.setCoords(coords),
         // eslint-disable-next-line no-console
