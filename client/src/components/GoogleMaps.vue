@@ -6,7 +6,8 @@
     :options="{
       mapId: '153063bbe11287f1',
       gestureHandling: 'greedy',
-      zoomControl: false,
+      zoomControl: true,
+      zoomControlOptions: { position: 3 },
       scaleControl: false,
       rotateControl: false,
       mapTypeControl: false,
@@ -210,12 +211,12 @@ export default Vue.extend({
     },
     createMapElements() {
       /** Create button for centering position at user */
-      const { TOP_RIGHT, RIGHT_BOTTOM } = google.maps.ControlPosition;
+      const { TOP_LEFT, RIGHT_BOTTOM } = google.maps.ControlPosition;
       const positionControl = document.getElementById("position-button");
       const compassControl = document.getElementById("compass-button");
 
       this.map.controls[RIGHT_BOTTOM].push(positionControl);
-      this.map.controls[TOP_RIGHT].push(compassControl);
+      this.map.controls[TOP_LEFT].push(compassControl);
     },
     handleDrag() {
       if (!this.map) return;
