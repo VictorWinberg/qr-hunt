@@ -34,6 +34,7 @@
     <GmapMarker
       v-if="userCoords"
       :position="userCoords"
+      :z-index="100"
       :icon="{
         url: require('@/assets/position-marker.svg'),
         anchor: { x: 12, y: 12 }
@@ -43,6 +44,7 @@
     <GmapMarker
       v-else
       :position="{ lat: 0, lng: 0 }"
+      :z-index="100"
       :icon="{
         url: require('@/assets/spinner.svg'),
         anchor: { x: 50, y: 50 },
