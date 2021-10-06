@@ -31,31 +31,6 @@
       @closeclick="infoWindow.open = false"
     />
 
-    <GmapMarker
-      v-if="userCoords"
-      :position="userCoords"
-      :icon="{
-        url: require('@/assets/position-marker.svg'),
-        anchor: { x: 12, y: 12 }
-      }"
-      @click="centerMapToUser"
-    />
-    <GmapMarker
-      v-else
-      :position="{ lat: 0, lng: 0 }"
-      :icon="{
-        url: require('@/assets/spinner.svg'),
-        anchor: { x: 50, y: 50 },
-        scaledSize: { width: 100, height: 100 }
-      }"
-      :label="{
-        text: 'Loading coordinates...',
-        fontSize: '1rem',
-        color: '#242424'
-      }"
-      @click="centerMapToUser"
-    />
-
     <GmapCircle
       v-if="userCoords"
       :center="userCoords"
@@ -104,6 +79,31 @@
         anchor: { x: 32, y: 32 },
         scaledSize: { width: 64, height: 64 }
       }"
+    />
+
+    <GmapMarker
+      v-if="userCoords"
+      :position="userCoords"
+      :icon="{
+        url: require('@/assets/position-marker.svg'),
+        anchor: { x: 12, y: 12 }
+      }"
+      @click="centerMapToUser"
+    />
+    <GmapMarker
+      v-else
+      :position="{ lat: 0, lng: 0 }"
+      :icon="{
+        url: require('@/assets/spinner.svg'),
+        anchor: { x: 50, y: 50 },
+        scaledSize: { width: 100, height: 100 }
+      }"
+      :label="{
+        text: 'Loading coordinates...',
+        fontSize: '1rem',
+        color: '#242424'
+      }"
+      @click="centerMapToUser"
     />
 
     <div id="position-button" class="control-button" @click="centerMapToUser">
