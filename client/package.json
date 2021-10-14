@@ -8,7 +8,7 @@
     "lint": "vue-cli-service lint",
     "test": "vue-cli-service test:unit --coverage",
     "bundle-analyze": "webpack-bundle-analyzer dist/report.json",
-    "stylelint": "stylelint **/*.{vue,scss} --fix"
+    "stylelint": "stylelint --fix"
   },
   "dependencies": {
     "@sentry/vue": "6.13.2",

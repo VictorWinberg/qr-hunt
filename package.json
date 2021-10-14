@@ -16,6 +16,9 @@
     "test-server": "cd server && npm test",
     "lint": "npm-run-all -s lint-client",
     "lint-client": "cd client && npm run lint",
+    "stylelint": "cd client && npm run stylelint",
+    "prettier-server": "cd server && npm run prettier",
+    "eslint-server": "cd server && npm run eslint",
     "db:migrate": "cd server && npm run db:migrate",
     "db:pull": "pg_dump --format=c -h zolly.ml -U vicnie qrhunt | pg_restore --clean --no-owner -h localhost -d qrhunt"
   },
@@ -39,6 +42,11 @@
     }
   },
   "lint-staged": {
-    "*": "lint"
+    "client/**/*.{vue,ts}": "npm run lint-client",
+    "client/**/*.{vue,scss}": "npm run stylelint",
+    "server/**/*.js": [
+      "npm run eslint-server",
+      "npm run prettier-server"
+    ]
   }
 }
