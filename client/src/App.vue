@@ -48,8 +48,8 @@ export default Vue.extend({
   justify-content: center;
   font-family: "Avenir", Helvetica, Arial, sans-serif;
   color: $text-color;
-  background-color: $primary-color;
   text-align: center;
+  background-color: $primary-color;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-tap-highlight-color: transparent;
