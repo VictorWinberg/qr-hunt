@@ -2,7 +2,7 @@
   <div>
     <h2 class="leaderboard__title">Leaderboard</h2>
     <div class="leaderboard__nav">
-      <h3 @click="togglePeriod">{{ week }} {{ month }} {{ year }}</h3>
+      <h3 class="leaderboard__period" @click="togglePeriod">{{ week }} {{ month }} {{ year }}</h3>
       <a class="nav--left" @click="nav(-1)">
         <i class="fas fa-caret-left"></i>
       </a>
@@ -108,10 +108,6 @@ export default Vue.extend({
 .leaderboard__nav {
   position: relative;
 
-  h3 {
-    display: inline-block;
-  }
-
   a {
     position: absolute;
     top: 0;
@@ -129,6 +125,11 @@ export default Vue.extend({
       background: $grey-800;
     }
   }
+}
+
+.leaderboard__period {
+  display: inline-block;
+  text-decoration: underline;
 }
 
 .leaderboard__table {
