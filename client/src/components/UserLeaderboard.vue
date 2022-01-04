@@ -59,7 +59,7 @@ export default Vue.extend({
     ...mapState("user", ["leaderboard"]),
     week() {
       if (this.period !== "week") return;
-      return "w " + this.date.week();
+      return "w. " + this.date.isoWeek();
     },
     month() {
       if (this.period !== "month") return;

@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
-import weekOfYear from "dayjs/plugin/weekOfYear";
-dayjs.extend(weekOfYear);
+import isoWeek from "dayjs/plugin/isoWeek";
+dayjs.extend(isoWeek);
 
 dayjs.Ls.en.weekStart = 1;
 
