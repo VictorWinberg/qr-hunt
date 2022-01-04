@@ -30,13 +30,18 @@ export default Vue.extend({
   },
   computed: mapState("scan", ["scanning"]),
   created() {
+    const { query } = this.$route;
+    if (this.$route.path !== "/") this.$router.push({ path: "/", query });
+
     this.$store.commit("popup/setPopup", false);
     this.$store.commit("qrSpot/setModalState", QR_SPOT_PANEL.HIDE);
 
-    const { qrcode } = this.$route.query;
-    if (qrcode) {
-      this.handleQR(qrcode);
-      this.stopScan();
+    // DEV ONLY
+    if (query.qrcode) {
+      setTimeout(() => {
+        this.handleQR(query.qrcode);
+        this.stopScan();
+      }, 600);
     }
   },
   mounted() {
