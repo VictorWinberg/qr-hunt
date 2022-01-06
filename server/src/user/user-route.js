@@ -139,11 +139,24 @@ module.exports = ({ app, db, isLoggedIn }) => {
 
   /**
    * @swagger
-   * /leaderboard/monthly:
+   * /leaderboard/{from}/{to}:
    *   get:
-   *     summary: Get the monthly leaderboard users
+   *     summary: Get the leaderboard for a period
    *     tags:
    *       - User
+   *     parameters:
+   *       - in: path
+   *         name: from
+   *         schema:
+   *           type: string
+   *           format: date
+   *         required: true
+   *       - in: path
+   *         name: to
+   *         schema:
+   *           type: string
+   *           format: date
+   *         required: true
    *     responses:
    *       200:
    *         content:

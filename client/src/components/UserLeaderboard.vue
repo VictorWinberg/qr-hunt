@@ -2,7 +2,9 @@
   <div>
     <h2 class="leaderboard__title">Leaderboard</h2>
     <div class="leaderboard__nav">
-      <h3 class="leaderboard__period" @click="togglePeriod">{{ week }} {{ month }} {{ year }}</h3>
+      <h3 class="leaderboard__period" @click="togglePeriod">
+        {{ week }} {{ month }} {{ year }}
+      </h3>
       <a class="nav--left" @click="nav(-1)">
         <i class="fas fa-caret-left"></i>
       </a>
@@ -10,7 +12,7 @@
         <i class="fas fa-caret-right"></i>
       </a>
     </div>
-    <table v-if="leaderboard" class="leaderboard__table">
+    <table v-if="leaderboard && leaderboard.length" class="leaderboard__table">
       <tr>
         <th>Rank</th>
         <th></th>
@@ -37,6 +39,10 @@
         </tr>
       </router-link>
     </table>
+
+    <h4 v-else-if="leaderboard">
+      {{ emptyLeaderboard() }}
+    </h4>
   </div>
 </template>
 
@@ -99,6 +105,18 @@ export default Vue.extend({
       this.period = { week: "month", month: "year", year: "week" }[this.period];
       this.date = dayjs().startOf(this.period);
       this.fetchLeaderboard();
+    },
+    emptyLeaderboard() {
+      const texts = [
+        "No contestants",
+        "No entries",
+        "No competition",
+        "Empty leaderboard",
+        "W.O.",
+        "Walkover",
+        "No one here"
+      ];
+      return texts[Math.floor(Math.random() * texts.length)];
     }
   }
 });
@@ -111,15 +129,18 @@ export default Vue.extend({
   a {
     position: absolute;
     top: 0;
-    background: $dark-brand-color;
     padding: 0.2rem 1rem;
+    background: $dark-brand-color;
     border-radius: 0.2rem;
+
     &.nav--left {
       left: 0;
     }
+
     &.nav--right {
       right: 0;
     }
+
     &.disabled {
       color: $grey-400;
       background: $grey-800;

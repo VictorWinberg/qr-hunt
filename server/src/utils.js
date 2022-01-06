@@ -85,8 +85,12 @@ const haveCalled = (req, res) => (url, method = "GET", status = 200) =>
   ].every(Boolean);
 
 function isValidDate(str) {
-  const date = new Date(str);
-  return new Date(date) instanceof Date && !isNaN(date.getTime());
+  var regEx = /^\d{4}-\d{2}-\d{2}$/;
+  if (!str.match(regEx)) return false; // Invalid format
+  var d = new Date(str);
+  var dNum = d.getTime();
+  if (!dNum && dNum !== 0) return false; // NaN value, Invalid date
+  return d.toISOString().slice(0, 10) === str;
 }
 
 module.exports = {
