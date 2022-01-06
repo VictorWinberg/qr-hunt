@@ -17,7 +17,7 @@
  *           type: string
  */
 
-const SELECT_QR_SHARDS_SQL = (where) => `
+const SELECT_QR_SHARDS_SQL = where => `
   SELECT users.id, CAST(COUNT(qrshards.*) AS int) AS qrshards_score
   FROM users
   LEFT JOIN qrshards ON qrshards.user_id = users.id
@@ -25,7 +25,7 @@ const SELECT_QR_SHARDS_SQL = (where) => `
   GROUP BY users.id
 `;
 
-const SELECT_ACHIEVEMENTS_SQL = (where) => `
+const SELECT_ACHIEVEMENTS_SQL = where => `
   SELECT users.id, CAST(COUNT(user_achievements.*) AS int) AS achievements_score
   FROM users
   LEFT JOIN user_achievements ON user_achievements.user_id = users.id
@@ -33,7 +33,7 @@ const SELECT_ACHIEVEMENTS_SQL = (where) => `
   GROUP BY users.id
 `;
 
-const SELECT_USERS_SQL = (args) => `
+const SELECT_USERS_SQL = args => `
   SELECT id, username, name, email, photo, created_at ${args}
   FROM users
 `;
@@ -45,7 +45,9 @@ const SELECT_USERS_SQL_FULL = `
     ${SELECT_ACHIEVEMENTS_SQL()}
   )
 
-  ${SELECT_USERS_SQL(', CAST(COALESCE(qrshards_score + achievements_score * 5, 0) AS int) AS xp')}
+  ${SELECT_USERS_SQL(
+    ", CAST(COALESCE(qrshards_score + achievements_score * 5, 0) AS int) AS xp"
+  )}
   LEFT JOIN qrshards_count USING (id)
   LEFT JOIN achievements_count USING (id)
 `;
@@ -56,14 +58,17 @@ const SELECT_USERS_SQL_DATE = (from, to) => `
   ), achievements_count AS (
     ${SELECT_ACHIEVEMENTS_SQL()}
   ), qrshards_date_count AS (
-    ${SELECT_QR_SHARDS_SQL(`qrshards.created_at >= '${from}' AND qrshards.created_at < '${to}'`)}
+    ${SELECT_QR_SHARDS_SQL(
+      `qrshards.created_at >= '${from}' AND qrshards.created_at < '${to}'`
+    )}
   )
 
-  ${SELECT_USERS_SQL(`, COALESCE(qrshards_date_count.qrshards_score, 0) AS score,
-    CAST(COALESCE(qrshards_count.qrshards_score + achievements_score * 5, 0) AS int) AS xp`)}
+  ${SELECT_USERS_SQL(`, qrshards_date_count.qrshards_score AS score,
+    qrshards_count.qrshards_score + achievements_score * 5 AS xp`)}
   LEFT JOIN qrshards_count USING (id)
   LEFT JOIN achievements_count USING (id)
   LEFT JOIN qrshards_date_count USING (id)
+  WHERE qrshards_date_count.qrshards_score IS NOT NULL
 `;
 
 module.exports = db => ({
