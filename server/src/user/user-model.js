@@ -111,7 +111,6 @@ module.exports = db => ({
   getAllOrderByXp: async () => {
     const sql = `${SELECT_USERS_SQL_FULL}
         ORDER BY xp DESC, name, username, id`;
-    console.log(sql);
     const { rows, err } = await db.query(sql);
     return { users: rows, err };
   },
