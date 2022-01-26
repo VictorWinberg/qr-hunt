@@ -139,8 +139,8 @@ export default Vue.extend({
 
     .qr-scanner__flash {
       position: absolute;
-      top: 20px;
-      right: 20px;
+      top: 0;
+      right: 0;
       width: 40px;
       height: 40px;
       padding: 20px;
