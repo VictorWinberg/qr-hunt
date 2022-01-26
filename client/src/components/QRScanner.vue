@@ -66,6 +66,7 @@ export default Vue.extend({
       const devices = await navigator.mediaDevices.enumerateDevices();
       const cameras = devices.filter(device => device.kind === "videoinput");
       const camera = cameras[cameras.length - 1];
+      if (!camera) return;
 
       this.scanner = new QRScanner(
         document.getElementById("qrscan"),
@@ -140,9 +141,9 @@ export default Vue.extend({
       position: absolute;
       top: 20px;
       right: 20px;
-      width: 5rem;
-      height: 5rem;
-      border: 2px solid red;
+      width: 40px;
+      height: 40px;
+      padding: 20px;
       font-size: 2rem;
     }
   }
