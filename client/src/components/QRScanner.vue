@@ -53,21 +53,7 @@ export default Vue.extend({
   mounted() {
     if (!this.scanning) return;
 
-    this.scanner = new QRScanner(document.getElementById("qrscan"), qrcode => {
-      if (qrcode) {
-        this.handleQR(qrcode);
-        this.stopScan();
-        clearTimeout(this.timeout);
-      }
-    });
-    this.scanner.start();
-    this.timeout = window.setTimeout(() => {
-      this.handleQR(null);
-      this.stopScan();
-    }, this.timeoutMs);
-
-    this.flashOn = this.scanner.isFlashOn();
-    this.scanner.hasFlash().then(hasFlash => (this.hasFlash = hasFlash));
+    this.initScanner();
   },
   beforeDestroy() {
     this.scanner && this.scanner.destroy();
@@ -76,9 +62,35 @@ export default Vue.extend({
   methods: {
     ...mapMutations("scan", ["stopScan"]),
     ...mapActions("scan", ["handleQR"]),
-    toggleFlash() {
+    async initScanner() {
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      const cameras = devices.filter(device => device.kind === "videoinput");
+      const camera = cameras[cameras.length - 1];
+
+      this.scanner = new QRScanner(
+        document.getElementById("qrscan"),
+        qrcode => {
+          if (qrcode) {
+            this.handleQR(qrcode);
+            this.stopScan();
+            clearTimeout(this.timeout);
+          }
+        },
+        QRScanner._onDecodeError,
+        QRScanner._calculateScanRegion,
+        camera.deviceId
+      );
+      await this.scanner.start();
+      this.hasFlash = await this.scanner.hasFlash();
+
+      this.timeout = window.setTimeout(() => {
+        this.handleQR(null);
+        this.stopScan();
+      }, this.timeoutMs);
+    },
+    async toggleFlash() {
       if (!this.scanner) return;
-      this.scanner.toggleFlash();
+      await this.scanner.toggleFlash();
       this.flashOn = !this.flashOn;
     }
   }
