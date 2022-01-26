@@ -140,6 +140,9 @@ export default Vue.extend({
       position: absolute;
       top: 20px;
       right: 20px;
+      width: 5rem;
+      height: 5rem;
+      border: 2px solid red;
       font-size: 2rem;
     }
   }
