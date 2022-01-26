@@ -4,6 +4,10 @@
       <div class="qr-scanner__camera">
         <i class="fas fa-camera-retro"></i> QR SCAN
       </div>
+      <div v-if="hasFlash" class="qr-scanner__flash" @click="toggleFlash">
+        <i v-if="flashOn" class="fas fa-bolt"></i>
+        <i v-else class="far fa-bolt"></i>
+      </div>
     </div>
     <div class="qrscan"><video id="qrscan"></video></div>
   </div>
@@ -23,6 +27,8 @@ export default Vue.extend({
   name: "QRScanner",
   data() {
     return {
+      hasFlash: false,
+      flashOn: false,
       scanner: undefined,
       timeout: -1,
       timeoutMs: 10 * 1000
@@ -59,6 +65,9 @@ export default Vue.extend({
       this.handleQR(null);
       this.stopScan();
     }, this.timeoutMs);
+
+    this.flashOn = this.scanner.isFlashOn();
+    this.scanner.hasFlash().then(hasFlash => (this.hasFlash = hasFlash));
   },
   beforeDestroy() {
     this.scanner && this.scanner.destroy();
@@ -66,7 +75,12 @@ export default Vue.extend({
   },
   methods: {
     ...mapMutations("scan", ["stopScan"]),
-    ...mapActions("scan", ["handleQR"])
+    ...mapActions("scan", ["handleQR"]),
+    toggleFlash() {
+      if (!this.scanner) return;
+      this.scanner.toggleFlash();
+      this.flashOn = !this.flashOn;
+    }
   }
 });
 </script>
@@ -108,7 +122,13 @@ export default Vue.extend({
       left: 0;
       font-size: 2rem;
       font-weight: bold;
-      color: $text-color;
+    }
+
+    .qr-scanner__flash {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 2rem;
     }
   }
 }
