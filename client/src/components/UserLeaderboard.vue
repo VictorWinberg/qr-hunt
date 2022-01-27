@@ -36,7 +36,7 @@
             ></div>
           </td>
           <td>{{ user.name || user.username }}</td>
-          <td align="right">{{ (user.dist / 1000).toFixed(1) }}</td>
+          <td align="right">{{ (user.dist * 2 / 1000).toFixed(1) }}</td>
           <td align="right">{{ user.score }}</td>
         </tr>
       </router-link>
