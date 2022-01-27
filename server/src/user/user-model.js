@@ -122,6 +122,17 @@ module.exports = db => ({
     return { users: rows, err };
   },
 
+  getAllShardDate: async (from, to) => {
+    const sql = `SELECT qrshards.id, qrshards.created_at, user_id, lat, lng
+      FROM qrshards
+      LEFT JOIN qrspots ON qrspot_id = qrspots.id
+      LEFT JOIN users ON user_id = users.id
+      WHERE qrshards.created_at >= '${from}' AND qrshards.created_at < '${to}'
+      ORDER BY user_id, qrshards.created_at`;
+    const { rows, err } = await db.query(sql);
+    return { shards: rows, err };
+  },
+
   delete: async id => {
     const sql = "DELETE FROM users WHERE id = $1 RETURNING *";
     const { rows, err } = await db.query(sql, [id]);
