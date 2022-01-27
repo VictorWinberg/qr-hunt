@@ -4,6 +4,10 @@
       <div class="qr-scanner__camera">
         <i class="fas fa-camera-retro"></i> QR SCAN
       </div>
+      <div v-if="hasFlash" class="qr-scanner__flash" @click="toggleFlash">
+        <i v-if="flashOn" class="fas fa-bolt"></i>
+        <i v-else class="far fa-bolt"></i>
+      </div>
     </div>
     <div class="qrscan"><video id="qrscan"></video></div>
   </div>
@@ -23,6 +27,8 @@ export default Vue.extend({
   name: "QRScanner",
   data() {
     return {
+      hasFlash: false,
+      flashOn: false,
       scanner: undefined,
       timeout: -1,
       timeoutMs: 10 * 1000
@@ -47,18 +53,7 @@ export default Vue.extend({
   mounted() {
     if (!this.scanning) return;
 
-    this.scanner = new QRScanner(document.getElementById("qrscan"), qrcode => {
-      if (qrcode) {
-        this.handleQR(qrcode);
-        this.stopScan();
-        clearTimeout(this.timeout);
-      }
-    });
-    this.scanner.start();
-    this.timeout = window.setTimeout(() => {
-      this.handleQR(null);
-      this.stopScan();
-    }, this.timeoutMs);
+    this.initScanner();
   },
   beforeDestroy() {
     this.scanner && this.scanner.destroy();
@@ -66,7 +61,39 @@ export default Vue.extend({
   },
   methods: {
     ...mapMutations("scan", ["stopScan"]),
-    ...mapActions("scan", ["handleQR"])
+    ...mapActions("scan", ["handleQR"]),
+    async initScanner() {
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      const cameras = devices.filter(device => device.kind === "videoinput");
+      const camera = cameras[cameras.length - 1];
+      if (!camera) return;
+
+      this.scanner = new QRScanner(
+        document.getElementById("qrscan"),
+        qrcode => {
+          if (qrcode) {
+            this.handleQR(qrcode);
+            this.stopScan();
+            clearTimeout(this.timeout);
+          }
+        },
+        QRScanner._onDecodeError,
+        QRScanner._calculateScanRegion,
+        camera.deviceId
+      );
+      await this.scanner.start();
+      this.hasFlash = await this.scanner.hasFlash();
+
+      this.timeout = window.setTimeout(() => {
+        this.handleQR(null);
+        this.stopScan();
+      }, this.timeoutMs);
+    },
+    async toggleFlash() {
+      if (!this.scanner) return;
+      await this.scanner.toggleFlash();
+      this.flashOn = !this.flashOn;
+    }
   }
 });
 </script>
@@ -108,7 +135,16 @@ export default Vue.extend({
       left: 0;
       font-size: 2rem;
       font-weight: bold;
-      color: $text-color;
+    }
+
+    .qr-scanner__flash {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 40px;
+      height: 40px;
+      padding: 20px;
+      font-size: 2rem;
     }
   }
 }
