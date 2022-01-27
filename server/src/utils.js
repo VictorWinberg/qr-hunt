@@ -63,6 +63,8 @@ const isToday = date =>
   new Date(date).toDateString() === new Date().toDateString();
 
 function distance({ lat: lat1, lng: lng1 }, { lat: lat2, lng: lng2 }) {
+  if (!lat1 || !lng1 || !lat2 || !lng2) return 0;
+
   const R = 6371e3;
   const φ1 = (lat1 * Math.PI) / 180;
   const φ2 = (lat2 * Math.PI) / 180;
@@ -93,6 +95,30 @@ function isValidDate(str) {
   return d.toISOString().slice(0, 10) === str;
 }
 
+function groupBy(xs, key) {
+  return xs.reduce(function(rv, x) {
+    (rv[x[key]] = rv[x[key]] || []).push(x);
+    return rv;
+  }, {});
+}
+
+const chaining = (...fns) => {
+  return fns.reduceRight(
+    (res, fn) => fn(res),
+    a => a
+  );
+};
+
+const mapValues = cb => obj => {
+  return Object.entries(obj).reduce((res, [key, val]) => {
+    return { ...res, [key]: cb(val) };
+  }, {});
+};
+
+const sumValues = () => values => {
+  return Object.values(values).reduce((res, value) => res + value, 0);
+};
+
 module.exports = {
   keyValuePairs,
   isLoggedIn,
@@ -101,5 +127,9 @@ module.exports = {
   camelcaseMiddleware,
   distance,
   haveCalled,
-  isValidDate
+  isValidDate,
+  groupBy,
+  chaining,
+  mapValues,
+  sumValues
 };

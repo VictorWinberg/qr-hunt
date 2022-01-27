@@ -17,6 +17,7 @@
         <th>Rank</th>
         <th></th>
         <th>User</th>
+        <th align="right">KM</th>
         <th align="right">Score</th>
       </tr>
       <router-link
@@ -35,6 +36,7 @@
             ></div>
           </td>
           <td>{{ user.name || user.username }}</td>
+          <td align="right">{{ (user.dist / 1000).toFixed(1) }}</td>
           <td align="right">{{ user.score }}</td>
         </tr>
       </router-link>

@@ -1,4 +1,11 @@
-const { isValidDate } = require("../utils");
+const {
+  isValidDate,
+  groupBy,
+  distance,
+  chaining,
+  mapValues,
+  sumValues
+} = require("../utils");
 
 module.exports = ({ app, db, isLoggedIn }) => {
   const User = require("./user-model")(db);
@@ -176,6 +183,43 @@ module.exports = ({ app, db, isLoggedIn }) => {
     }
     const { users, err } = await User.getAllScoreDate(from, to);
     if (err) return next(err);
+
+    const { dists, err: err2 } = await getUserShardDistance(from, to);
+    if (err2) return next(err2);
+
+    mapValues(user => (user.dist = dists[user.id]))(users);
+
     return res.send(users.map(setProps(["rank", "lvl"])));
   });
+
+  async function getUserShardDistance(from, to) {
+    let { shards, err } = await User.getAllShardDate(from, to);
+    if (err) return { err };
+
+    shards = shards.map(shard => ({
+      ...shard,
+      date: new Date(shard.created_at).toISOString().split("T")[0]
+    }));
+
+    const calcDistance = () => shards => {
+      return shards.reduce((res, _, index, arr) => {
+        if (index === 0) return res;
+        const dist = distance(arr[index - 1], arr[index]);
+        return res + dist;
+      }, 0);
+    };
+
+    const groupByDate = cb => shards => cb(groupBy(shards, "date"));
+    const groupByUser = cb => shards => cb(groupBy(shards, "user_id"));
+
+    const groupedShards = chaining(
+      groupByUser,
+      mapValues,
+      groupByDate,
+      mapValues,
+      calcDistance
+    )(shards);
+
+    return { dists: chaining(mapValues, sumValues)(groupedShards) };
+  }
 };
