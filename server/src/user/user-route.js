@@ -3,8 +3,7 @@ const {
   groupBy,
   distance,
   chaining,
-  mapValues,
-  sumValues
+  mapValues
 } = require("../utils");
 
 module.exports = ({ app, db, isLoggedIn }) => {
@@ -209,17 +208,14 @@ module.exports = ({ app, db, isLoggedIn }) => {
       }, 0);
     };
 
-    const groupByDate = cb => shards => cb(groupBy(shards, "date"));
     const groupByUser = cb => shards => cb(groupBy(shards, "user_id"));
 
     const groupedShards = chaining(
       groupByUser,
       mapValues,
-      groupByDate,
-      mapValues,
       calcDistance
     )(shards);
 
-    return { dists: chaining(mapValues, sumValues)(groupedShards) };
+    return { dists: groupedShards };
   }
 };
