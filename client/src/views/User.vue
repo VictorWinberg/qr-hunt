@@ -216,7 +216,7 @@ export default Vue.extend({
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: Roboto, arial, sans-serif;
+  font-family: "Roboto", arial, sans-serif;
   font-size: 0.4em;
   font-style: italic;
   font-weight: bold;
