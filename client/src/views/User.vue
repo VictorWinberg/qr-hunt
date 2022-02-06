@@ -210,7 +210,7 @@ export default Vue.extend({
 .user-xp__text {
   position: absolute;
   top: 0.2em;
-  right: 0;
+  right: 0.2em;
   bottom: 0;
   left: 0;
   display: flex;
