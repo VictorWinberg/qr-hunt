@@ -218,6 +218,7 @@ export default Vue.extend({
   justify-content: center;
   font-size: 0.5em;
   font-style: italic;
+  font-family: sans-serif;
   font-weight: bold;
   color: $black;
   -webkit-text-fill-color: $white;
