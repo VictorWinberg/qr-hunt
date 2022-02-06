@@ -186,7 +186,7 @@ export default Vue.extend({
   max-width: 66%;
   height: 2.5rem;
   margin-left: -2.25rem;
-  font-size: 2.5rem;
+  font-size: 3rem;
   border: 1px solid $black;
   border-radius: 3px;
 }
@@ -209,7 +209,7 @@ export default Vue.extend({
 
 .user-xp__text {
   position: absolute;
-  top: 0;
+  top: 0.2em;
   right: 0;
   bottom: 0;
   left: 0;
@@ -217,7 +217,7 @@ export default Vue.extend({
   align-items: center;
   justify-content: center;
   font-family: Roboto, arial, sans-serif;
-  font-size: 0.5em;
+  font-size: 0.4em;
   font-style: italic;
   font-weight: bold;
   color: $black;
