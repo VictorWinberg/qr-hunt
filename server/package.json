@@ -13,8 +13,8 @@
     "db:pull": "pg_dump --format=c -h zolly.ml -U vicnie qrhunt | pg_restore --clean --no-owner -h localhost -d qrhunt"
   },
   "dependencies": {
-    "@sentry/node": "6.18.1",
-    "@sentry/tracing": "6.18.1",
+    "@sentry/node": "6.19.3",
+    "@sentry/tracing": "6.19.3",
     "camelcase-keys": "7.0.2",
     "cookie-parser": "1.4.6",
     "cookie-session": "1.4.0",
@@ -26,7 +26,7 @@
     "passport-google-oauth": "2.0.0",
     "pg": "8.7.3",
     "snakecase-keys": "4.0.2",
-    "swagger-jsdoc": "6.1.0",
+    "swagger-jsdoc": "6.2.0",
     "swagger-ui-express": "4.3.0",
     "uuid": "8.3.2"
   },
