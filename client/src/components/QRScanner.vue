@@ -9,7 +9,7 @@
         <i v-else class="far fa-bolt"></i>
       </div>
     </div>
-    <div class="qrscan"><video id="qrscan"></video></div>
+    <div class="qrscan"><video id="qrscan" ref="qrscan"></video></div>
   </div>
 </template>
 
@@ -66,10 +66,11 @@ export default Vue.extend({
       const devices = await navigator.mediaDevices.enumerateDevices();
       const cameras = devices.filter(device => device.kind === "videoinput");
       const camera = cameras[cameras.length - 1];
-      if (!camera) return;
+      const { qrscan } = this.$refs;
+      if (!camera || !qrscan) return;
 
       this.scanner = new QRScanner(
-        document.getElementById("qrscan"),
+        qrscan,
         qrcode => {
           if (qrcode) {
             this.handleQR(qrcode);
