@@ -51,7 +51,7 @@
         scaledSize: { width: 100, height: 100 }
       }"
       :label="{
-        text: 'Loading coordinates...',
+        text: 'Please enable location access',
         fontSize: '1rem',
         color: '#242424'
       }"
@@ -264,6 +264,7 @@ export default Vue.extend({
       return require("@/assets/qr-spot-marker--free.svg");
     },
     centerMapToUser({ zoom = true }) {
+      if (!this.userCoords) return;
       this.map.panTo(new google.maps.LatLng(this.userCoords));
       localStorage.setItem("mapCoords", JSON.stringify(this.userCoords));
       if (zoom && this.map.zoom < 15) this.map.setZoom(15);
