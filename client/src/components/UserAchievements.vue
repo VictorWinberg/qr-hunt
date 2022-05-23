@@ -3,7 +3,7 @@
     <h2 class="user-achievements__title">Achievements</h2>
     <div class="user-achievements">
       <div
-        v-for="{ name, title, icon } in achievements"
+        v-for="{ name, title, icon, count } in achievements"
         :key="name"
         class="user-achievements__card"
       >
@@ -15,6 +15,7 @@
                 <div class="banner">
                   <div class="banner__text async async--text">
                     {{ title || name || ". . ." }}
+                    {{ count }}
                   </div>
                 </div>
               </div>
