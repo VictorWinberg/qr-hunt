@@ -67,7 +67,6 @@ CREATE TABLE achievements (
   title     VARCHAR(50)   NOT NULL,
   icon      VARCHAR(50),
   score     INT,
-  level     INT,
 
   created_at TIMESTAMP DEFAULT NOW(),
 
@@ -76,9 +75,10 @@ CREATE TABLE achievements (
 
 DROP TABLE IF EXISTS user_achievements CASCADE;
 CREATE TABLE user_achievements (
-  popup            BOOLEAN     NOT NULL DEFAULT FALSE,
   user_id          INT,
   achievement_name VARCHAR(36),
+  count            INT          NOT NULL DEFAULT 1,
+  popup            BOOLEAN      NOT NULL DEFAULT FALSE,
 
   created_at TIMESTAMP DEFAULT NOW(),
 
