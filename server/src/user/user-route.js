@@ -11,13 +11,14 @@ module.exports = ({ app, db, isLoggedIn }) => {
 
   const setProps = keys => (user, idx = 0, users = []) => {
     const prevUser = idx === 0 ? {} : users[idx - 1];
+    const eqRank = user.score === prevUser.score && user.dist === prevUser.dist;
 
     let props = {};
     props.isAuthenticated = true;
     props.lvl = Math.floor(Math.sqrt(user.xp));
     props.lvlXp = user.xp - Math.pow(props.lvl, 2);
     props.reqLvlXp = Math.pow(props.lvl + 1, 2) - Math.pow(props.lvl, 2);
-    props.rank = user.score === prevUser.score ? prevUser.rank : idx + 1;
+    props.rank = eqRank ? prevUser.rank : idx + 1;
 
     keys.forEach(key => (user[key] = props[key]));
 
@@ -187,6 +188,7 @@ module.exports = ({ app, db, isLoggedIn }) => {
     if (err2) return next(err2);
 
     mapValues(user => (user.dist = dists[user.id]))(users);
+    users.sort((a, b) => b.score - a.score || b.dist - a.dist);
 
     return res.send(users.map(setProps(["rank", "lvl"])));
   });
