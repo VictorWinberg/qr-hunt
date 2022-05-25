@@ -7,6 +7,15 @@
         :key="name"
         class="user-achievements__card"
       >
+        <div
+          v-if="count > 1"
+          class="count"
+          :style="{ backgroundColor: hashColor(name) }"
+        >
+          <p class="count__title">
+            {{ count }}
+          </p>
+        </div>
         <div class="hex" :style="{ color: hashColor(name) }">
           <div class="hex hex__inner">
             <div class="hex hex__inner" :style="{ color: hashColor(name) }">
@@ -15,7 +24,6 @@
                 <div class="banner">
                   <div class="banner__text async async--text">
                     {{ title || name || ". . ." }}
-                    {{ count }}
                   </div>
                 </div>
               </div>
@@ -72,9 +80,28 @@ export default {
 }
 
 .user-achievements__card {
+  position: relative;
   display: flex;
   justify-content: center;
   width: 100px;
+}
+
+.count {
+  position: absolute;
+  top: -4px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border: solid white 2.5px;
+  border-radius: 50%;
+}
+
+.count__title {
+  font-size: 0.6em;
+  font-weight: bold;
 }
 
 .hex {
