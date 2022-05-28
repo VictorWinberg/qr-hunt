@@ -27,7 +27,7 @@ module.exports = ({ pg, db }) => async (req, res, next) => {
     });
 
     const achievement = await achievementsCal(dayjs());
-    if (haveCalled(req, res)("/api/qrshards", "POST")) {
+    if (achievement && haveCalled(req, res)("/api/qrshards", "POST")) {
       const { err } = await Achievement.create(user.id, achievement);
       if (err) console.error(err);
     }

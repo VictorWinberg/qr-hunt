@@ -32,7 +32,9 @@ const makeDbQuery = pg => async (query, values) => {
   } catch ({ severity, message }) {
     return {
       rows: [],
-      err: `Database ${pascalCase(severity)}: ${message}\n in query: ${query}`
+      err: `Database ${pascalCase(severity)}: ${message}
+      \n in query: ${query}
+      \n with values: ${values}`
     };
   }
 };

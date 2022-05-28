@@ -26,9 +26,10 @@ const SELECT_QR_SHARDS_SQL = where => `
 `;
 
 const SELECT_ACHIEVEMENTS_SQL = where => `
-  SELECT users.id, CAST(COUNT(user_achievements.*) AS int) AS achievements_score
+  SELECT users.id, CAST(SUM(user_achievements.count * achievements.score) AS int) AS achievements_score
   FROM users
   LEFT JOIN user_achievements ON user_achievements.user_id = users.id
+  LEFT JOIN achievements ON achievements.name = user_achievements.achievement_name
   WHERE popup = 't' AND ${where || "true"}
   GROUP BY users.id
 `;
@@ -46,7 +47,7 @@ const SELECT_USERS_SQL_FULL = `
   )
 
   ${SELECT_USERS_SQL(
-    ", CAST(COALESCE(qrshards_score + achievements_score * 5, 0) AS int) AS xp"
+    ", CAST(COALESCE(qrshards_score + achievements_score, 0) AS int) AS xp"
   )}
   LEFT JOIN qrshards_count USING (id)
   LEFT JOIN achievements_count USING (id)
@@ -64,7 +65,7 @@ const SELECT_USERS_SQL_DATE = (from, to) => `
   )
 
   ${SELECT_USERS_SQL(`, qrshards_date_count.qrshards_score AS score,
-    qrshards_count.qrshards_score + achievements_score * 5 AS xp`)}
+    qrshards_count.qrshards_score + achievements_score AS xp`)}
   LEFT JOIN qrshards_count USING (id)
   LEFT JOIN achievements_count USING (id)
   LEFT JOIN qrshards_date_count USING (id)
