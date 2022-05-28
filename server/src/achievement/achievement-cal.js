@@ -1,4 +1,5 @@
 const { google } = require("googleapis");
+const fs = require("fs");
 const path = require("path");
 const dayjs = require("dayjs");
 const isBetween = require("dayjs/plugin/isBetween");
@@ -13,17 +14,33 @@ const calendarIds = [
   "lsjl8fapajvr46qjf31mc1llc4@group.calendar.google.com"
 ];
 
+const hasCredentials = async filePath => {
+  return await new Promise(resolve => {
+    fs.access(filePath, fs.constants.F_OK, error => {
+      resolve(!error);
+    });
+  });
+};
+
 const calendarEvents = async () => {
+  if (cache.has("calendarEvents")) {
+    return cache.get("calendarEvents");
+  }
+
+  const filePath = path.join(__dirname, "../../../credentials.json");
+
+  if (!(await hasCredentials(filePath))) {
+    console.error("Error: Credentials file not found");
+    cache.set("calendarEvents", [], 60 * 60);
+    return [];
+  }
+
   const auth = new google.auth.GoogleAuth({
-    keyFile: path.join(__dirname, "../../../credentials.json"),
+    keyFile: filePath,
     scopes: ["https://www.googleapis.com/auth/calendar.events"]
   });
 
   const calendar = google.calendar({ version: "v3", auth });
-
-  if (cache.has("calendarEvents")) {
-    return cache.get("calendarEvents");
-  }
 
   const items = await Promise.all(
     calendarIds.map(async calendarId => {

@@ -14,6 +14,11 @@ There are two env-files that you need to create locally:
 - one in client dir (path: `client/.env`) for frontend
 > You can copy the `.env.example` to `.env` and modify the variables as needed
 
+### Credentials
+
+There is also a `credentials.json` file in the root dir.
+> You can download it from https://console.cloud.google.com/apis/credentials under "Service Accounts"
+
 ## Database Setup
 ```
 createdb qrhunt
