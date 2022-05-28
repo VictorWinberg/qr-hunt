@@ -1,5 +1,5 @@
 const dayjs = require("dayjs");
-const achievements = require("./achievement-list");
+const achievementsList = require("./achievement-list");
 const achievementsCal = require("./achievement-cal");
 const { haveCalled } = require("../utils");
 
@@ -16,7 +16,7 @@ module.exports = ({ pg, db }) => async (req, res, next) => {
     const { user = {} } = req;
     if (!req.isAuthenticated()) return;
 
-    Object.entries(achievements).forEach(async ([key, fn]) => {
+    Object.entries(achievementsList).forEach(async ([key, fn]) => {
       let achievement = await fn({ key, pg, db, req, res });
       if (Array.isArray(achievement)) achievement = achievement.every(Boolean);
 
@@ -26,7 +26,7 @@ module.exports = ({ pg, db }) => async (req, res, next) => {
       }
     });
 
-    const achievement = achievementsCal[dayjs().format("MM-DD")];
+    const achievement = await achievementsCal(dayjs());
     if (achievement && haveCalled(req, res)("/api/qrshards", "POST")) {
       const { err } = await Achievement.create(user.id, achievement);
       if (err) console.error(err);
