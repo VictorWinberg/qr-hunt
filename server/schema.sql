@@ -63,10 +63,11 @@ CREATE TABLE qrshards (
 
 DROP TABLE IF EXISTS achievements CASCADE;
 CREATE TABLE achievements (
-  name      VARCHAR(36)   NOT NULL,
-  title     VARCHAR(50)   NOT NULL,
-  icon      VARCHAR(50),
-  score     INT,
+  name        VARCHAR(36)   NOT NULL,
+  title       VARCHAR(50)   NOT NULL,
+  icon        VARCHAR(50),
+  repeatable  VARCHAR(10),
+  score       INT,
 
   created_at TIMESTAMP DEFAULT NOW(),
 
@@ -81,7 +82,21 @@ CREATE TABLE user_achievements (
   popup            BOOLEAN      NOT NULL DEFAULT FALSE,
 
   created_at TIMESTAMP DEFAULT NOW(),
+  updated_at  TIMESTAMP DEFAULT NOW(),
 
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
   PRIMARY KEY (user_id, achievement_name)
 );
+
+CREATE OR REPLACE FUNCTION trigger_set_timestamp()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER set_timestamp
+BEFORE UPDATE ON user_achievements
+FOR EACH ROW
+EXECUTE PROCEDURE trigger_set_timestamp();
