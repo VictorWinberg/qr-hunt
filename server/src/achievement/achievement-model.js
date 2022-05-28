@@ -57,7 +57,7 @@ module.exports = db => ({
         SELECT achievement_name AS name, title, icon, score, count, user_achievements.created_at
         FROM user_achievements
         FULL JOIN achievements ON user_achievements.achievement_name = achievements.name
-        WHERE popup = 't' AND user_id = $1`;
+        WHERE user_id = $1`;
 
     const { rows, err } = await db.query(sql, [userId]);
     return { achievements: rows, err };

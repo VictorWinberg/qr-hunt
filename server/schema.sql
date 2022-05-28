@@ -78,11 +78,11 @@ DROP TABLE IF EXISTS user_achievements CASCADE;
 CREATE TABLE user_achievements (
   user_id          INT,
   achievement_name VARCHAR(36),
-  count            INT          NOT NULL DEFAULT 1,
+  count            INT          NOT NULL DEFAULT 0,
   popup            BOOLEAN      NOT NULL DEFAULT FALSE,
 
-  created_at TIMESTAMP DEFAULT NOW(),
-  updated_at  TIMESTAMP DEFAULT NOW(),
+  created_at       TIMESTAMP DEFAULT NOW(),
+  updated_at       TIMESTAMP DEFAULT NOW(),
 
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
   PRIMARY KEY (user_id, achievement_name)
