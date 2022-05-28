@@ -1,12 +1,15 @@
 {
-  "Nyårsafton": "NEW_YEAR",
   "Alla hjärtans dag": "VALENTINES_DAY",
-  "Internationella kvinnodagen 💁🏼‍♀️": "INTERNATIONAL_WOMEN_DAY",
-  "π-dagen": "PI_DAY",
-  "Valborg": "VALBORG",
-  "Sveriges nationaldag": "SWEDEN_NATIONAL_DAY",
+  "Annandag jul": "CHRISTMAS",
+  "Champagnedagen 🥂": "CHAMPAGNE_DAY",
+  "Fettisdagen": "FAT_TUESDAY",
   "Halloween": "HALLOWEEN",
+  "Internationella kvinnodagen 💁🏼‍♀️": "INTERNATIONAL_WOMEN_DAY",
   "Julafton": "CHRISTMAS",
   "Juldagen": "CHRISTMAS",
-  "Annandag jul": "CHRISTMAS"
+  "Midsommarafton": "MIDSUMMERS_DAY",
+  "Nyårsafton": "NEW_YEAR",
+  "Sveriges nationaldag": "SWEDEN_NATIONAL_DAY",
+  "Valborg": "VALBORG",
+  "π-dagen": "PI_DAY"
 }
