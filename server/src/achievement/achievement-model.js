@@ -1,21 +1,21 @@
 module.exports = db => ({
   create: async (userId, name) => {
     const sql = `
-        WITH new_achievement AS (
-          INSERT INTO user_achievements (user_id, achievement_name) VALUES ($1, $2)
-          ON CONFLICT DO NOTHING
-          RETURNING *
-        )
+        BEGIN;
 
         UPDATE user_achievements
         SET count = user_achievements.count + 1, popup = 'f'
         FROM achievements
-        WHERE (user_achievements.user_id, user_achievements.achievement_name, achievements.name) = ($1, $2, $2)
+        WHERE (user_achievements.user_id, user_achievements.achievement_name, achievements.name) = (${userId}, '${name}', '${name}')
           AND repeatable IS NOT NULL
-          AND to_char(updated_at, repeatable) != to_char(now(), repeatable)
-        RETURNING *`;
-    const { rows, err } = await db.query(sql, [userId, name]);
-    return { achievement: rows[0], err };
+          AND to_char(updated_at, repeatable) != to_char(now(), repeatable);
+
+        INSERT INTO user_achievements (user_id, achievement_name) VALUES (${userId}, '${name}')
+        ON CONFLICT DO NOTHING;
+
+        COMMIT;`;
+    const { err } = await db.query(sql);
+    return { err };
   },
 
   update: async (userId, name) => {

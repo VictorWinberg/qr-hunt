@@ -78,7 +78,7 @@ DROP TABLE IF EXISTS user_achievements CASCADE;
 CREATE TABLE user_achievements (
   user_id          INT,
   achievement_name VARCHAR(36),
-  count            INT          NOT NULL DEFAULT 0,
+  count            INT          NOT NULL DEFAULT 1,
   popup            BOOLEAN      NOT NULL DEFAULT FALSE,
 
   created_at       TIMESTAMP DEFAULT NOW(),
