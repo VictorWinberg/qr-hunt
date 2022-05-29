@@ -26,7 +26,7 @@ module.exports = {
     const hours = new Date().getHours();
     return [
       haveCalled(req, res)("/api/qrshards", "POST"),
-      hours >= 3 && hours < 6
+      hours >= 5 && hours < 8
     ];
   },
   COLLECT_AT_LUNCH: ({ req, res }) => {
@@ -40,7 +40,7 @@ module.exports = {
     const hours = new Date().getHours();
     return [
       haveCalled(req, res)("/api/qrshards", "POST"),
-      hours >= 22 || hours < 3
+      hours >= 22 || hours < 5
     ];
   },
   FIRST_RECOLLECT: () => {
