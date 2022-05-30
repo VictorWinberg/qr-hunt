@@ -126,11 +126,13 @@ export default {
   &::before {
     top: -20px;
     border-bottom: 20px solid currentColor;
+    transform: translateY(0.1px);
   }
 
   &::after {
     bottom: -20px;
     border-top: 20px solid currentColor;
+    transform: translateY(-0.1px);
   }
 }
 
