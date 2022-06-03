@@ -10,27 +10,29 @@
         <p class="user-header__email async async--text">{{ user.email }}</p>
       </div>
 
-      <div :key="user.lvl" class="user-xp">
-        <i
-          class="user-xp__level fas fa-star"
-          :style="{ color: hashColor(user.lvl) }"
-        >
-          <span class="user-xp__text">
-            {{ user.lvl != null ? user.lvl : "?" }}
-          </span>
-        </i>
-        <div class="user-xp__bar">
-          <span class="user-xp__text" :style="xpTextStyle(user.lvl)">
-            {{ user.lvlXp != null ? user.lvlXp : "-" }} /
-            {{ user.reqLvlXp != null ? user.reqLvlXp : "-" }} xp
-          </span>
-          <div
-            class="user-xp__bar--fill"
-            :style="{
-              background: hashColor(user.lvl),
-              maxWidth: `${(user.lvlXp / user.reqLvlXp) * 100}%`
-            }"
-          />
+      <div class="user-xp">
+        <div :key="user.lvl" class="user-xp-wrapper">
+          <i
+            class="user-xp__level fas fa-star"
+            :style="{ color: hashColor(user.lvl) }"
+          >
+            <span class="user-xp__text">
+              {{ user.lvl != null ? user.lvl : "?" }}
+            </span>
+          </i>
+          <div class="user-xp__bar">
+            <span class="user-xp__text" :style="xpTextStyle(user.lvl)">
+              {{ user.lvlXp != null ? user.lvlXp : "-" }} /
+              {{ user.reqLvlXp != null ? user.reqLvlXp : "-" }} xp
+            </span>
+            <div
+              class="user-xp__bar--fill"
+              :style="{
+                background: hashColor(user.lvl),
+                maxWidth: `${(user.lvlXp / user.reqLvlXp) * 100}%`
+              }"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -166,7 +168,7 @@ export default Vue.extend({
   background-color: $seconday-color;
 }
 
-.user-xp {
+.user-xp-wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
