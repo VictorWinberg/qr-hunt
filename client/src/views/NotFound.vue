@@ -1,5 +1,5 @@
 <template>
-  <router-link to="/" class="not-found__wrapper">
+  <router-link to="/" class="not-found">
     <span class="not-found__code">404</span>
     <h1 class="not-found__status">Page Not Found</h1>
     <p>
@@ -14,7 +14,7 @@ export default {};
 </script>
 
 <style lang="scss">
-.not-found__wrapper {
+.not-found {
   display: block;
   width: 100%;
   height: 100%;
