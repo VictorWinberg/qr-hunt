@@ -12,13 +12,22 @@ export const newAchievements = async () => {
   // Get new achievement
   const achievement = await api.get("/api/achievements/new");
   if (!achievement.err && achievement.data) {
-    const { name, title, icon } = achievement.data;
+    const { name, title, count, icon } = achievement.data;
+    const countString =
+      count > 3
+        ? `${count}th`
+        : count === 3
+        ? "3rd"
+        : count === 2
+        ? "2nd"
+        : "1st";
     Snackbar.show({
       text: `
         <div class="achievement-top"><p>Great work!</p></div>
-        You've unlocked a new achievement!
+        ${count > 1 ? "You got the achievement" : "You got a new achievement"}
         <br/>
         <h2>${title || name}</h2>
+        ${count > 1 ? "for the " + countString + " time <br/>" : ""}
         <br/>
         <i class="${icon} fa-2x"></i>
       `,
