@@ -26,7 +26,7 @@ export const newAchievements = async () => {
         <div class="achievement-top"><p>Great work!</p></div>
         ${
           count > 1
-            ? "You got an achievement for the " + countString + " time!"
+            ? "You got the achievement for the " + countString + " time!"
             : "You got a new achievement!"
         }
         <br/>
