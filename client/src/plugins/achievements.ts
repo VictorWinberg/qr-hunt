@@ -24,7 +24,7 @@ export const newAchievements = async () => {
     Snackbar.show({
       text: `
         <div class="achievement-top"><p>Great work!</p></div>
-        ${count > 1 ? "You got the achievement" : "You got a new achievement!"}
+        ${count > 1 ? "You got the achievement" : "You got a new achievement"}
         <br/>
         <h2>${title || name}</h2>
         ${count > 1 ? "for the " + countString + " time <br/>" : ""}
