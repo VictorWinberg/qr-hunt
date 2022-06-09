@@ -165,7 +165,7 @@ export default Vue.extend({
   margin: auto;
   overflow-x: hidden;
   overflow-y: scroll;
-  background-color: $seconday-color;
+  background-color: $secondary-color;
 }
 
 .user-xp-wrapper {
@@ -256,7 +256,7 @@ export default Vue.extend({
   top: 0;
   z-index: 1;
   height: 3.5em;
-  background-color: $seconday-color;
+  background-color: $secondary-color;
 }
 
 .tab-options {

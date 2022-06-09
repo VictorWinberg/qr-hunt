@@ -49,7 +49,7 @@ export default Vue.extend({
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba($seconday-color, 0.8);
+  background: rgba($secondary-color, 0.8);
 }
 
 .sign-in__inner {
