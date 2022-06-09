@@ -122,7 +122,7 @@ export default Vue.extend({
   overflow: scroll;
   color: $text-color;
   cursor: pointer;
-  background-color: $seconday-color;
+  background-color: $secondary-color;
   border-radius: 2px;
   box-shadow: $shadow-color;
 }
