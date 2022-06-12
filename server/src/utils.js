@@ -19,7 +19,24 @@ function keyValuePairs(valid, obj) {
 }
 
 function isLoggedIn(req, res, next) {
-  if (!req.isAuthenticated() && process.env.NODE_ENV === "production") {
+  if (process.env.NODE_ENV !== "production") return next();
+
+  if (!req.isAuthenticated()) {
+    return res.sendStatus(401);
+  }
+  return next();
+}
+
+function isAdmin(req, res, next) {
+  if (process.env.NODE_ENV !== "production") return next();
+
+  if (
+    !req.isAuthenticated() ||
+    !(
+      req.user.email === "annie.onnered@gmail.com" ||
+      req.user.email === "victor.m.winberg@gmail.com"
+    )
+  ) {
     return res.sendStatus(401);
   }
   return next();
@@ -124,6 +141,7 @@ const sumValues = () => values => {
 module.exports = {
   keyValuePairs,
   isLoggedIn,
+  isAdmin,
   makeDbQuery,
   isToday,
   camelcaseMiddleware,

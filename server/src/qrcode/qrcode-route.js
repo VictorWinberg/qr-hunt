@@ -1,6 +1,6 @@
 const { v4: uuidv4 } = require("uuid");
 
-module.exports = ({ app, db, isLoggedIn }) => {
+module.exports = ({ app, db, isLoggedIn, isAdmin }) => {
   const QRCode = require("./qrcode-model")(db);
 
   /**
@@ -42,7 +42,7 @@ module.exports = ({ app, db, isLoggedIn }) => {
    *               $ref: '#/components/schemas/QRCode'
    */
 
-  app.post("/api/qrcodes", isLoggedIn, async (req, res, next) => {
+  app.post("/api/qrcodes", isLoggedIn, isAdmin, async (req, res, next) => {
     const { user = {} } = req;
     const { qrcode, err } = await QRCode.create(user.id, { uuid: uuidv4() });
     if (err) return next(err);
