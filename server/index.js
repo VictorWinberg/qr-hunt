@@ -60,7 +60,8 @@ const props = {
   passport,
   pg,
   db: { query: utils.makeDbQuery(pg) },
-  isLoggedIn: utils.isLoggedIn
+  isLoggedIn: utils.isLoggedIn,
+  isAdmin: utils.isAdmin
 };
 
 // achievements
