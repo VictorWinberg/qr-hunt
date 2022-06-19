@@ -8,7 +8,7 @@ module.exports = {
     return haveCalled(req, res)("/api/achievements/thankful", "POST", 204);
   },
   FOUND_BUG: ({ err }) => {
-    return !!err;
+    return Boolean(err);
   },
   FIRST_QRSPOT_FOUND: ({ req, res }) => {
     return [haveCalled(req, res)("/api/scan/:id"), (res.body || {}).qrspot];
