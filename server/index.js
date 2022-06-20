@@ -64,9 +64,6 @@ const props = {
   isAdmin: utils.isAdmin
 };
 
-// achievements
-app.use(require("./src/achievement/achievement-middleware")(props));
-
 // routes
 require("./src/auth/auth")(props);
 require("./src/qrspot/qrspot-route")(props);
@@ -75,6 +72,9 @@ require("./src/qrcode/qrcode-route")(props);
 require("./src/scan/scan-route")(props);
 require("./src/user/user-route")(props);
 
+// achievements
+require("./src/achievement/achievement-middleware")(props);
+
 // swagger
 swagger(app);
 
@@ -82,7 +82,7 @@ app.get("*", (_, res) => {
   res.sendFile(path.resolve(__dirname, "..", "client", "dist", "index.html"));
 });
 
-app.use((err, req, res, next) => {
+app.use((err, _req, _res, next) => {
   if (err) throw new Error(err);
   next();
 });
@@ -90,7 +90,7 @@ app.use((err, req, res, next) => {
 sentry.afterHandlers(app);
 
 // eslint-disable-next-line no-unused-vars
-app.use((err, req, res, _next) => {
+app.use((err, _req, res, _next) => {
   console.error(err);
   res.status(500).send(err.message);
 });

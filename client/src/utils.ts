@@ -33,7 +33,7 @@ const apiFetch = (method?: string) => async (
     }
     return { data: isJson(data) ? JSON.parse(data) : data, err: false };
   } catch (err) {
-    CustomSnackbar.err(err);
+    CustomSnackbar.err(err as string);
     return { data: null, err };
   }
 };
