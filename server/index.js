@@ -64,6 +64,10 @@ const props = {
   isAdmin: utils.isAdmin
 };
 
+// achievements
+const achievements = require("./src/achievement/achievement-middleware")(props);
+app.use((req, res, next) => achievements(null, req, res, next));
+
 // routes
 require("./src/auth/auth")(props);
 require("./src/qrspot/qrspot-route")(props);
@@ -73,7 +77,7 @@ require("./src/scan/scan-route")(props);
 require("./src/user/user-route")(props);
 
 // achievements
-require("./src/achievement/achievement-middleware")(props);
+app.use((err, req, res, next) => achievements(err, req, res, next));
 
 // swagger
 swagger(app);
