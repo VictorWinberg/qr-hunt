@@ -1,5 +1,7 @@
 import dayjs from "dayjs";
 import Snackbar from "node-snackbar";
+import { EVENT_TYPE } from "@/constants";
+import EventBus from "./event-bus";
 
 const delay = 3 * 1000;
 
@@ -45,4 +47,8 @@ const welcome = () => {
   });
 };
 
-setTimeout(welcome, delay);
+EventBus.$on(EVENT_TYPE.AUTH_CHANGE, ({ isAuthenticated }) => {
+  if (isAuthenticated) {
+    setTimeout(welcome, delay);
+  }
+});

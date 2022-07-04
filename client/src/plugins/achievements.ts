@@ -52,7 +52,11 @@ export const newAchievements = async () => {
   }
 };
 
-setTimeout(newAchievements, delay);
+EventBus.$on(EVENT_TYPE.AUTH_CHANGE, ({ isAuthenticated }) => {
+  if (isAuthenticated) {
+    setTimeout(newAchievements, delay);
+  }
+});
 EventBus.$on(EVENT_TYPE.API_REQUEST_UPDATE, () => {
   setTimeout(newAchievements, delay);
 });

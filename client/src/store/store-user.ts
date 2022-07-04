@@ -27,6 +27,7 @@ export default {
         state.status = "unauthenticated";
         state.user = {};
       }
+      EventBus.$emit(EVENT_TYPE.AUTH_CHANGE, payload);
     },
     setCoords(state, { latitude, longitude }) {
       state.coords = { lat: latitude, lng: longitude };
