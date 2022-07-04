@@ -69,7 +69,7 @@ module.exports = ({ app, db, isLoggedIn }) => {
 
   app.put("/api/qrspots/:id", isLoggedIn, async (req, res, next) => {
     const { params, body, user = {} } = req;
-    const { qrspot, err } = await QRSpot.update(user.id, params.id, body);
+    const { qrspot, err } = await QRSpot.update(user, params.id, body);
     if (err) return next(err);
     if (!qrspot) return res.sendStatus(403);
     return res.send(qrspot);
@@ -92,7 +92,7 @@ module.exports = ({ app, db, isLoggedIn }) => {
 
   app.delete("/api/qrspots/:id", isLoggedIn, async (req, res, next) => {
     const { params, user = {} } = req;
-    const { qrspot, err } = await QRSpot.deactivate(user.id, params.id);
+    const { qrspot, err } = await QRSpot.deactivate(user, params.id);
     if (err) return next(err);
     if (!qrspot) return res.sendStatus(403);
     return res.send(qrspot);

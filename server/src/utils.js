@@ -30,13 +30,7 @@ function isLoggedIn(req, res, next) {
 function isAdmin(req, res, next) {
   if (process.env.NODE_ENV !== "production") return next();
 
-  if (
-    !req.isAuthenticated() ||
-    !(
-      req.user.email === "annie.onnered@gmail.com" ||
-      req.user.email === "victor.m.winberg@gmail.com"
-    )
-  ) {
+  if (!req.isAuthenticated() || !req.user.is_admin) {
     return res.sendStatus(401);
   }
   return next();

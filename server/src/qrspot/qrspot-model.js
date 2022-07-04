@@ -50,22 +50,22 @@ module.exports = db => ({
     return { qrspot: rows[0], err };
   },
 
-  update: async (userId, id, qrspot) => {
+  update: async (user, id, qrspot) => {
     const valid = ["title", "note", "hint"];
     const { keyIndices, values } = keyValuePairs(valid, qrspot);
     const sql = `
       UPDATE qrspots SET ${keyIndices}
-      WHERE id = ${id} AND owner_id = ${userId}
-      RETURNING *, owner_id = ${userId} AS is_owner`;
+      WHERE id = ${id} AND (owner_id = ${user.id} OR ${user.is_admin} = true)
+      RETURNING *, owner_id = ${user.id} AS is_owner`;
 
     const { rows, err } = await db.query(sql, values);
     return { qrspot: rows[0], err };
   },
 
-  deactivate: async (userId, id) => {
+  deactivate: async (user, id) => {
     const sql = `
       UPDATE qrspots SET active = FALSE, qrcode = NULL
-      WHERE id = ${id} AND owner_id = ${userId}
+      WHERE id = ${id} AND (owner_id = ${user.id} OR ${user.is_admin} = true)
       RETURNING *`;
 
     const { rows, err } = await db.query(sql);
