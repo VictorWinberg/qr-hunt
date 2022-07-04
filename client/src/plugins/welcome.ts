@@ -6,6 +6,9 @@ import EventBus from "./event-bus";
 const delay = 3 * 1000;
 
 const welcome = () => {
+  // Don't show welcome when in intro mode
+  if (new URLSearchParams(window.location.search).get("intro")) return;
+
   const latestWelcome = localStorage.getItem("latestWelcome");
   localStorage.setItem("latestWelcome", dayjs().toJSON());
 
