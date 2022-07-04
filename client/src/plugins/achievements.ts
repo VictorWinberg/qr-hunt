@@ -102,7 +102,7 @@ const isThankful = async () => {
         localStorage.setItem("thankful", "true");
       }
     });
-  } else {
+  } else if (!thankful.err) {
     localStorage.setItem("thankful", "true");
   }
 };
