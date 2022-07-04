@@ -23,7 +23,7 @@
             <div
               v-if="qrSpot.isOwner || user.isAdmin"
               class="fixed-button"
-              :class="!qrSpot.isOwner && user.isAdmin ? 'danger' : ''"
+              :class="{ danger: !qrSpot.isOwner && user.isAdmin }"
               @click="edit()"
             >
               <i class="fas fa-pencil-alt fa-2x"></i>
