@@ -35,7 +35,7 @@ const SELECT_ACHIEVEMENTS_SQL = where => `
 `;
 
 const SELECT_USERS_SQL = args => `
-  SELECT id, username, name, email, photo, created_at ${args}
+  SELECT id, username, name, email, photo, is_admin, created_at ${args}
   FROM users
 `;
 

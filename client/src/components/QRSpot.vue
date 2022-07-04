@@ -20,7 +20,12 @@
             </div>
           </div>
           <div v-if="panel === QR_SPOT_PANEL.SHOW_DETAILS">
-            <div v-if="qrSpot.isOwner" class="fixed-button" @click="edit()">
+            <div
+              v-if="qrSpot.isOwner || user.isAdmin"
+              class="fixed-button"
+              :class="!qrSpot.isOwner && user.isAdmin ? 'danger' : ''"
+              @click="edit()"
+            >
               <i class="fas fa-pencil-alt fa-2x"></i>
             </div>
             <QRSpotView />
@@ -56,6 +61,7 @@ export default Vue.extend({
   },
   computed: {
     ...mapState("qrSpot", ["qrSpot", "mode", "panel"]),
+    ...mapState("user", ["user"]),
     ...mapState({ userCoords: state => state.user.coords })
   },
   methods: {
@@ -147,5 +153,9 @@ export default Vue.extend({
   position: absolute;
   top: 1em;
   right: 1em;
+
+  &.danger {
+    color: $danger;
+  }
 }
 </style>

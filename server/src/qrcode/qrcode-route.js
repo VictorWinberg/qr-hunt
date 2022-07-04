@@ -21,7 +21,7 @@ module.exports = ({ app, db, isLoggedIn, isAdmin }) => {
    *               minItems: 3
    */
 
-  app.get("/api/qrcodes", isLoggedIn, async (_, res, next) => {
+  app.get("/api/qrcodes", isLoggedIn, isAdmin, async (_, res, next) => {
     const { qrcodes, err } = await QRCode.getAll();
     if (err) return next(err);
     return res.send(qrcodes);
