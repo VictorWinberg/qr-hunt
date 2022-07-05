@@ -1,9 +1,6 @@
 const { haveCalled } = require("../utils");
 
 module.exports = {
-  USER_HAS_SIGNED_UP: ({ req, res }) => {
-    return haveCalled(req, res)("/auth/google/callback", "GET", 302);
-  },
   THANKFUL: ({ req, res }) => {
     return haveCalled(req, res)("/api/achievements/thankful", "POST", 204);
   },

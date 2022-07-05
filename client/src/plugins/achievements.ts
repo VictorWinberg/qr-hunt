@@ -52,7 +52,11 @@ export const newAchievements = async () => {
   }
 };
 
-setTimeout(newAchievements, delay);
+EventBus.$on(EVENT_TYPE.AUTH_CHANGE, ({ isAuthenticated }) => {
+  if (isAuthenticated) {
+    setTimeout(newAchievements, delay);
+  }
+});
 EventBus.$on(EVENT_TYPE.API_REQUEST_UPDATE, () => {
   setTimeout(newAchievements, delay);
 });
@@ -97,11 +101,16 @@ const isThankful = async () => {
       pos: "top-center",
       actionText: "Yes! <i class='fas fa-thumbs-up'></i>",
       actionTextColor: "",
-      onActionClick: () => api.post("/api/achievements/thankful")
+      onActionClick: () => {
+        api.post("/api/achievements/thankful");
+        localStorage.setItem("thankful", "true");
+      }
     });
+  } else if (!thankful.err) {
+    localStorage.setItem("thankful", "true");
   }
 };
 
-if (Math.random() < 0.1) {
+if (Math.random() < 0.1 && !localStorage.getItem("thankful")) {
   setTimeout(isThankful, 30 * 1000);
 }

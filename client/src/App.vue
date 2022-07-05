@@ -28,10 +28,15 @@ export default Vue.extend({
   components: { Header, Footer, SignIn, QRScanner, Popup },
   computed: {
     ...mapState("scan", ["scanning"]),
-    ...mapState("popup", ["popup"])
+    ...mapState("popup", ["popup"]),
+    ...mapState("user", ["isAuthenticated"])
   },
-  created() {
-    notifyAppUpdate(this.$store, APP_VERSION);
+  watch: {
+    isAuthenticated(auth) {
+      if (auth) {
+        notifyAppUpdate(this.$store, APP_VERSION);
+      }
+    }
   }
 });
 </script>

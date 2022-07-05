@@ -7,6 +7,7 @@ import "./plugins/achievements";
 import "./plugins/google-maps";
 import "./plugins/intro";
 import "./plugins/sentry";
+import "./plugins/welcome";
 import "./registerServiceWorker";
 
 import "./assets/scss/app.scss";
