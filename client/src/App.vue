@@ -16,7 +16,6 @@
 <script>
 import Vue from "vue";
 import { mapState } from "vuex";
-import { notifyAppUpdate } from "@/utils";
 import Header from "@/components/Header.vue";
 import Footer from "@/components/Footer.vue";
 import SignIn from "@/components/SignIn.vue";
@@ -28,15 +27,7 @@ export default Vue.extend({
   components: { Header, Footer, SignIn, QRScanner, Popup },
   computed: {
     ...mapState("scan", ["scanning"]),
-    ...mapState("popup", ["popup"]),
-    ...mapState("user", ["isAuthenticated"])
-  },
-  watch: {
-    isAuthenticated(auth) {
-      if (auth) {
-        notifyAppUpdate(this.$store, APP_VERSION);
-      }
-    }
+    ...mapState("popup", ["popup"])
   }
 });
 </script>
