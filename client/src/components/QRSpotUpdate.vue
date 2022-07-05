@@ -5,7 +5,7 @@
     </div>
     <div class="update-title">
       <div v-if="mode === QR_SPOT_MODE.CREATE">
-        Make your spot
+        {{ $t("qr-spot-create-title") }}
       </div>
       <div v-else>
         {{ qrSpot.title }}
@@ -13,8 +13,11 @@
     </div>
     <form>
       <label for="title">
-        {{ mode === QR_SPOT_MODE.CREATE ? "Select an" : "Update the" }}
-        awesome title for your spot
+        {{
+          mode === QR_SPOT_MODE.CREATE
+            ? $t("qr-spot-create-name")
+            : $t("qr-spot-update-name")
+        }}
       </label>
       <input
         id="title"
@@ -25,7 +28,7 @@
       />
 
       <label for="note">
-        Tell us something about this spot
+        {{ $t("qr-spot-create-description") }}
       </label>
       <textarea
         id="note"
@@ -35,9 +38,11 @@
         @input="e => (inputQrSpot.note = e.target.value)"
       />
       <label for="hint">
-        Do you want to
-        {{ mode === QR_SPOT_MODE.CREATE ? "give a" : "change the" }}
-        hint of where the spot can be found?
+        {{
+          mode === QR_SPOT_MODE.CREATE
+            ? $t("qr-spot-create-hint")
+            : $t("qr-spot-update-hint")
+        }}
       </label>
       <input
         id="hint"
@@ -47,13 +52,15 @@
         @input="e => (inputQrSpot.hint = e.target.value)"
       />
       <div v-if="qrSpot.lat && qrSpot.lng">
-        Coordinates:
+        {{ $t("qr-spot-coordinates") }}
         <br />
-        <b>Lat:</b> {{ Math.round(qrSpot.lat * 1000) / 1000 }}, <b>Lng:</b>
+        <b> {{ $t("qr-spot-coordinates-lat") }} </b>
+        {{ Math.round(qrSpot.lat * 1000) / 1000 }},
+        <b> {{ $t("qr-spot-coordinates-lng") }} </b>
         {{ Math.round(qrSpot.lng * 1000) / 1000 }}
       </div>
       <div v-else>
-        Loading amazing coordinates...
+        {{ $t("qr-spot-loading-coordinates") }}
         <br />
         <img
           alt="Loading..."
@@ -68,10 +75,10 @@
         :class="{ disabled: !valid }"
         @click="saveSpot"
       >
-        Save Spot
+        {{ $t("qr-spot-button-save") }}
       </button>
       <button type="button" class="deleteBtn" @click="deleteSpot">
-        Delete Spot
+        {{ $t("qr-spot-button-delete") }}
       </button>
       <br /><br />
     </form>

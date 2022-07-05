@@ -17,7 +17,7 @@
         style="font-size: 16px; line-height: 48px;"
         class="abcRioButtonContents"
       >
-        <span>Sign in with Google</span>
+        <span>{{ $t("sign-in-google") }}</span>
       </span>
     </div>
   </div>

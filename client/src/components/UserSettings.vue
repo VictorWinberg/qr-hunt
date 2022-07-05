@@ -1,15 +1,31 @@
 <template>
   <div>
-    <h2 class="settings__title">Settings</h2>
-    <div class="bottom-buttons">
+    <h2 class="settings__title">
+      {{ $t("settings-title") }}
+    </h2>
+    <div class="settings__buttons">
       <a href="/?intro=start" class="help-me">
-        HELP
+        {{ $t("settings-help-option") }}
       </a>
+
+      <div class="select-language">
+        {{ $t("settings-language-option") }}
+        <select v-model="$i18n.locale">
+          <option
+            v-for="(locale, i) in locales"
+            :key="`locale-${i}`"
+            :value="locale"
+          >
+            {{ locale }}
+          </option>
+        </select>
+      </div>
+
       <a href="/auth/logout" class="log-out">
-        LOG OUT
+        {{ $t("settings-logout-option") }}
       </a>
       <a class="user-remove" @click="deleteMe">
-        DELETE ACCOUNT
+        {{ $t("settings-delete-account-option") }}
       </a>
     </div>
   </div>
@@ -18,8 +34,14 @@
 <script>
 import { mapMutations } from "vuex";
 import { api } from "@/utils";
+import { languages } from "../locales";
 
 export default {
+  data() {
+    return {
+      locales: languages || []
+    };
+  },
   methods: {
     ...mapMutations("user", ["setAuth"]),
     async deleteMe() {
@@ -55,26 +77,40 @@ export default {
 </script>
 
 <style lang="scss">
-.bottom-buttons {
+.settings__buttons {
+  display: flex;
+  flex-direction: column;
   margin-top: auto;
   margin-bottom: 20px;
 }
 
+select {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  font-size: 0;
+  background-color: transparent;
+  border: none;
+  appearance: none;
+}
+
+.select-language,
 .user-remove,
 .help-me,
 .log-out {
+  position: relative;
   display: block;
   padding: 1rem 2rem;
   margin: 1rem;
   color: white;
   text-decoration: none;
+  text-transform: uppercase;
   cursor: pointer;
-
-  i {
-    vertical-align: sub;
-  }
 }
 
+.select-language,
 .help-me,
 .log-out {
   background: $grey-800;

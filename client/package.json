@@ -6,9 +6,10 @@
     "serve": "vue-cli-service serve --open",
     "build": "vue-cli-service build --report-json",
     "lint": "vue-cli-service lint",
-    "test": "vue-cli-service test:unit --coverage",
     "bundle-analyze": "webpack-bundle-analyzer dist/report.json",
-    "stylelint": "stylelint --fix"
+    "i18n:report": "vue-cli-service i18n:report --src \"./src/**/*.?(js|vue)\" --locales \"./src/locales/**/*.json\"",
+    "stylelint": "stylelint --fix",
+    "test": "vue-cli-service test:unit --coverage"
   },
   "dependencies": {
     "@sentry/vue": "6.19.7",
@@ -19,6 +20,7 @@
     "qr-scanner": "1.4.1",
     "register-service-worker": "1.7.2",
     "vue": "2.6.14",
+    "vue-i18n": "^8.26.3",
     "vue-router": "3.5.4",
     "vue2-google-maps": "0.10.7",
     "vuex": "3.6.2"
@@ -54,11 +56,9 @@
     "stylelint-config-recess-order": "2.6.0",
     "stylelint-config-standard": "20.0.0",
     "typescript": "3.9.10",
+    "vue-cli-plugin-i18n": "~2.3.1",
     "vue-template-compiler": "2.6.14",
     "webpack-bundle-analyzer": "4.5.0"
-  },
-  "engines": {
-    "node": "12.x"
   },
   "browserslist": [
     "> 1%",
@@ -70,6 +70,9 @@
     "collectCoverageFrom": [
       "src/**/*.{ts,vue}"
     ]
+  },
+  "engines": {
+    "node": "12.x"
   },
   "stylelint": {
     "extends": [
