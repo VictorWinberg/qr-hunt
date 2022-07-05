@@ -10,7 +10,6 @@ const welcome = () => {
   if (new URLSearchParams(window.location.search).get("intro")) return;
 
   const latestWelcome = localStorage.getItem("latestWelcome");
-  localStorage.setItem("latestWelcome", dayjs().toJSON());
 
   let recruit;
   if (!dayjs(latestWelcome).isValid()) {
@@ -18,6 +17,7 @@ const welcome = () => {
   } else if (dayjs().diff(latestWelcome, "week") > 1) {
     recruit = false;
   } else {
+    localStorage.setItem("latestWelcome", dayjs().toJSON());
     return;
   }
 
@@ -46,6 +46,8 @@ const welcome = () => {
     onActionClick: async () => {
       // @ts-ignore
       Snackbar.close();
+
+      localStorage.setItem("latestWelcome", dayjs().toJSON());
     }
   });
 };
