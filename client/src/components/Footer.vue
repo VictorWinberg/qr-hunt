@@ -64,14 +64,14 @@ export default Vue.extend({
             name: "Close",
             type: "disabled",
             action: async () => {
-              store.commit("popup/setPopup", false);
+              this.$store.commit("popup/setPopup", false);
             }
           },
           {
             name: "Read More",
             type: "success",
             action: async () => {
-              store.commit("popup/setPopup", false);
+              this.$store.commit("popup/setPopup", false);
               location.href = "//github.com/VictorWinberg/qr-hunt/releases";
             }
           }
