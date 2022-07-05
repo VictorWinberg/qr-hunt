@@ -30,5 +30,14 @@ module.exports = {
         prependData: `@import "~@/assets/scss/variables";`
       }
     }
+  },
+  pluginOptions: {
+    i18n: {
+      locale: "sv",
+      fallbackLocale: "sv",
+      localeDir: "locales",
+      enableInSFC: false,
+      enableBridge: false
+    }
   }
 };

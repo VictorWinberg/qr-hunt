@@ -7,7 +7,9 @@
       :class="{ 'show-hint': showHint }"
       @click="flipHint()"
     >
-      <div class="hint-card__question">Do you need a hint?</div>
+      <div class="hint-card__question">
+        {{ $t("qr-spot-view-hint-question") }}
+      </div>
       <div class="hint-card__answer">
         <transition name="fade-slow">
           <div v-if="showHint" class="hint-card__answer-text">
