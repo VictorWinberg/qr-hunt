@@ -80,10 +80,12 @@ import Vue from "vue";
 import { api, hashColor } from "@/utils";
 import UserAchievements from "@/components/UserAchievements";
 import UserLeaderboard from "@/components/UserLeaderboard";
+import UserProgress from "@/components/UserProgress";
 import UserSettings from "@/components/UserSettings";
 
 export default Vue.extend({
   components: {
+    UserProgress,
     UserAchievements,
     UserLeaderboard,
     UserSettings
@@ -126,13 +128,27 @@ export default Vue.extend({
     },
     setTabs() {
       const { params } = this.$route;
-      this.tabs = [
-        { id: 0, icon: "fa fa-award", component: "user-achievements" },
-        { id: 1, icon: "fa fa-trophy", component: "user-leaderboard" }
-      ];
+      this.tabs = [];
       if (params.id == null) {
         this.tabs.push({
-          id: 2,
+          id: 0,
+          icon: "fa fa-chart-pie",
+          component: "user-progress"
+        });
+      }
+      this.tabs.push({
+        id: 1,
+        icon: "fa fa-award",
+        component: "user-achievements"
+      });
+      this.tabs.push({
+        id: 2,
+        icon: "fa fa-trophy",
+        component: "user-leaderboard"
+      });
+      if (params.id == null) {
+        this.tabs.push({
+          id: 3,
           icon: "fa fa-cog",
           component: "user-settings"
         });
