@@ -108,6 +108,16 @@
       }"
     />
 
+    <div id="streak-button" class="control-button" @click="centerMapToUser">
+      <div class="control-button__streak" :class="{ 'no-streak': !showStreak }">
+        <i class="fas fa-egg fa-2x"></i>
+        <i class="fas fa-flame fa-3x"></i>
+        <p v-if="showStreak" class="control-button__streak__count">
+          {{ user.streak }}
+        </p>
+      </div>
+    </div>
+
     <div id="position-button" class="control-button" @click="centerMapToUser">
       <img
         alt="My Location"
@@ -167,7 +177,11 @@ export default Vue.extend({
   },
   computed: {
     ...mapState("qrSpot", ["map", "qrSpot", "mode", "panel"]),
-    ...mapState({ userCoords: state => state.user.coords })
+    ...mapState("user", ["user"]),
+    ...mapState({ userCoords: state => state.user.coords }),
+    showStreak() {
+      return this.user.streak > 2;
+    }
   },
   watch: {
     mapCoords(newCoords) {
@@ -213,10 +227,16 @@ export default Vue.extend({
     },
     createMapElements() {
       /** Create button for centering position at user */
-      const { TOP_LEFT, RIGHT_BOTTOM } = google.maps.ControlPosition;
+      const {
+        TOP_LEFT,
+        RIGHT_BOTTOM,
+        LEFT_BOTTOM
+      } = google.maps.ControlPosition;
+      const myStreak = document.getElementById("streak-button");
       const positionControl = document.getElementById("position-button");
       const compassControl = document.getElementById("compass-button");
 
+      this.map.controls[LEFT_BOTTOM].push(myStreak);
       this.map.controls[RIGHT_BOTTOM].push(positionControl);
       this.map.controls[TOP_LEFT].push(compassControl);
     },
@@ -310,12 +330,55 @@ export default Vue.extend({
   width: 70%;
 }
 
+.control-button__streak {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+
+  &.no-streak {
+    filter: opacity(0.1);
+  }
+}
+
+.control-button__streak__count {
+  position: absolute;
+  bottom: 0.25em;
+  font-family: "Syne", sans-serif;
+  font-size: 200%;
+  line-height: 1;
+  color: $primary-color;
+  text-shadow: -1px -1px 1px #24242485;
+}
+
+.test {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.fa-flame {
+  position: absolute;
+  color: #df5632;
+}
+
+.fa-egg {
+  position: absolute;
+  top: 12px;
+  color: #f6c243;
+}
+
 .vue-map-container {
   &.collapsed-map {
     height: 25%;
     transition: all 300ms 200ms;
 
     .gmnoprint,
+    #streak-button,
     #position-button {
       display: flex !important;
       opacity: 0;
@@ -327,6 +390,7 @@ export default Vue.extend({
     transition: all 300ms 0ms;
 
     .gmnoprint,
+    #streak-button,
     #position-button {
       display: flex !important;
       opacity: 1;

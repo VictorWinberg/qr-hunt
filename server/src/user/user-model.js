@@ -34,6 +34,28 @@ const SELECT_ACHIEVEMENTS_SQL = where => `
   GROUP BY users.id
 `;
 
+const SELECT_DISTINCT_QRSHARDS_SQL = () => `
+  SELECT DISTINCT(created_at::date) AS created_at, user_id
+  FROM qrshards
+`;
+
+const SELECT_LAST_GAP_SQL = () => `
+  SELECT DISTINCT ON (users.id) d.d AS last_date, users.id AS user_id
+  FROM generate_series(date_trunc('month', CURRENT_DATE), CURRENT_DATE, '1 day') d(d)
+  CROSS JOIN users
+  LEFT OUTER JOIN user_shards ON user_shards.created_at = d.d::date AND user_shards.user_id = users.id
+  WHERE user_shards.created_at IS NULL
+  ORDER BY users.id, d.d DESC
+`;
+
+const SELECT_STREAK_SQL = () => `
+  SELECT CAST(COUNT(*) AS int) AS streak, user_id AS id
+  FROM user_shards
+  JOIN last_gap USING(user_id)
+  WHERE created_at > last_date
+  GROUP BY user_id
+`;
+
 const SELECT_USERS_SQL = args => `
   SELECT id, username, name, email, photo, is_admin, created_at ${args}
   FROM users
@@ -44,13 +66,20 @@ const SELECT_USERS_SQL_FULL = `
     ${SELECT_QR_SHARDS_SQL()}
   ), achievements_count AS (
     ${SELECT_ACHIEVEMENTS_SQL()}
+  ), user_shards AS (
+    ${SELECT_DISTINCT_QRSHARDS_SQL()}
+  ), last_gap AS (
+    ${SELECT_LAST_GAP_SQL()}
+  ), streak_count AS (
+    ${SELECT_STREAK_SQL()}
   )
 
   ${SELECT_USERS_SQL(
-    ", CAST(COALESCE(qrshards_score + achievements_score, 0) AS int) AS xp"
+    `, COALESCE(streak, 0) AS streak, CAST(COALESCE(qrshards_score + achievements_score, 0) AS int) AS xp`
   )}
   LEFT JOIN qrshards_count USING (id)
   LEFT JOIN achievements_count USING (id)
+  LEFT JOIN streak_count USING (id)
 `;
 
 const SELECT_USERS_SQL_DATE = (from, to) => `
