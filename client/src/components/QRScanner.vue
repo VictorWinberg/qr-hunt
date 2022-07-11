@@ -2,7 +2,8 @@
   <div class="qr-scanner-wrapper">
     <div class="qr-scanner">
       <div class="qr-scanner__camera">
-        <i class="fas fa-camera-retro"></i> QR SCAN
+        <i class="fas fa-camera-retro"></i>
+        {{ $t("qr-scanner-title") }}
       </div>
       <div v-if="hasFlash" class="qr-scanner__flash" @click="toggleFlash">
         <i v-if="flashOn" class="fas fa-bolt"></i>
@@ -136,6 +137,7 @@ export default Vue.extend({
       left: 0;
       font-size: 2rem;
       font-weight: bold;
+      text-transform: uppercase;
     }
 
     .qr-scanner__flash {

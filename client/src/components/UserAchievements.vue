@@ -1,6 +1,8 @@
 <template>
   <div>
-    <h2 class="user-achievements__title">Achievements</h2>
+    <h2 class="user-achievements__title">
+      {{ $t("achievements-title") }}
+    </h2>
     <div class="user-achievements">
       <div
         v-for="{ name, title, icon, count } in achievements"
