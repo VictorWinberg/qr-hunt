@@ -50,4 +50,10 @@ export default Vue.extend({
   -moz-osx-font-smoothing: grayscale;
   -webkit-tap-highlight-color: transparent;
 }
+
+@font-face {
+  font-family: "Syne";
+  src: local("Syne"),
+    url(./assets/fonts/Syne/Syne-Regular.ttf) format("truetype");
+}
 </style>
