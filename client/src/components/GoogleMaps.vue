@@ -352,15 +352,6 @@ export default Vue.extend({
   text-shadow: -1px -1px 1px #24242485;
 }
 
-.test {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-}
-
 .fa-flame {
   position: absolute;
   color: #df5632;
