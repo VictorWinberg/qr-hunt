@@ -8,7 +8,7 @@
       @click="flipHint()"
     >
       <div class="hint-card__question">
-        {{ $t("qr-spot-view-hint-question") }}
+        {{ $t("qr-spot.view-hint-question") }}
       </div>
       <div class="hint-card__answer">
         <transition name="fade-slow">

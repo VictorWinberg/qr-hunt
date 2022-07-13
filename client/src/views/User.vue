@@ -24,7 +24,7 @@
             <span class="user-xp__text" :style="xpTextStyle(user.lvl)">
               {{ user.lvlXp != null ? user.lvlXp : "-" }} /
               {{ user.reqLvlXp != null ? user.reqLvlXp : "-" }}
-              {{ $t("user-experience-points") }}
+              {{ $t("user.experience-points") }}
             </span>
             <div
               class="user-xp__bar--fill"

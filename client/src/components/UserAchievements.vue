@@ -1,7 +1,7 @@
 <template>
   <div>
     <h2 class="user-achievements__title">
-      {{ $t("achievements-title") }}
+      {{ $t("achievements.title") }}
     </h2>
     <div class="user-achievements">
       <div

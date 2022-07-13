@@ -3,7 +3,7 @@
     <div class="qr-scanner">
       <div class="qr-scanner__camera">
         <i class="fas fa-camera-retro"></i>
-        {{ $t("qr-scanner-title") }}
+        {{ $t("scanner.title") }}
       </div>
       <div v-if="hasFlash" class="qr-scanner__flash" @click="toggleFlash">
         <i v-if="flashOn" class="fas fa-bolt"></i>
