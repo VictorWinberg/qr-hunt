@@ -2,7 +2,7 @@
   <transition name="fade">
     <div v-if="status !== 'pending' && !isAuthenticated" class="sign-in">
       <div class="sign-in__inner">
-        <h1>{{ $t("common-qr-hunt-title") }}</h1>
+        <h1>{{ $t("common.title") }}</h1>
         <SignInGoogle />
       </div>
     </div>

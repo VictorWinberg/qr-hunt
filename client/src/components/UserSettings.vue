@@ -1,15 +1,15 @@
 <template>
   <div>
     <h2 class="settings__title">
-      {{ $t("settings-title") }}
+      {{ $t("settings.title") }}
     </h2>
     <div class="settings__buttons">
       <a href="/?intro=start" class="help-me">
-        {{ $t("settings-help-option") }}
+        {{ $t("settings.help-option") }}
       </a>
 
       <div class="select-language">
-        {{ $t("settings-language-option") }}
+        {{ $t("settings.language-option") }}
         <select v-model="$i18n.locale">
           <option
             v-for="(locale, i) in locales"
@@ -22,10 +22,10 @@
       </div>
 
       <a href="/auth/logout" class="log-out">
-        {{ $t("settings-logout-option") }}
+        {{ $t("settings.logout-option") }}
       </a>
       <a class="user-remove" @click="deleteMe">
-        {{ $t("settings-delete-account-option") }}
+        {{ $t("settings.delete-account-option") }}
       </a>
     </div>
   </div>

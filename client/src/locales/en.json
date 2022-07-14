@@ -1,53 +1,69 @@
 {
-  "achievements-title": "Achievements",
-  "common-qr-hunt-title": "QR Hunt",
-  "leaderboard-empty-alternative-texts": [
-    "No contestants",
-    "No entries",
-    "No competition",
-    "Empty leaderboard",
-    "W.O.",
-    "Walkover",
-    "No one here"
-  ],
-  "leaderboard-month-names": [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December"
-  ],
-  "leaderboard-table-distance": "Km",
-  "leaderboard-table-rank": "Rank",
-  "leaderboard-table-score": "Score",
-  "leaderboard-table-user": "User",
-  "leaderboard-title": "Leaderboard",
-  "qr-scanner-title": "QR Scan",
-  "qr-spot-button-save": "Save Spot",
-  "qr-spot-button-delete": "Delete Spot",
-  "qr-spot-coordinates": "Coordinates:",
-  "qr-spot-coordinates-lat": "Lat:",
-  "qr-spot-coordinates-lng": "Lng:",
-  "qr-spot-create-description": "Tell us something about this spot",
-  "qr-spot-create-hint": "Do you want to give a hint of where the spot can be found?",
-  "qr-spot-create-name": "Give your awesome spot a name",
-  "qr-spot-create-title": "Create your spot",
-  "qr-spot-loading-coordinates": "Loading amazing coordinates...",
-  "qr-spot-update-hint": "Do you want to change the hint of where the spot can be found?",
-  "qr-spot-update-name": "Update the awesome name for your spot",
-  "qr-spot-view-hint-question": "Do you need a hint?",
-  "settings-delete-account-option": "Delete account",
-  "settings-help-option": "Help",
-  "settings-language-option": "Language",
-  "settings-logout-option": "Log out",
-  "settings-title": "Settings",
-  "sign-in-google": "Sign in with Google",
-  "user-experience-points": "xp"
+  "achievements": {
+    "title": "Achievements"
+  },
+  "common": {
+    "delete": "Delete",
+    "month-names": [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December"
+    ],
+    "save": "Save",
+    "title": "QR Hunt"
+  },
+  "google": {
+    "sign-in": "Sign in with Google"
+  },
+  "leaderboard": {
+    "empty-alternative-texts": [
+      "No contestants",
+      "No entries",
+      "No competition",
+      "Empty leaderboard",
+      "W.O.",
+      "Walkover",
+      "No one here"
+    ],
+    "table-distance": "Km",
+    "table-rank": "Rank",
+    "table-score": "Score",
+    "table-user": "User",
+    "title": "Leaderboard"
+  },
+  "qr-spot": {
+    "coordinates": "Coordinates:",
+    "coordinates-lat": "Lat:",
+    "coordinates-lng": "Lng:",
+    "create-description": "Tell us something about this spot",
+    "create-hint": "Do you want to give a hint of where the spot can be found?",
+    "create-name": "Give your awesome spot a name",
+    "create-title": "Create your spot",
+    "loading-coordinates": "Loading amazing coordinates...",
+    "update-hint": "Do you want to change the hint of where the spot can be found?",
+    "update-name": "Update the awesome name for your spot",
+    "view-hint-question": "Do you need a hint?"
+  },
+  "scanner": {
+    "title": "QR Scan"
+  },
+  "settings": {
+    "delete-account-option": "Delete account",
+    "help-option": "Help",
+    "language-option": "Language",
+    "logout-option": "Log out",
+    "title": "Settings"
+  },
+  "user": {
+    "experience-points": "xp"
+  }
 }

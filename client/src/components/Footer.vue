@@ -1,7 +1,7 @@
 <template>
   <footer>
     <div class="footer-content">
-      <span class="app__name"> {{ $t("common-qr-hunt-title") }}</span>
+      <span class="app__name"> {{ $t("common.title") }}</span>
       <span class="app__version" @click="viewRelease">
         {{ APP_VERSION }}
         <i

@@ -1,11 +1,11 @@
 <template>
   <div>
     <h2 class="leaderboard__title">
-      {{ $t("leaderboard-title") }}
+      {{ $t("leaderboard.title") }}
     </h2>
     <div class="leaderboard__nav">
       <h3 class="leaderboard__period" @click="togglePeriod">
-        {{ week }} {{ $t("leaderboard-month-names")[month] }} {{ year }}
+        {{ week }} {{ $t("common.month-names")[month] }} {{ year }}
       </h3>
       <a class="nav--left" @click="nav(-1)">
         <i class="fas fa-caret-left"></i>
@@ -16,11 +16,11 @@
     </div>
     <table v-if="leaderboard && leaderboard.length" class="leaderboard__table">
       <tr>
-        <th>{{ $t("leaderboard-table-rank") }}</th>
+        <th>{{ $t("leaderboard.table-rank") }}</th>
         <th></th>
-        <th>{{ $t("leaderboard-table-user") }}</th>
-        <th align="right">{{ $t("leaderboard-table-distance") }}</th>
-        <th align="right">{{ $t("leaderboard-table-score") }}</th>
+        <th>{{ $t("leaderboard.table-user") }}</th>
+        <th align="right">{{ $t("leaderboard.table-distance") }}</th>
+        <th align="right">{{ $t("leaderboard.table-score") }}</th>
       </tr>
       <router-link
         v-for="user in leaderboard"
@@ -45,7 +45,7 @@
     </table>
 
     <h4 v-else-if="leaderboard">
-      {{ emptyLeaderboard($t("leaderboard-empty-alternative-texts")) }}
+      {{ emptyLeaderboard($t("leaderboard.empty-alternative-texts")) }}
     </h4>
   </div>
 </template>
