@@ -26,7 +26,7 @@ export default Vue.extend({
   name: "Footer",
   data() {
     return {
-      APP_VERSION,
+      APP_VERSION: APP_VERSION,
       get localAppVersion() {
         return localStorage.getItem("appVersion");
       },
