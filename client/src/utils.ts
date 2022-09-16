@@ -1,5 +1,4 @@
 import { EVENT_TYPE } from "@/constants";
-import Snackbar from "node-snackbar";
 import CustomSnackbar from "@/plugins/snackbar";
 import EventBus from "@/plugins/event-bus";
 
