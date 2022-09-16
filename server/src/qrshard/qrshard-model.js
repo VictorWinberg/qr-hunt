@@ -14,16 +14,25 @@
 
 const { keyValuePairs } = require("../utils");
 
-module.exports = (db) => ({
+module.exports = db => ({
   create: async (userId, qrshard) => {
     const valid = ["rating", "comment", "qrspot_id"];
     const { keys, values, indices } = keyValuePairs(valid, qrshard);
+    await db.query("BEGIN TRANSACTION");
+
+    const { exists, err: existsErr } = await alreadyExists(db, userId, qrshard);
+    if (exists || existsErr) {
+      await db.query("ROLLBACK");
+      return { err: existsErr || "Already exists" };
+    }
+
     const sql = `
-        INSERT INTO qrshards ( ${keys.concat("user_id")} ) 
+        INSERT INTO qrshards ( ${keys.concat("user_id")} )
         VALUES (${indices.concat(userId)})
         RETURNING *`;
 
     const { rows, err } = await db.query(sql, values);
+    await db.query("COMMIT");
     return { qrshard: rows[0], err };
   },
 
@@ -39,7 +48,7 @@ module.exports = (db) => ({
     return { qrshard: rows[0], err };
   },
 
-  getAll: async (userId) => {
+  getAll: async userId => {
     const sql = "SELECT * FROM qrshards WHERE user_id = $1";
 
     const { rows, err } = await db.query(sql, [userId]);
@@ -56,5 +65,15 @@ module.exports = (db) => ({
 
     const { rows, err } = await db.query(sql, [userId, qrcode]);
     return { qrshard: rows[0], err };
-  },
+  }
 });
+
+const alreadyExists = async (db, userId, qrshard) => {
+  const sql = `
+    SELECT * FROM qrshards
+    WHERE user_id = $1 AND qrspot_id = $2
+    AND created_at::date = now()::date
+  `;
+  const { rows, err } = await db.query(sql, [userId, qrshard.qrspot_id]);
+  return { exists: (rows || []).length > 0, err };
+};
