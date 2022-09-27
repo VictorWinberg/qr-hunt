@@ -43,6 +43,7 @@ module.exports = ({ app, db, isLoggedIn }) => {
 
     const { qrshard, err } = await QRShard.create(user.id, body);
     if (err) return next(err);
+    if (!qrshard) return res.status(403).send("Forbidden, already exists");
     return res.send(qrshard);
   });
 

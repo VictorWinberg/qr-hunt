@@ -23,7 +23,7 @@ module.exports = db => ({
     const { exists, err: existsErr } = await alreadyExists(db, userId, qrshard);
     if (exists || existsErr) {
       await db.query("ROLLBACK");
-      return { err: existsErr || "Already exists" };
+      return { qrshard: null, err: existsErr };
     }
 
     const sql = `
