@@ -20,10 +20,10 @@ module.exports = db => ({
     const { keys, values, indices } = keyValuePairs(valid, qrshard);
     await db.query("BEGIN TRANSACTION");
 
-    const { exists, err: existsErr } = await alreadyExists(db, userId, qrshard);
-    if (exists || existsErr) {
+    const res = await alreadyExists(db, userId, qrshard);
+    if (res.exists || res.err) {
       await db.query("ROLLBACK");
-      return { qrshard: null, err: existsErr };
+      return { qrshard: null, err: res.err };
     }
 
     const sql = `
