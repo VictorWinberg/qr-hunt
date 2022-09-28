@@ -5,7 +5,7 @@
     </h2>
     <div class="leaderboard__nav">
       <h3 class="leaderboard__period" @click="togglePeriod">
-        {{ week }} {{ $t("common.month-names")[month] }} {{ year }}
+        {{ week }} {{ $t("common.month-names")[month - 1] }} {{ year }}
       </h3>
       <a class="nav--left" @click="nav(-1)">
         <i class="fas fa-caret-left"></i>
