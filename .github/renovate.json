@@ -6,5 +6,11 @@
     "groupName": "GitHub Vulnerability Alerts",
     "labels": ["Type: Security"],
     "schedule": "before 3am on the first day of the month"
-  }
+  },
+  "packageRules": [
+    {
+      "matchPackageNames": ["passport"],
+      "allowedVersions": "<0.6.0"
+    }
+  ]
 }
