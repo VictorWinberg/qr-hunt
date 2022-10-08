@@ -66,7 +66,13 @@ export default Vue.extend({
     async initScanner() {
       const devices = await navigator.mediaDevices.enumerateDevices();
       const cameras = devices.filter(device => device.kind === "videoinput");
-      const camera = cameras[cameras.length - 1];
+
+      let cameraIdx = localStorage.getItem("cameraIdx") ?? cameras.length - 1;
+      if (cameraIdx < 0 || cameraIdx > cameras.length - 1) {
+        cameraIdx = cameras.length - 1;
+      }
+
+      const camera = cameras[Number(cameraIdx)];
       const { qrscan } = this.$refs;
       if (!camera || !qrscan) return;
 
@@ -85,6 +91,9 @@ export default Vue.extend({
       );
       await this.scanner.start();
       this.hasFlash = await this.scanner.hasFlash();
+      if (!this.hasFlash) {
+        localStorage.setItem("cameraIdx", cameraIdx - 1);
+      }
 
       this.timeout = window.setTimeout(() => {
         this.handleQR(null);
