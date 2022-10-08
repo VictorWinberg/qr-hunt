@@ -4,6 +4,9 @@ set -eu # exit script on errors
 echo "copy qr-hunt env"
 rsync /home/git/www/qr-hunt/.env .
 
+echo "copy qr-hunt migrations version"
+rsync /home/git/www/qr-hunt/server/migrations/.version ./server/migrations
+
 echo "> npm install server..."
 npm run install-server
 
