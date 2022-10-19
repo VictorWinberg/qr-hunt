@@ -110,9 +110,8 @@
 
     <div id="streak-button" class="control-button" @click="centerMapToUser">
       <div class="control-button__streak" :class="{ 'no-streak': !showStreak }">
-        <i class="fas fa-egg fa-2x"></i>
-        <i class="fas fa-flame fa-3x"></i>
-        <p v-if="showStreak" class="control-button__streak__count">
+        <Flame />
+        <p class="control-button__streak__count">
           {{ user.streak }}
         </p>
       </div>
@@ -147,10 +146,14 @@ import Vue from "vue";
 import { mapState, mapMutations, mapActions } from "vuex";
 import { EVENT_TYPE, QR_SPOT_MODE, QR_SPOT_PANEL } from "@/constants";
 import { api } from "@/utils";
+import Flame from "@/components/Flame.vue";
 import EventBus from "@/plugins/event-bus";
 import dayjs from "@/plugins/dayjs";
 
 export default Vue.extend({
+  components: {
+    Flame
+  },
   data() {
     const { mapCoords, mapZoom } = localStorage;
     return {
@@ -344,23 +347,11 @@ export default Vue.extend({
 
 .control-button__streak__count {
   position: absolute;
-  bottom: 0.25em;
   font-family: "Syne", sans-serif;
-  font-size: 200%;
+  font-size: 300%;
   line-height: 1;
   color: $primary-color;
   text-shadow: -1px -1px 1px #24242485;
-}
-
-.fa-flame {
-  position: absolute;
-  color: #df5632;
-}
-
-.fa-egg {
-  position: absolute;
-  top: 12px;
-  color: #f6c243;
 }
 
 .vue-map-container {
