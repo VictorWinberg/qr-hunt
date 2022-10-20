@@ -108,9 +108,9 @@
       }"
     />
 
-    <div id="streak-button" class="control-button" @click="centerMapToUser">
+    <div id="streak-button" class="control-button" @click="explainStreak">
       <div class="control-button__streak" :class="{ 'no-streak': !showStreak }">
-        <Flame />
+        <Flame v-if="showStreak" />
         <p class="control-button__streak__count">
           {{ user.streak }}
         </p>
@@ -291,6 +291,22 @@ export default Vue.extend({
       this.map.panTo(new google.maps.LatLng(this.userCoords));
       localStorage.setItem("mapCoords", JSON.stringify(this.userCoords));
       if (zoom && this.map.zoom < 15) this.map.setZoom(15);
+    },
+    explainStreak() {
+      this.$store.commit("popup/setPopup", {
+        title: "Your streak",
+        subtitle:
+          "This number shows how many days in a row you have collected a QR shard. 🔥",
+        options: [
+          {
+            name: "OK, got it!",
+            type: "success",
+            action: async () => {
+              this.$store.commit("popup/setPopup", false);
+            }
+          }
+        ]
+      });
     },
     resetHeading() {
       if (this.mapHeading === 0 && this.mapTilt === 0) {
