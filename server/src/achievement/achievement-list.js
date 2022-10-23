@@ -25,6 +25,13 @@ module.exports = {
   COLLECT_MANY_IN_DAY: () => {
     return false;
   },
+  COLLECT_AT_LEET: () => {
+    const date = new Date();
+    return [
+      haveCalled(req, res)("/api/qrshards", "POST"),
+      date.getHours() == 13 && date.getMinutes() == 37
+    ];
+  },
   COLLECT_AT_MORNING: ({ req, res }) => {
     const hours = new Date().getHours();
     return [
