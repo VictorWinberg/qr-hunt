@@ -3,7 +3,12 @@
 import { register } from "register-service-worker";
 import Snackbar from "@/plugins/snackbar";
 
-if (process.env.NODE_ENV === "production") {
+const whitelist = ["qr.zolly.ml", "www.qrhunt.ml"];
+
+if (
+  process.env.NODE_ENV === "production" &&
+  whitelist.includes(location.hostname)
+) {
   register(`${process.env.BASE_URL}service-worker.js`, {
     ready(): void {
       console.log(
