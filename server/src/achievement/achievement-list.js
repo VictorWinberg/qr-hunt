@@ -25,7 +25,7 @@ module.exports = {
   COLLECT_MANY_IN_DAY: () => {
     return false;
   },
-  COLLECT_AT_LEET: () => {
+  COLLECT_AT_LEET: ({ req, res }) => {
     const date = new Date();
     return [
       haveCalled(req, res)("/api/qrshards", "POST"),
