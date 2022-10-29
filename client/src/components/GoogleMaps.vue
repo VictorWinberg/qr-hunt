@@ -108,11 +108,10 @@
       }"
     />
 
-    <div id="streak-button" class="control-button" @click="centerMapToUser">
+    <div id="streak-button" class="control-button" @click="explainStreak">
       <div class="control-button__streak" :class="{ 'no-streak': !showStreak }">
-        <i class="fas fa-egg fa-2x"></i>
-        <i class="fas fa-flame fa-3x"></i>
-        <p v-if="showStreak" class="control-button__streak__count">
+        <Flame v-if="showStreak" />
+        <p class="control-button__streak__count">
           {{ user.streak }}
         </p>
       </div>
@@ -147,10 +146,14 @@ import Vue from "vue";
 import { mapState, mapMutations, mapActions } from "vuex";
 import { EVENT_TYPE, QR_SPOT_MODE, QR_SPOT_PANEL } from "@/constants";
 import { api } from "@/utils";
+import Flame from "@/components/Flame.vue";
 import EventBus from "@/plugins/event-bus";
 import dayjs from "@/plugins/dayjs";
 
 export default Vue.extend({
+  components: {
+    Flame
+  },
   data() {
     const { mapCoords, mapZoom } = localStorage;
     return {
@@ -289,6 +292,22 @@ export default Vue.extend({
       localStorage.setItem("mapCoords", JSON.stringify(this.userCoords));
       if (zoom && this.map.zoom < 15) this.map.setZoom(15);
     },
+    explainStreak() {
+      this.$store.commit("popup/setPopup", {
+        title: "Your streak",
+        subtitle:
+          "This number shows how many days in a row you have collected a QR shard. 🔥",
+        options: [
+          {
+            name: "OK, got it!",
+            type: "success",
+            action: async () => {
+              this.$store.commit("popup/setPopup", false);
+            }
+          }
+        ]
+      });
+    },
     resetHeading() {
       if (this.mapHeading === 0 && this.mapTilt === 0) {
         this.map.setTilt(45);
@@ -344,23 +363,11 @@ export default Vue.extend({
 
 .control-button__streak__count {
   position: absolute;
-  bottom: 0.25em;
   font-family: "Syne", sans-serif;
-  font-size: 200%;
+  font-size: 300%;
   line-height: 1;
   color: $primary-color;
   text-shadow: -1px -1px 1px #24242485;
-}
-
-.fa-flame {
-  position: absolute;
-  color: #df5632;
-}
-
-.fa-egg {
-  position: absolute;
-  top: 12px;
-  color: #f6c243;
 }
 
 .vue-map-container {
