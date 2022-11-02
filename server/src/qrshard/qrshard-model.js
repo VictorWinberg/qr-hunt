@@ -18,7 +18,7 @@ module.exports = db => ({
   create: async (userId, qrshard) => {
     const valid = ["rating", "comment", "qrspot_id"];
     const { keys, values, indices } = keyValuePairs(valid, qrshard);
-    await db.query("BEGIN TRANSACTION");
+    await db.query("START TRANSACTION ISOLATION LEVEL SERIALIZABLE");
 
     const res = await alreadyExists(db, userId, qrshard);
     if (res.exists || res.err) {
