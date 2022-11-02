@@ -41,7 +41,7 @@ const SELECT_DISTINCT_QRSHARDS_SQL = () => `
 
 const SELECT_LAST_GAP_SQL = () => `
   SELECT DISTINCT ON (users.id) d.d AS last_date, users.id AS user_id
-  FROM generate_series(date_trunc('month', CURRENT_DATE), CURRENT_DATE - interval '1 day', '1 day') d(d)
+  FROM generate_series('2020-01-01', CURRENT_DATE - interval '1 day', '1 day') d(d)
   CROSS JOIN users
   LEFT OUTER JOIN user_shards ON user_shards.created_at = d.d::date AND user_shards.user_id = users.id
   WHERE user_shards.created_at IS NULL
