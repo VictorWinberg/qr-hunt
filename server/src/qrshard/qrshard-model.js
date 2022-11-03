@@ -18,13 +18,7 @@ module.exports = db => ({
   create: async (userId, qrshard) => {
     const valid = ["rating", "comment", "qrspot_id"];
     const { keys, values, indices } = keyValuePairs(valid, qrshard);
-    await db.query("START TRANSACTION ISOLATION LEVEL SERIALIZABLE");
-
-    const res = await alreadyExists(db, userId, qrshard);
-    if (res.exists || res.err) {
-      await db.query("ROLLBACK");
-      return { qrshard: null, err: res.err };
-    }
+    await db.query("BEGIN TRANSACTION");
 
     const sql = `
         INSERT INTO qrshards ( ${keys.concat("user_id")} )
@@ -32,6 +26,13 @@ module.exports = db => ({
         RETURNING *`;
 
     const { rows, err } = await db.query(sql, values);
+
+    const res = await alreadyExists(db, userId, qrshard);
+    if (res.exists !== 1 || res.err) {
+      await db.query("ROLLBACK");
+      return { qrshard: null, err: res.err };
+    }
+
     await db.query("COMMIT");
     return { qrshard: rows[0], err };
   },
@@ -75,5 +76,5 @@ const alreadyExists = async (db, userId, qrshard) => {
     AND created_at::date = now()::date
   `;
   const { rows, err } = await db.query(sql, [userId, qrshard.qrspot_id]);
-  return { exists: (rows || []).length > 0, err };
+  return { exists: (rows || []).length, err };
 };
