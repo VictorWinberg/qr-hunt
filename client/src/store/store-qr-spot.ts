@@ -88,15 +88,12 @@ export default {
       commit("setMode", QR_SPOT_MODE.VIEW);
     },
     updateQrSpotLocation({ state, commit, dispatch }) {
-      console.log("finding location...");
       commit("setQRSpot", { ...state.qrSpot, lat: undefined, lng: undefined });
 
       navigator.geolocation.getCurrentPosition(
         async ({ coords }): Promise<void> => {
           const { qrSpot } = state;
           const { latitude: lat, longitude: lng } = coords;
-          console.log("location found!");
-
           commit("setQRSpot", { ...qrSpot, lat, lng });
         },
         err => {
