@@ -3,24 +3,6 @@ import { api } from "@/utils";
 import Snackbar from "@/plugins/snackbar";
 import EventBus from "@/plugins/event-bus";
 
-const qrSpotGeolocation = ({ state, commit }) => {
-  navigator.geolocation.getCurrentPosition(
-    async ({ coords }): Promise<void> => {
-      const { qrSpot } = state;
-      const { latitude: lat, longitude: lng } = coords;
-      commit("setQRSpot", { ...qrSpot, lat, lng });
-    },
-    err => {
-      Snackbar.err("GeolocationError: " + err.message + " - retrying ...");
-      qrSpotGeolocation({ state, commit });
-    },
-    {
-      timeout: 10 * 1000,
-      maximumAge: 10 * 1000
-    }
-  );
-};
-
 export default {
   namespaced: true,
   state: () => ({
@@ -44,7 +26,7 @@ export default {
     }
   },
   actions: {
-    async prompt({ state, commit }, { qrcode }) {
+    async prompt({ commit, dispatch }, { qrcode }) {
       commit("setQRSpot", { qrcode });
       commit(
         "popup/setPopup",
@@ -59,7 +41,7 @@ export default {
                 commit("popup/setPopup", false, { root: true });
                 commit("setMode", QR_SPOT_MODE.CREATE);
                 commit("setModalState", QR_SPOT_PANEL.SHOW_DETAILS);
-                qrSpotGeolocation({ state, commit });
+                dispatch("updateQrSpotLocation");
               }
             }
           ]
@@ -104,6 +86,25 @@ export default {
       EventBus.$emit(EVENT_TYPE.QR_SPOTS_UPDATE);
       commit("setQRSpot", qrspot);
       commit("setMode", QR_SPOT_MODE.VIEW);
+    },
+    updateQrSpotLocation({ state, commit, dispatch }) {
+      commit("setQRSpot", { ...state.qrSpot, lat: undefined, lng: undefined });
+
+      navigator.geolocation.getCurrentPosition(
+        async ({ coords }): Promise<void> => {
+          const { qrSpot } = state;
+          const { latitude: lat, longitude: lng } = coords;
+          commit("setQRSpot", { ...qrSpot, lat, lng });
+        },
+        err => {
+          Snackbar.err("GeolocationError: " + err.message + " - retrying ...");
+          dispatch("updateQrSpotLocation");
+        },
+        {
+          timeout: 10 * 1000,
+          maximumAge: 10 * 1000
+        }
+      );
     }
   }
 };

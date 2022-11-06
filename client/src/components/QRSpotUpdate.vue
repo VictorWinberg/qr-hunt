@@ -58,6 +58,7 @@
         {{ Math.round(qrSpot.lat * 1000) / 1000 }},
         <b> {{ $t("qr-spot.coordinates-lng") }} </b>
         {{ Math.round(qrSpot.lng * 1000) / 1000 }}
+        <i class="fas fa-sync updateBtn" @click="updateQrSpotLocation()"></i>
       </div>
       <div v-else>
         {{ $t("qr-spot.loading-coordinates") }}
@@ -73,7 +74,7 @@
         type="button"
         class="saveBtn"
         :class="{ disabled: !valid }"
-        @click="saveSpot"
+        @click="saveSpot()"
       >
         {{ $t("common.save") }}
       </button>
@@ -110,7 +111,7 @@ export default Vue.extend({
   },
   methods: {
     ...mapMutations("qrSpot", ["setMode", "setModalState"]),
-    ...mapActions("qrSpot", ["create", "edit"]),
+    ...mapActions("qrSpot", ["create", "edit", "updateQrSpotLocation"]),
     view() {
       this.$store.commit("popup/setPopup", {
         title: "Are you sure?",
@@ -224,6 +225,13 @@ textarea:focus {
 .deleteBtn {
   color: white;
   background-color: $danger;
+}
+
+.updateBtn {
+  padding: 0.5rem;
+  background-color: $dark-brand-color;
+  border: solid #bbb 1px;
+  border-radius: 100%;
 }
 
 .spinner-icon {
