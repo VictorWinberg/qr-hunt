@@ -6,6 +6,7 @@ CREATE TABLE users (
   username  VARCHAR(50)   NOT NULL,
   email     VARCHAR(255)  NOT NULL UNIQUE,
   photo     VARCHAR(255),
+  locale    VARCHAR(2),
   is_admin  BOOLEAN       NOT NULL DEFAULT FALSE,
 
   created_at TIMESTAMP DEFAULT NOW(),

@@ -59,6 +59,7 @@
   "settings": {
     "delete-account-option": "Avsluta konto",
     "help-option": "Hjälp",
+    "browser-language": "Webbläsarens språk",
     "language-option": "Språk",
     "logout-option": "Logga  ut",
     "title": "Inställningar"

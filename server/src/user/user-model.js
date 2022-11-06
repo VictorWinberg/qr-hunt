@@ -17,6 +17,8 @@
  *           type: string
  */
 
+const { keyValuePairs } = require("../utils");
+
 const SELECT_QR_SHARDS_SQL = where => `
   SELECT users.id, CAST(COUNT(qrshards.*) AS int) AS qrshards_score
   FROM users
@@ -57,7 +59,7 @@ const SELECT_STREAK_SQL = () => `
 `;
 
 const SELECT_USERS_SQL = args => `
-  SELECT id, username, name, email, photo, is_admin, created_at ${args}
+  SELECT id, username, name, email, photo, locale, is_admin, created_at ${args}
   FROM users
 `;
 
@@ -110,11 +112,14 @@ module.exports = db => ({
     return { user: rows[0], err };
   },
 
-  update: async (id, { name, photo }) => {
+  update: async (id, user) => {
+    const valid = ["name", "photo", "locale"];
+    const { keyIndices, values } = keyValuePairs(valid, user);
     const sql = `
-        UPDATE users SET (name, photo) = ($2, $3)
-        WHERE id = $1 RETURNING *`;
-    const { rows, err } = await db.query(sql, [id, name, photo]);
+        UPDATE users SET ${keyIndices}
+        WHERE id = ${id} RETURNING *`;
+
+    const { rows, err } = await db.query(sql, values);
     return { user: rows[0], err };
   },
 

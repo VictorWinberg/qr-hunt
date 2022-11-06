@@ -10,7 +10,10 @@
 
       <div class="select-language">
         {{ $t("settings.language-option") }}
-        <select v-model="$i18n.locale">
+        <select :value="user.locale" @change="setLocale">
+          <option :value="null">
+            {{ $t("settings.browser-language") }}
+          </option>
           <option
             v-for="(locale, i) in locales"
             :key="`locale-${i}`"
@@ -32,8 +35,9 @@
 </template>
 
 <script>
-import { mapMutations } from "vuex";
+import { mapState, mapMutations } from "vuex";
 import { api } from "@/utils";
+import i18n from "@/plugins/i18n";
 import { languages } from "../locales";
 
 export default {
@@ -42,8 +46,22 @@ export default {
       locales: languages || []
     };
   },
+  computed: {
+    ...mapState("user", ["user"])
+  },
   methods: {
     ...mapMutations("user", ["setAuth"]),
+    async setLocale(event) {
+      const locale = event.target.value || null;
+      if (locale) {
+        i18n.locale = locale;
+      } else {
+        i18n.locale = navigator.language.split("-")[0];
+      }
+      await api.put("/api/user", {
+        body: JSON.stringify({ locale })
+      });
+    },
     async deleteMe() {
       this.$store.commit("popup/setPopup", {
         title: "Delete account",

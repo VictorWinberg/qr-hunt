@@ -59,6 +59,7 @@
   "settings": {
     "delete-account-option": "Delete account",
     "help-option": "Help",
+    "browser-language": "Browser language",
     "language-option": "Language",
     "logout-option": "Log out",
     "title": "Settings"

@@ -52,6 +52,29 @@ module.exports = ({ app, db, isLoggedIn }) => {
   /**
    * @swagger
    * /user:
+   *   put:
+   *     summary: Update your user
+   *     tags:
+   *       - User
+   *     responses:
+   *       200:
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/User'
+   */
+
+  app.put("/api/user", async (req, res, next) => {
+    const { user: req_user = {}, body } = req;
+    const { user, err } = await User.update(req_user.id, body);
+    if (err) return next(err);
+    if (!user) return res.sendStatus(404);
+    return res.send(user);
+  });
+
+  /**
+   * @swagger
+   * /user:
    *   delete:
    *     summary: Delete your user
    *     tags:
