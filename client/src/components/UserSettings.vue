@@ -11,6 +11,9 @@
       <div class="select-language">
         {{ $t("settings.language-option") }}
         <select v-model="$i18n.locale">
+          <option :value="null">
+            {{ $t("settings.browser-language") }}
+          </option>
           <option
             v-for="(locale, i) in locales"
             :key="`locale-${i}`"
@@ -41,6 +44,13 @@ export default {
     return {
       locales: languages || []
     };
+  },
+  watch: {
+    async "$i18n.locale"(locale) {
+      await api.put("/api/user", {
+        body: JSON.stringify({ locale })
+      });
+    }
   },
   methods: {
     ...mapMutations("user", ["setAuth"]),
