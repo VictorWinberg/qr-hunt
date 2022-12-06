@@ -26,10 +26,9 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - name: Install and cache dependencies
-        uses: cypress-io/github-action@v2
+        uses: bahmutov/npm-install@v1
         with:
           working-directory: client
-          runTests: false
 
       - name: Build client
         run: npm run build
