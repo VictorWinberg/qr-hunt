@@ -22,7 +22,7 @@ There is also a `credentials.json` file in the root dir.
 
 ## Server (Backend)
 
-See [backend/README.md](backend/README.md)
+See [server/README.md](server/README.md).
 
 ## Frontend (Client)
 
