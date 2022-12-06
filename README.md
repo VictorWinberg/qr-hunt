@@ -4,7 +4,8 @@
 
 ## Prerequisite
 
-- Node v12
+- Node v12 (for backend)
+- Node v14 (for frontend)
 - Postgres v11
 
 ## Environment variables
@@ -19,28 +20,13 @@ There are two env-files that you need to create locally:
 There is also a `credentials.json` file in the root dir.
 > You can download it from https://console.cloud.google.com/apis/credentials under "Service Accounts"
 
-## Database Setup
-```
-createdb qrhunt
-psql qrhunt < server/schema.sql
-```
+## Server (Backend)
 
-### Database migrations
-```
-npm run db:migrate
-```
+See [server/README.md](server/README.md).
 
-### Database clone production (optional)
-```
-npm run db:pull
-```
+## Frontend (Client)
 
-## Node Setup
-
-```
-npm install
-npm start
-```
+See [client/README.md](client/README.md).
 
 ## Swagger UI | API Documentation
 Visit `/api/docs`
