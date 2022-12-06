@@ -27,8 +27,8 @@ jobs:
 
       - name: Install and cache dependencies
         uses: cypress-io/github-action@v2
-        working-directory: client
         with:
+          working-directory: client
           runTests: false
 
       - name: Build client
