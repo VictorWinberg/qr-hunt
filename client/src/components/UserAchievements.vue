@@ -3,27 +3,29 @@
     <h2 class="user-achievements__title">
       {{ $t("achievements.title") }}
     </h2>
-    <div class="user-achievements">
+    <div v-if="!selectedAchievement" class="user-achievements">
       <AchievementsCard
         v-for="achievement in achievements"
         :key="achievement.name"
+        class="user-achievements__card"
         :name="achievement.name"
         :title="achievement.title"
         :icon="achievement.icon"
         :count="achievement.count"
-        class="user-achievements__card"
+        :data-flip-key="achievement.name"
         @click="selectAchievement(achievement)"
       />
     </div>
     <AchievementsCard
       v-if="selectedAchievement"
       ref="selectedAchievement"
+      class="user-achievements__card selected"
       :name="selectedAchievement.name"
       :title="selectedAchievement.title"
       :icon="selectedAchievement.icon"
       :count="selectedAchievement.count"
-      class="user-achievements__card selected"
       :overlay="true"
+      :data-flip-key="selectedAchievement.name"
       @click="selectAchievement(null)"
     />
   </div>
@@ -31,6 +33,7 @@
 
 <script>
 import Vue from "vue";
+import Flipping from "flipping";
 import EventBus from "@/plugins/event-bus";
 import AchievementsCard from "@/components/AchievementsCard.vue";
 import { EVENT_TYPE } from "@/constants";
@@ -43,7 +46,16 @@ export default {
   data() {
     return {
       achievements: [{}, {}],
-      selectedAchievement: null
+      selectedAchievement: null,
+      flipping: new Flipping({
+        onRead: state => console.log("read", state),
+        onFlip: state => console.log("flip", state),
+        onEnter: state => console.log("enter", state),
+        onLeave: state => console.log("leave", state),
+        duration: 3000,
+        easing: "ease-in-out",
+        parent: this.$el
+      })
     };
   },
   watch: {
@@ -59,17 +71,28 @@ export default {
   methods: {
     hashColor,
     selectAchievement(achievement) {
-      if (achievement === this.selectedAchievement) {
-        this.selectedAchievement = null;
-      } else {
-        this.selectedAchievement = achievement;
-      }
+      this.flipping.read();
+      this.achievements = [
+        ...this.achievements.map(achievement => ({
+          ...achievement,
+          name: Math.random().toString()
+        })),
+        achievement
+      ];
+      // if (achievement === this.selectedAchievement) {
+      //   this.selectedAchievement = null;
+      // } else {
+      //   this.selectedAchievement = achievement;
+      // }
       Vue.nextTick(() => {
-        const element = this.$refs?.selectedAchievement?.$el;
-        if (element) {
-          document.getElementById("app").appendChild(element);
-        }
+        this.flipping.flip();
       });
+      // Vue.nextTick(() => {
+      //   const element = this.$refs?.selectedAchievement?.$el;
+      //   if (element) {
+      //     document.getElementById("app").appendChild(element);
+      //   }
+      // });
     },
     async fetchAchievements() {
       const { params } = this.$route;
