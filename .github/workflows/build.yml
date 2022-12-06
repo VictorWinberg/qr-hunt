@@ -9,12 +9,12 @@ on:
 
 jobs:
   build:
-    name: Test and Build
+    name: Build
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        node-version: [12.x]
+        node-version: [16.x]
 
     steps:
       - uses: actions/checkout@v3
@@ -30,13 +30,12 @@ jobs:
         with:
           runTests: false
 
-      - name: Build
+      - name: Build client
         run: npm run build
+        working-directory: client
         env:
           VUE_APP_GOOGLE_API_KEY: ${{ secrets.VUE_APP_GOOGLE_API_KEY }}
 
-      - name: Lint
+      - name: Lint client
         run: npm run lint
-
-      - name: Test
-        run: npm test
+        working-directory: client
