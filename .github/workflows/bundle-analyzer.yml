@@ -25,7 +25,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - uses: preactjs/compressed-size-action@v2
       with:
-        working-directory: client
+        cwd: client
         repo-token: ${{ secrets.GITHUB_TOKEN }}
         pattern: "dist/{.,css,js}/*.{js,css}"
         strip-hash: "\\b\\w{8}\\."
