@@ -145,30 +145,6 @@ module.exports = ({ app, db, isLoggedIn }) => {
 
   /**
    * @swagger
-   * /leaderboard:
-   *   get:
-   *     summary: Get the leaderboard users
-   *     tags:
-   *       - User
-   *     responses:
-   *       200:
-   *         content:
-   *           application/json:
-   *             schema:
-   *               type: array
-   *               items:
-   *                 $ref: '#/components/schemas/User'
-   *               minItems: 3
-   */
-
-  app.get("/api/leaderboard", isLoggedIn, async (_, res, next) => {
-    const { users, err } = await User.getAllOrderByXp();
-    if (err) return next(err);
-    return res.send(users.map(setProps(["lvl"])));
-  });
-
-  /**
-   * @swagger
    * /leaderboard/{from}/{to}:
    *   get:
    *     summary: Get the leaderboard for a period

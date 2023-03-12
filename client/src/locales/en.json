@@ -38,7 +38,8 @@
     "table-rank": "Rank",
     "table-score": "Score",
     "table-user": "User",
-    "title": "Leaderboard"
+    "title": "Leaderboard",
+    "total": "All time"
   },
   "qr-spot": {
     "coordinates": "Coordinates:",

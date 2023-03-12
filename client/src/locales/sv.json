@@ -38,7 +38,8 @@
     "table-rank": "Rank",
     "table-score": "Poäng",
     "table-user": "Användare",
-    "title": "Poängställning"
+    "title": "Poängställning",
+    "total": "All time"
   },
   "qr-spot": {
     "coordinates": "Koordinater:",

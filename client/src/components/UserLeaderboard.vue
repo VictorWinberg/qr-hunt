@@ -5,9 +5,14 @@
     </h2>
     <div class="leaderboard__nav">
       <h3 class="leaderboard__period" @click="togglePeriod">
-        {{ week }} {{ $t("common.month-names")[month - 1] }} {{ year }}
+        <span v-if="period == 'total'">
+          {{ $t("leaderboard.total") }}
+        </span>
+        <span v-else>
+          {{ $t("common.month-names")[month - 1] }} {{ year }}
+        </span>
       </h3>
-      <a class="nav--left" @click="nav(-1)">
+      <a :class="['nav--left', first ? 'disabled' : '']" @click="nav(-1)">
         <i class="fas fa-caret-left"></i>
       </a>
       <a :class="['nav--right', last ? 'disabled' : '']" @click="nav(1)">
@@ -67,10 +72,6 @@ export default Vue.extend({
   },
   computed: {
     ...mapState("user", ["leaderboard"]),
-    week() {
-      if (this.period !== "week") return;
-      return "w. " + this.date.isoWeek();
-    },
     month() {
       if (this.period !== "month") return;
       return this.date.format("M");
@@ -78,6 +79,9 @@ export default Vue.extend({
     year() {
       if (this.period !== "year" && dayjs().isSame(this.date, "year")) return;
       return this.date.format("YYYY");
+    },
+    first() {
+      return this.date.subtract(1, this.period).isBefore("2021");
     },
     last() {
       return this.date.add(1, this.period).isAfter(dayjs());
@@ -106,7 +110,8 @@ export default Vue.extend({
     },
     togglePeriod() {
       this.setLeaderboard(null);
-      this.period = { week: "month", month: "year", year: "week" }[this.period];
+      const nextPeriod = { month: "year", year: "total", total: "month" };
+      this.period = nextPeriod[this.period];
       this.date = dayjs().startOf(this.period);
       this.fetchLeaderboard();
     },
