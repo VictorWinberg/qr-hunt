@@ -1,4 +1,4 @@
-# QR-Hunt
+# QR-Hunt 2
 
 [![Build](https://github.com/VictorWinberg/qr-hunt/workflows/Build/badge.svg)](https://github.com/VictorWinberg/qr-hunt/actions?query=workflow%3ABuild+branch%3Amaster)
 
