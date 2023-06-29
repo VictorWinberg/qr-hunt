@@ -146,7 +146,7 @@ import Vue from "vue";
 import { mapState, mapMutations, mapActions } from "vuex";
 import { EVENT_TYPE, QR_SPOT_MODE, QR_SPOT_PANEL } from "@/constants";
 import { api } from "@/utils";
-import Flame from "@/components/Flame.vue";
+import Flame from "@/components/Flame";
 import EventBus from "@/plugins/event-bus";
 import dayjs from "@/plugins/dayjs";
 

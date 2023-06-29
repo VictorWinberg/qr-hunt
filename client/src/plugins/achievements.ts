@@ -4,6 +4,7 @@ import { api } from "@/utils";
 import EventBus from "./event-bus";
 
 const delay = 3 * 1000;
+let timeout = -1;
 
 export const newAchievements = async () => {
   // Don't show achievements when in intro mode
@@ -46,7 +47,8 @@ export const newAchievements = async () => {
         // @ts-ignore
         Snackbar.close();
 
-        setTimeout(newAchievements, delay);
+        clearTimeout(timeout);
+        timeout = setTimeout(newAchievements, delay);
       }
     });
   }
@@ -54,43 +56,14 @@ export const newAchievements = async () => {
 
 EventBus.$on(EVENT_TYPE.AUTH_CHANGE, ({ isAuthenticated }) => {
   if (isAuthenticated) {
-    setTimeout(newAchievements, delay);
+    clearTimeout(timeout);
+    timeout = setTimeout(newAchievements, delay);
   }
 });
+
 EventBus.$on(EVENT_TYPE.API_REQUEST_UPDATE, () => {
-  setTimeout(newAchievements, delay);
-});
-
-const levelUp = async (lvl: number) => {
-  Snackbar.show({
-    text: `
-    <div class="achievement-top"><p>Level up!</p></div>
-    <p style="color: #a67b1e">
-      <i class="fas fa-star"></i>
-      <i class="fas fa-star fa-2x"></i>
-      <i class="fas fa-star"></i>
-    </p>
-    <h2>Level ${lvl}</h2>
-    Congratulations! You achieved a new level!
-  `,
-    textColor: "black",
-    actionText: "ok",
-    actionTextColor: "white",
-    backgroundColor: "rgba(36,36,36,0.9)",
-    duration: 0,
-    pos: undefined,
-    customClass: "achievement-popup",
-    onActionClick: async () => {
-      // @ts-ignore
-      Snackbar.close();
-
-      setTimeout(newAchievements, delay);
-    }
-  });
-};
-
-EventBus.$on(EVENT_TYPE.LEVEL_UP, (lvl: number) => {
-  setTimeout(() => levelUp(lvl), delay);
+  clearTimeout(timeout);
+  timeout = setTimeout(newAchievements, delay);
 });
 
 const isThankful = async () => {
@@ -112,5 +85,6 @@ const isThankful = async () => {
 };
 
 if (Math.random() < 0.1 && !localStorage.getItem("thankful")) {
-  setTimeout(isThankful, 30 * 1000);
+  clearTimeout(timeout);
+  timeout = setTimeout(isThankful, 30 * 1000);
 }
