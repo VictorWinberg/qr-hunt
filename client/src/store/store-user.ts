@@ -15,13 +15,6 @@ export default {
   mutations: {
     setAuth(state, payload) {
       const { isAuthenticated = false, ...user } = payload;
-      if (user.lvl && state.user.lvl && user.lvl > state.user.lvl) {
-        EventBus.$emit(EVENT_TYPE.LEVEL_UP, user.lvl);
-        throw new Error(
-          `Was this correct? LEVEL_UP: ${user.lvl} > ${state.user.lvl}`
-        );
-      }
-
       if (isAuthenticated) {
         state.isAuthenticated = true;
         state.status = "success";

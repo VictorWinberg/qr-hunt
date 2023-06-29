@@ -1,13 +1,14 @@
 --SQL TABLE SCHEMAS
 DROP TABLE IF EXISTS users CASCADE;
 CREATE TABLE users (
-  id        SERIAL        NOT NULL,
-  name      VARCHAR(50)   NOT NULL,
-  username  VARCHAR(50)   NOT NULL,
-  email     VARCHAR(255)  NOT NULL UNIQUE,
-  photo     VARCHAR(255),
-  locale    VARCHAR(2),
-  is_admin  BOOLEAN       NOT NULL DEFAULT FALSE,
+  id         SERIAL        NOT NULL,
+  name       VARCHAR(50)   NOT NULL,
+  username   VARCHAR(50)   NOT NULL,
+  email      VARCHAR(255)  NOT NULL UNIQUE,
+  photo      VARCHAR(255),
+  locale     VARCHAR(2),
+  max_streak INTEGER       NOT NULL DEFAULT 0,
+  is_admin   BOOLEAN       NOT NULL DEFAULT FALSE,
 
   created_at TIMESTAMP DEFAULT NOW(),
 
@@ -68,7 +69,7 @@ CREATE TABLE achievements (
   name        VARCHAR(36)   NOT NULL,
   title       VARCHAR(50)   NOT NULL,
   icon        VARCHAR(50),
-  repeatable  VARCHAR(10),
+  repeatable  VARCHAR(25),
   score       INT,
 
   created_at TIMESTAMP DEFAULT NOW(),

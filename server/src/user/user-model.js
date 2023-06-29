@@ -77,7 +77,7 @@ const SELECT_USERS_SQL_FULL = `
   )
 
   ${SELECT_USERS_SQL(
-    `, COALESCE(streak, 0) AS streak, CAST(COALESCE(qrshards_score + achievements_score, 0) AS int) AS xp`
+    `, COALESCE(streak, 0) AS streak, max_streak, CAST(COALESCE(qrshards_score + achievements_score, 0) AS int) AS xp`
   )}
   LEFT JOIN qrshards_count USING (id)
   LEFT JOIN achievements_count USING (id)
@@ -113,7 +113,7 @@ module.exports = db => ({
   },
 
   update: async (id, user) => {
-    const valid = ["name", "photo", "locale"];
+    const valid = ["name", "photo", "locale", "max_streak"];
     const { keyIndices, values } = keyValuePairs(valid, user);
     const sql = `
         UPDATE users SET ${keyIndices}

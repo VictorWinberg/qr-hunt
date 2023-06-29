@@ -53,6 +53,32 @@ module.exports = {
       hours >= 22 || hours < 5
     ];
   },
+  MAX_STREAK: ({ req, res, db }) => {
+    const { id, streak, max_streak } = req.user;
+
+    if (
+      streak >= 3 &&
+      streak > max_streak &&
+      haveCalled(req, res)("/api/user", "GET")
+    ) {
+      const User = require("../user/user-model")(db);
+      User.update(id, { max_streak: streak }).catch(console.error);
+      return true;
+    }
+    return false;
+  },
+  LEVEL_UP: async ({ req, res, db }) => {
+    if (!haveCalled(req, res)("/api/user", "GET")) return false;
+
+    const { user } = req;
+    const Achievement = require("./achievement-model")(db);
+
+    const response = await Achievement.getByName(user.id, "LEVEL_UP");
+    const { achievement, err } = response;
+    if (err) return false;
+
+    return (user.lvl > 0 && !achievement) || user.lvl > achievement.count;
+  },
   FIRST_RECOLLECT: () => {
     return false;
   },

@@ -34,6 +34,12 @@
               }"
             />
           </div>
+          <div class="user-xp__level">
+            <span class="user-xp__text">
+              {{ user.maxStreak }}
+            </span>
+            <img height="100%" :src="require('@/assets/fire.svg')" />
+          </div>
         </div>
       </div>
     </div>
@@ -82,12 +88,14 @@ import { api, hashColor } from "@/utils";
 import UserAchievements from "@/components/UserAchievements";
 import UserLeaderboard from "@/components/UserLeaderboard";
 import UserSettings from "@/components/UserSettings";
+import Flame from "@/components/Flame.vue";
 
 export default Vue.extend({
   components: {
     UserAchievements,
     UserLeaderboard,
-    UserSettings
+    UserSettings,
+    Flame
   },
   data() {
     return {
@@ -178,6 +186,7 @@ export default Vue.extend({
 .user-xp__level {
   position: relative;
   z-index: 1;
+  height: 4rem;
   font-size: 4rem;
   -webkit-text-stroke: 1px $black;
 }
@@ -188,6 +197,7 @@ export default Vue.extend({
   width: 300px;
   max-width: 66%;
   height: 2.5rem;
+  margin-right: -1rem;
   margin-left: -2.25rem;
   font-size: 3rem;
   border: 1px solid $black;
