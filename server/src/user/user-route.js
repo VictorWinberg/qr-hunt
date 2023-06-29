@@ -8,16 +8,18 @@ const {
 
 module.exports = ({ app, db, isLoggedIn }) => {
   const User = require("./user-model")(db);
+  const Level = require("./user-level");
 
   const setProps = keys => (user, idx = 0, users = []) => {
     const prevUser = idx === 0 ? {} : users[idx - 1];
     const eqRank = user.score === prevUser.score && user.dist === prevUser.dist;
+    const level = new Level(user.xp);
 
     let props = {};
     props.isAuthenticated = true;
-    props.lvl = Math.floor(Math.sqrt(user.xp));
-    props.lvlXp = user.xp - Math.pow(props.lvl, 2);
-    props.reqLvlXp = Math.pow(props.lvl + 1, 2) - Math.pow(props.lvl, 2);
+    props.lvl = level.lvl;
+    props.lvlXp = level.lvlXp;
+    props.reqLvlXp = level.reqLvlXp;
     props.rank = eqRank ? prevUser.rank : idx + 1;
 
     keys.forEach(key => (user[key] = props[key]));
