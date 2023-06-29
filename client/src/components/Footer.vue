@@ -52,7 +52,7 @@ export default Vue.extend({
       const res = await fetch(url);
       const json = await res.json();
       this.$store.commit("popup/setPopup", {
-        title: "Release " + APP_VERSION,
+        title: "Release " + json.name,
         subtitle: json.body
           .replace(/##([^\r\n]+)/g, "<h3>$1</h3>")
           .replace(/(\*\*|__)(?=\S)([^\r]*?\S[*_]*)\1/g, "<b>$2</b>")
