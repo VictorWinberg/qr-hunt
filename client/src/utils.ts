@@ -259,3 +259,9 @@ export function distance({ lat: lat1, lng: lng1 }, { lat: lat2, lng: lng2 }) {
   const d = R * c;
   return d;
 }
+
+export function calculateWalkingTime(distanceInMeters: number) {
+  const walkingSpeed = 1.2;
+  const walkingTimeInSeconds = distanceInMeters / walkingSpeed;
+  return Math.ceil(walkingTimeInSeconds / 60);
+}

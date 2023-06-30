@@ -12,6 +12,9 @@
               <div class="qrspot-info__distance">
                 <i class="fas fa-route"></i>
                 {{ distanceToMarker(userCoords, qrSpot) }}
+                -
+                <i class="fas fa-clock"></i>
+                {{ walkingTimeToMarker(userCoords, qrSpot) }}
               </div>
               <!-- <div class="qrspot-info__rating">
                 <i class="far fa-star"></i>
@@ -45,7 +48,7 @@ import { mapState, mapMutations } from "vuex";
 import { QR_SPOT_MODE, QR_SPOT_PANEL } from "@/constants";
 import QRSpotView from "./QRSpotView";
 import QRSpotUpdate from "./QRSpotUpdate";
-import { distance } from "@/utils";
+import { distance, calculateWalkingTime } from "@/utils";
 
 export default Vue.extend({
   name: "QRSpot",
@@ -72,7 +75,13 @@ export default Vue.extend({
     distanceToMarker(pos1, pos2) {
       if (!pos1 || !pos2) return "N/A";
       const d = distance(pos1, pos2);
-      return d < 1000 ? d.toFixed(1) + " m" : (d / 1000).toFixed(1) + " km";
+      return d < 1000 ? d.toFixed(0) + " m" : (d / 1000).toFixed(1) + " km";
+    },
+    walkingTimeToMarker(pos1, pos2) {
+      if (!pos1 || !pos2) return "N/A";
+      const d = distance(pos1, pos2);
+      const min = calculateWalkingTime(d);
+      return min < 60 ? min.toFixed(0) + " min" : (min / 60).toFixed(1) + " hr";
     }
   }
 });
