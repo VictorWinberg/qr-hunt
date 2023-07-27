@@ -2,7 +2,7 @@ const { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, HA_BEARER_TOKEN } = process.env;
 
 const GoogleStrategy = require("passport-google-oauth").OAuth2Strategy;
 const fetch = require("node-fetch");
-const notify = "https://home.zolly.ml/api/services/notify/notify";
+const notify = "https://home.codies.se/api/services/notify/notify";
 
 const get = (p, o) => p.reduce((xs, x) => (xs && xs[x] ? xs[x] : null), o);
 
