@@ -3,7 +3,7 @@
 import { register } from "register-service-worker";
 import Snackbar from "@/plugins/snackbar";
 
-const whitelist = ["qr.zolly.ml", "www.qrhunt.ml"];
+const whitelist = ["qr.codies.se"];
 
 if (
   process.env.NODE_ENV === "production" &&
