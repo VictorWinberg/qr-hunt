@@ -22,7 +22,7 @@ const options = {
         url: "http://localhost:3000/api"
       },
       {
-        url: "https://qr.zolly.ml/api"
+        url: "https://qr.codies.se/api"
       }
     ]
   },
