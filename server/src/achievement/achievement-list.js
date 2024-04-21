@@ -76,8 +76,9 @@ module.exports = {
     const response = await Achievement.getByName(user.id, "LEVEL_UP");
     const { achievement, err } = response;
     if (err) return false;
+    if (!achievement) return user.lvl > 0;
 
-    return (user.lvl > 0 && !achievement) || user.lvl > achievement.count;
+    return user.lvl > achievement.count;
   },
   FIRST_RECOLLECT: () => {
     return false;
