@@ -7,7 +7,8 @@ export const QR_SPOT_PANEL = {
 export const QR_SPOT_MODE = {
   VIEW: "VIEW",
   EDIT: "EDIT",
-  CREATE: "CREATE"
+  CREATE: "CREATE",
+  REPLACE_CODE: "REPLACE_CODE"
 };
 
 export const EVENT_TYPE = {

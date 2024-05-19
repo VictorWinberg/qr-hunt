@@ -70,6 +70,10 @@
         />
       </div>
       <br />
+      <a class="replaceQRCode" @click="replaceQRCode">
+        {{ $t("qr-spot.replace-qrcode") }}
+      </a>
+      <br />
       <button
         type="button"
         class="saveBtn"
@@ -110,6 +114,7 @@ export default Vue.extend({
     }
   },
   methods: {
+    ...mapMutations("scan", ["toggleScan"]),
     ...mapMutations("qrSpot", ["setMode", "setModalState"]),
     ...mapActions("qrSpot", ["create", "edit", "updateQrSpotLocation"]),
     view() {
@@ -171,6 +176,10 @@ export default Vue.extend({
           }
         ]
       });
+    },
+    replaceQRCode() {
+      this.setMode(QR_SPOT_MODE.REPLACE_CODE);
+      this.toggleScan();
     }
   }
 });
@@ -220,6 +229,10 @@ textarea:focus {
     pointer-events: none;
     opacity: 0.5;
   }
+}
+
+.replaceQRCode {
+  text-decoration: underline;
 }
 
 .deleteBtn {
