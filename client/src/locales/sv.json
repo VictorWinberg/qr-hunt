@@ -52,7 +52,8 @@
     "loading-coordinates": "Laddar fantastiska koordinater...",
     "update-hint": "Vill du ändra ledtråden på var din QR kod finns någonstans?",
     "update-name": "Uppdatera namnet på din fantastiska plats",
-    "view-hint-question": "Behöver du en ledtråd?"
+    "view-hint-question": "Behöver du en ledtråd?",
+    "replace-qrcode": "Ersätt försvunnen QR kod?"
   },
   "scanner": {
     "title": "QR Scanner"

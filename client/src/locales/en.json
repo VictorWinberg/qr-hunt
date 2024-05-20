@@ -52,7 +52,8 @@
     "loading-coordinates": "Loading amazing coordinates...",
     "update-hint": "Do you want to change the hint of where the spot can be found?",
     "update-name": "Update the awesome name for your spot",
-    "view-hint-question": "Do you need a hint?"
+    "view-hint-question": "Do you need a hint?",
+    "replace-qrcode": "Replace missing QR code?"
   },
   "scanner": {
     "title": "QR Scan"

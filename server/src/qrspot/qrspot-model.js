@@ -51,7 +51,7 @@ module.exports = db => ({
   },
 
   update: async (user, id, qrspot) => {
-    const valid = ["title", "lat", "lng", "note", "hint"];
+    const valid = ["qrcode", "title", "lat", "lng", "note", "hint"];
     const { keyIndices, values } = keyValuePairs(valid, qrspot);
     const sql = `
       UPDATE qrspots SET ${keyIndices}

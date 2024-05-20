@@ -26,7 +26,30 @@ export default {
     }
   },
   actions: {
-    async prompt({ commit, dispatch }, { qrcode }) {
+    async prompt({ state, commit, dispatch }, { qrcode }) {
+      if (state.mode === QR_SPOT_MODE.REPLACE_CODE) {
+        commit(
+          "popup/setPopup",
+          {
+            title: "Replace QR Code",
+            subtitle: "Do you want to replace a QR Code?",
+            options: [
+              {
+                name: "Replace",
+                type: "success",
+                action: async () => {
+                  commit("popup/setPopup", false, { root: true });
+                  commit("setMode", QR_SPOT_MODE.EDIT);
+                  dispatch("edit", { qrcode });
+                }
+              }
+            ]
+          },
+          { root: true }
+        );
+        return;
+      }
+
       commit("setQRSpot", { qrcode });
       commit(
         "popup/setPopup",
