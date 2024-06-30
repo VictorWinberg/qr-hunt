@@ -34,7 +34,7 @@
     "uuid": "8.3.2"
   },
   "devDependencies": {
-    "eslint": "7.32.0",
+    "eslint": "9.6.0",
     "prettier": "1.19.1"
   },
   "engines": {
