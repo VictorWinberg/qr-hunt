@@ -64,9 +64,11 @@ export default Vue.extend({
     ...mapMutations("scan", ["stopScan"]),
     ...mapActions("scan", ["handleQR"]),
     async initScanner() {
-      const devices = await navigator.mediaDevices.enumerateDevices();
-      const cameras = devices.filter(device => device.kind === "videoinput");
-      const camera = cameras[cameras.length - 1];
+      await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: "environment" }
+      });
+      const cameras = await navigator.mediaDevices.enumerateDevices();
+      const camera = cameras[0];
       const { qrscan } = this.$refs;
       if (!camera || !qrscan) return;
 
