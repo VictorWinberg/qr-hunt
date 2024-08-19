@@ -274,10 +274,10 @@ export function findCamera(devices: MediaDeviceInfo[]) {
     .map(item => item.label.length)
     .sort((a, b) => a - b)
     .slice(0, 4);
+  const length = lenghts.pop() || Infinity;
 
-  const mainCameras = cameras.filter(camera =>
-    lenghts.includes(camera.label.length)
-  );
+  const mainCameras = cameras.filter(camera => camera.label.length <= length);
 
+  // Return the last camera in the list, should be the back camera
   return mainCameras[mainCameras.length - 1];
 }
