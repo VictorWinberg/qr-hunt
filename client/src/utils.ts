@@ -265,3 +265,18 @@ export function calculateWalkingTime(distanceInMeters: number) {
   const walkingTimeInSeconds = distanceInMeters / walkingSpeed;
   return Math.ceil(walkingTimeInSeconds / 60);
 }
+
+export function findCamera(devices: MediaDeviceInfo[]) {
+  const cameras = devices.filter(device => device.kind === "videoinput");
+
+  const lenghts = cameras
+    .map(item => item.label.length)
+    .sort((a, b) => a - b)
+    .slice(0, 4);
+
+  const mainCameras = cameras.filter(camera =>
+    lenghts.includes(camera.label.length)
+  );
+
+  return mainCameras[mainCameras.length - 1];
+}

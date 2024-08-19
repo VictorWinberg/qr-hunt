@@ -20,6 +20,8 @@ import { mapState, mapMutations, mapActions } from "vuex";
 import QRScanner from "qr-scanner";
 
 import { QR_SPOT_PANEL } from "@/constants";
+import { findCamera } from "@/utils";
+
 // eslint-disable-next-line import/no-webpack-loader-syntax
 import QRScannerWorkerPath from "!!file-loader!../../node_modules/qr-scanner/qr-scanner-worker.min.js";
 QRScanner.WORKER_PATH = QRScannerWorkerPath;
@@ -69,8 +71,7 @@ export default Vue.extend({
     async initScanner() {
       await navigator.mediaDevices.getUserMedia({ audio: false, video: true });
       const devices = await navigator.mediaDevices.enumerateDevices();
-      const cameras = devices.filter(device => device.kind === "videoinput");
-      const { deviceId } = cameras[(this.user.cameraId || 0) % cameras.length];
+      const { deviceId } = findCamera(devices);
       const { qrscan } = this.$refs;
       if (!deviceId || !qrscan) return;
 
