@@ -38,8 +38,7 @@ export default Vue.extend({
     };
   },
   computed: {
-    ...mapState("scan", ["scanning"]),
-    ...mapState("user", ["user"])
+    ...mapState("scan", ["scanning"])
   },
   created() {
     const { query } = this.$route;
@@ -71,9 +70,9 @@ export default Vue.extend({
     async initScanner() {
       await navigator.mediaDevices.getUserMedia({ audio: false, video: true });
       const devices = await navigator.mediaDevices.enumerateDevices();
-      const { deviceId } = findCamera(devices);
+      const camera = findCamera(devices);
       const { qrscan } = this.$refs;
-      if (!deviceId || !qrscan) return;
+      if (!camera.deviceId || !qrscan) return;
 
       this.scanner = new QRScanner(
         qrscan,
@@ -86,7 +85,7 @@ export default Vue.extend({
         },
         QRScanner._onDecodeError,
         QRScanner._calculateScanRegion,
-        deviceId
+        camera.deviceId
       );
       await this.scanner.start();
       this.hasFlash = await this.scanner.hasFlash();

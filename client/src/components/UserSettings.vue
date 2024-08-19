@@ -24,23 +24,6 @@
         </select>
       </div>
 
-      <div class="select-camera" @click="getCameras">
-        {{ $t("settings.camera-option") }}
-        <select
-          :key="cameras.length"
-          :value="user.cameraId"
-          @change="setCamera"
-        >
-          <option
-            v-for="(camera, i) in cameras"
-            :key="`camera-${i}`"
-            :value="i"
-          >
-            {{ camera.label }}
-          </option>
-        </select>
-      </div>
-
       <a href="/auth/logout" class="log-out">
         {{ $t("settings.logout-option") }}
       </a>
@@ -60,8 +43,7 @@ import { languages } from "../locales";
 export default {
   data() {
     return {
-      locales: languages || [],
-      cameras: []
+      locales: languages || []
     };
   },
   computed: {
@@ -77,15 +59,6 @@ export default {
         i18n.locale = navigator.language.split("-")[0];
       }
       await api.put("/api/user", { body: JSON.stringify({ locale }) });
-    },
-    async setCamera(event) {
-      const cameraId = event.target.value;
-      await api.put("/api/user", { body: JSON.stringify({ cameraId }) });
-    },
-    async getCameras() {
-      await navigator.mediaDevices.getUserMedia({ audio: false, video: true });
-      const devices = await navigator.mediaDevices.enumerateDevices();
-      this.cameras = devices.filter(device => device.kind === "videoinput");
     },
     async deleteMe() {
       this.$store.commit("popup/setPopup", {
@@ -140,7 +113,6 @@ select {
 }
 
 .select-language,
-.select-camera,
 .user-remove,
 .help-me,
 .log-out {
@@ -155,7 +127,6 @@ select {
 }
 
 .select-language,
-.select-camera,
 .help-me,
 .log-out {
   background: $grey-800;

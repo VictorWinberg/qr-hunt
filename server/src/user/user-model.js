@@ -59,7 +59,7 @@ const SELECT_STREAK_SQL = () => `
 `;
 
 const SELECT_USERS_SQL = args => `
-  SELECT id, username, name, email, photo, locale, camera_id, is_admin, created_at ${args}
+  SELECT id, username, name, email, photo, locale, is_admin, created_at ${args}
   FROM users
 `;
 
@@ -113,7 +113,7 @@ module.exports = db => ({
   },
 
   update: async (id, user) => {
-    const valid = ["name", "photo", "locale", "camera_id", "max_streak"];
+    const valid = ["name", "photo", "locale", "max_streak"];
     const { keyIndices, values } = keyValuePairs(valid, user);
     const sql = `
         UPDATE users SET ${keyIndices}
