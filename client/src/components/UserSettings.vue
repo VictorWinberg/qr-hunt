@@ -58,9 +58,7 @@ export default {
       } else {
         i18n.locale = navigator.language.split("-")[0];
       }
-      await api.put("/api/user", {
-        body: JSON.stringify({ locale })
-      });
+      await api.put("/api/user", { body: JSON.stringify({ locale }) });
     },
     async deleteMe() {
       this.$store.commit("popup/setPopup", {
