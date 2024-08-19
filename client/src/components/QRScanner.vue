@@ -1,7 +1,7 @@
 <template>
   <div class="qr-scanner-wrapper">
     <div class="qr-scanner">
-      <div class="qr-scanner__camera" @click="nextCamera">
+      <div class="qr-scanner__camera">
         <i class="fas fa-camera-retro"></i>
         {{ $t("scanner.title") }}
       </div>
@@ -32,11 +32,13 @@ export default Vue.extend({
       flashOn: false,
       scanner: undefined,
       timeout: -1,
-      timeoutMs: 10 * 1000,
-      cameraIndex: 0
+      timeoutMs: 10 * 1000
     };
   },
-  computed: mapState("scan", ["scanning"]),
+  computed: {
+    ...mapState("scan", ["scanning"]),
+    ...mapState("user", ["user"])
+  },
   created() {
     const { query } = this.$route;
     if (this.$route.path !== "/") this.$router.push({ path: "/", query });
@@ -65,18 +67,10 @@ export default Vue.extend({
     ...mapMutations("scan", ["stopScan"]),
     ...mapActions("scan", ["handleQR"]),
     async initScanner() {
-      await navigator.mediaDevices.getUserMedia({
-        audio: false,
-        video: {
-          facingMode: { ideal: "environment" },
-          aspectRatio: { ideal: 1.7777777778 },
-          frameRate: { ideal: 60, min: 30 },
-          zoom: 1
-        }
-      });
+      await navigator.mediaDevices.getUserMedia({ audio: false, video: true });
       const devices = await navigator.mediaDevices.enumerateDevices();
       const cameras = devices.filter(device => device.kind === "videoinput");
-      const { deviceId } = cameras[this.cameraIndex % cameras.length];
+      const { deviceId } = cameras[(this.user.cameraId || 0) % cameras.length];
       const { qrscan } = this.$refs;
       if (!deviceId || !qrscan) return;
 
@@ -91,7 +85,7 @@ export default Vue.extend({
         },
         QRScanner._onDecodeError,
         QRScanner._calculateScanRegion,
-        "755A2BC07E2D6465D7B5E90BD152774DAC384FEE"
+        deviceId
       );
       await this.scanner.start();
       this.hasFlash = await this.scanner.hasFlash();
@@ -105,12 +99,6 @@ export default Vue.extend({
       if (!this.scanner) return;
       await this.scanner.toggleFlash();
       this.flashOn = !this.flashOn;
-    },
-    async nextCamera() {
-      if (!this.scanner) return;
-      this.cameraIndex++;
-      await this.scanner.stop();
-      await this.initScanner();
     }
   }
 });

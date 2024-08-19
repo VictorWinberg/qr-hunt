@@ -7,6 +7,7 @@ CREATE TABLE users (
   email      VARCHAR(255)  NOT NULL UNIQUE,
   photo      VARCHAR(255),
   locale     VARCHAR(2),
+  camera_id  INTEGER       NOT NULL DEFAULT 1,
   max_streak INTEGER       NOT NULL DEFAULT 0,
   is_admin   BOOLEAN       NOT NULL DEFAULT FALSE,
 
