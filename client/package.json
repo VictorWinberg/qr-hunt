@@ -53,7 +53,7 @@
     "sass": "1.77.6",
     "sass-loader": "8.0.2",
     "stylelint": "13.13.1",
-    "stylelint-config-recess-order": "2.6.0",
+    "stylelint-config-recess-order": "5.1.1",
     "stylelint-config-standard": "20.0.0",
     "typescript": "3.9.10",
     "vue-cli-plugin-i18n": "2.3.2",
