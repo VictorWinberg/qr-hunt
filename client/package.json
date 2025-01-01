@@ -54,7 +54,7 @@
     "sass-loader": "8.0.2",
     "stylelint": "13.13.1",
     "stylelint-config-recess-order": "2.6.0",
-    "stylelint-config-standard": "20.0.0",
+    "stylelint-config-standard": "36.0.1",
     "typescript": "3.9.10",
     "vue-cli-plugin-i18n": "2.3.2",
     "vue-template-compiler": "2.7.16",
