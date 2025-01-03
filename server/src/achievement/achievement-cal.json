@@ -8,7 +8,8 @@
   "Julafton": "CHRISTMAS",
   "Juldagen": "CHRISTMAS",
   "Midsommarafton": "MIDSUMMERS_DAY",
-  "Nyårsafton": "NEW_YEAR",
+  "Nyårsafton": "NEW_YEAR_EVE",
+  "Nyårsdagen": "NEW_YEAR_DAY",
   "Sveriges nationaldag": "SWEDEN_NATIONAL_DAY",
   "Valborg": "VALBORG",
   "π-dagen": "PI_DAY"
