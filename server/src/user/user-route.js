@@ -6,6 +6,8 @@ const {
   mapValues
 } = require("../utils");
 
+const MAX_COLLECT_DISTANCE = 10000; // 10 km
+
 module.exports = ({ app, db, isLoggedIn }) => {
   const User = require("./user-model")(db);
   const Level = require("./user-level");
@@ -207,6 +209,7 @@ module.exports = ({ app, db, isLoggedIn }) => {
       return shards.reduce((res, _, index, arr) => {
         if (index === 0) return res;
         const dist = distance(arr[index - 1], arr[index]);
+        if (dist > MAX_COLLECT_DISTANCE) return res;
         return res + dist;
       }, 0);
     };
