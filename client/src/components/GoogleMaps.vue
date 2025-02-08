@@ -279,7 +279,7 @@ export default Vue.extend({
     },
     getIcon({ missing, collectedAt }) {
       if (missing) {
-        return require("@/assets/puff.svg");
+        return require("@/assets/google.svg");
       }
       if (!collectedAt) {
         return require("@/assets/qr-spot-marker--new.svg");
