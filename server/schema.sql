@@ -34,6 +34,7 @@ CREATE TABLE qrspots (
   lat       DECIMAL       NOT NULL,
   lng       DECIMAL       NOT NULL,
   active    BOOLEAN       NOT NULL DEFAULT TRUE,
+  missing   BOOLEAN       NOT NULL DEFAULT FALSE,
   note      VARCHAR(500),
   hint      VARCHAR(255),
   score     INT,

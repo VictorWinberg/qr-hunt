@@ -277,7 +277,10 @@ export default Vue.extend({
         watchOptions
       );
     },
-    getIcon({ collectedAt }) {
+    getIcon({ missing, collectedAt }) {
+      if (missing) {
+        return require("@/assets/puff.svg");
+      }
       if (!collectedAt) {
         return require("@/assets/qr-spot-marker--new.svg");
       }
