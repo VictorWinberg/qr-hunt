@@ -51,6 +51,7 @@
         :value="inputQrSpot.hint"
         @input="e => (inputQrSpot.hint = e.target.value)"
       />
+      Missing? <input v-model="inputQrSpot.missing" type="checkbox" /><br />
       <div v-if="qrSpot.lat && qrSpot.lng">
         {{ $t("qr-spot.coordinates") }}
         <br />
@@ -99,9 +100,9 @@ import EventBus from "@/plugins/event-bus";
 
 export default Vue.extend({
   data() {
-    const { title, note, hint } = this.$store.state.qrSpot.qrSpot;
+    const { title, note, hint, missing } = this.$store.state.qrSpot.qrSpot;
     return {
-      inputQrSpot: { title, note, hint },
+      inputQrSpot: { title, note, hint, missing },
       QR_SPOT_MODE
     };
   },
