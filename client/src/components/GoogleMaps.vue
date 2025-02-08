@@ -82,7 +82,7 @@
     />
 
     <GmapCircle
-      v-for="(marker, index) in markers"
+      v-for="(marker, index) in markers.filter(m => !m.missing)"
       :key="`${index}-c`"
       :center="{ lat: Number(marker.lat), lng: Number(marker.lng) }"
       :radius="15"
@@ -279,7 +279,7 @@ export default Vue.extend({
     },
     getIcon({ missing, collectedAt }) {
       if (missing) {
-        return require("@/assets/google.svg");
+        return require("@/assets/qr-spot-marker--missing.svg");
       }
       if (!collectedAt) {
         return require("@/assets/qr-spot-marker--new.svg");
