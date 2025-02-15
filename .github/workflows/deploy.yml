@@ -11,10 +11,11 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [14.x]
+        node-version: [22.x]
 
     steps:
       - uses: actions/checkout@v4
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
@@ -23,11 +24,11 @@ jobs:
       - name: Install and cache client dependencies
         uses: bahmutov/npm-install@v1
         with:
-          working-directory: client
+          working-directory: client-beta
 
       - name: Build client
         run: npm run build
-        working-directory: client
+        working-directory: client-beta
         env:
           VUE_APP_GOOGLE_API_KEY: ${{ secrets.VUE_APP_GOOGLE_API_KEY }}
 
@@ -35,6 +36,7 @@ jobs:
         with:
           name: dist
           path: "*/dist"
+
   deploy:
     needs: build
 
@@ -46,15 +48,18 @@ jobs:
         with:
           fetch-depth: "0"
           ref: "master"
+
       - uses: actions/download-artifact@v4
         with:
           name: dist
+
       - name: Install SSH key
         uses: shimataro/ssh-key-action@v2
         with:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           name: id_rsa # optional
           known_hosts: ${{ secrets.KNOWN_HOSTS }}
+
       - name: Push to Server
         run: |
           git remote add server git@codies.se:repos/qr-hunt.git
