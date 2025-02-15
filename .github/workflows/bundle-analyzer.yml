@@ -27,5 +27,5 @@ jobs:
         with:
           cwd: client-beta
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-          pattern: "dist/{.,css,js}/*.{js,css}"
-          strip-hash: "\\b\\w{8}\\."
+          pattern: "dist/{.,assets}/*.{js,css}"
+          strip-hash: "\\b\\-[a-zA-Z0-9_-]{8}"
