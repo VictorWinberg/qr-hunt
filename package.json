@@ -7,7 +7,7 @@
     "vue-lint": "cd client && npm run lint",
     "stylelint": "cd client && npm run stylelint",
     "vue-lint-beta": "cd client-beta && npm run lint",
-    "stylelint-beta": "cd client-beta && npm run stylelint",
+    "vue-lint-style-beta": "cd client-beta && npm run lint:style",
     "prettier-server": "cd server && npm run prettier",
     "eslint-server": "cd server && npm run eslint"
   },
@@ -33,7 +33,7 @@
     ],
     "client/**/*.{vue,scss}": [
       "npm run stylelint",
-      "npm run stylelint-beta"
+      "npm run vue-lint-style-beta"
     ],
     "server/**/*.js": [
       "npm run eslint-server",
