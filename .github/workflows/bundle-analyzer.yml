@@ -19,13 +19,15 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: "0"
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
+
       - uses: preactjs/compressed-size-action@v2
         with:
-          cwd: client
+          cwd: client-beta
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-          pattern: "dist/{.,css,js}/*.{js,css}"
-          strip-hash: "\\b\\w{8}\\."
+          pattern: "dist/{.,assets}/*.{js,css}"
+          strip-hash: "\\b\\-[a-zA-Z0-9_-]{8}"

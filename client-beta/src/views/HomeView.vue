@@ -1,37 +1,31 @@
-<template>
-  <v-container fluid class="home">
-    <v-row>
-      <v-col>
-        TODO: Google Maps Component
-        <br />
-        TODO: QRSpot Component
-      </v-col>
-    </v-row>
-    <hello-world />
-  </v-container>
-  <teleport to="head">
-    <meta name="keyword" content="qr-hunt,qr-game,qr-code,competition" />
-    <meta
-      name="description"
-      content="An app that let's you hunt down QR codes, collect points and compete against your friends!"
-    />
-  </teleport>
-</template>
-
-<script lang="ts" setup>
+<script setup lang="ts">
+// This starter template is using Vue 3 <script setup> SFCs
+// Check out https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup
 import HelloWorld from '@/components/HelloWorld.vue';
+
+const jsonLd = JSON.stringify(
+  {
+    '@schema': 'https://json.schemastore.org/jsonld.json',
+    '@context': 'http://schema.org',
+    '@type': 'WebSite',
+    name: 'Vite Vue3 Vuetify3 Beta TypeScript Startar',
+    url: 'https://github.com/logue/vite-vuetify-ts-starter',
+    description: 'Vite Vue3 Vuetify3 Beta TypeScript Demo'
+  },
+  null,
+  2
+);
 </script>
 
-<style lang="scss">
-.home {
-  flex: 1;
-  overflow: hidden;
-}
-
-.map-wrapper {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-</style>
+<template>
+  <v-container>
+    <hello-world msg="⚡Hello Vue 3.3 + Vuetify 3 + TypeScript + Vite⚡" />
+  </v-container>
+  <teleport to="head">
+    <meta name="keyword" content="template,typescript,vue3,vuetify,vite,vite-template,volar" />
+    <meta name="description" content="Vite Vue3 Vuetify TypeScript Demo" />
+    <component :is="'script'" type="application/ld+json">
+      {{ jsonLd }}
+    </component>
+  </teleport>
+</template>

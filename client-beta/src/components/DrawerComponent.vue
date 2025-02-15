@@ -12,9 +12,14 @@ const items: DrawerMenuItem[] = [
     title: '-' // Divider
   },
   {
-    title: 'User',
+    title: 'About',
     icon: 'mdi-information',
-    to: { name: 'User' }
+    to: { name: 'About' }
+  },
+  {
+    title: 'Disabled Item',
+    icon: 'mdi-cancel'
+    // empty `to` value becomes to disabled item
   }
 ];
 </script>
