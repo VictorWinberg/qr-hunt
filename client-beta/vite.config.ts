@@ -46,7 +46,35 @@ export default defineConfig(({ command, mode }): UserConfig => {
         // eslint: { lintCommand: 'eslint' },
         // stylelint: { lintCommand: 'stylelint' }
       }),
-      VitePWA({ registerType: 'autoUpdate' })
+      VitePWA({
+        registerType: 'autoUpdate',
+        manifest: {
+          name: 'QR Hunt',
+          short_name: 'QR Hunt',
+          icons: [
+            {
+              src: 'favicon.ico',
+              sizes: '48x48 32x32 16x16',
+              type: 'image/x-icon'
+            },
+            {
+              src: 'icons/favicon-192x192.png',
+              sizes: '192x192',
+              type: 'image/png'
+            },
+            {
+              src: 'icons/favicon-512x512.png',
+              sizes: '512x512',
+              type: 'image/png'
+            }
+          ],
+          start_url: '/',
+          display: 'standalone',
+          orientation: 'portrait',
+          theme_color: '#000',
+          background_color: '#000'
+        }
+      })
     ],
     // Resolver
     resolve: {
