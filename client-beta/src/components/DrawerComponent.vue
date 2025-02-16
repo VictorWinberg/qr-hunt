@@ -12,6 +12,11 @@ const items: DrawerMenuItem[] = [
     title: '-' // Divider
   },
   {
+    title: 'User',
+    icon: 'mdi-information',
+    to: { name: 'User' }
+  },
+  {
     title: 'About',
     icon: 'mdi-information',
     to: { name: 'About' }
