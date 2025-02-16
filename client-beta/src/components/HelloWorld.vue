@@ -1,13 +1,11 @@
 <script setup lang="ts">
-import { version } from 'vuetify';
-
 import Meta from '@/Meta';
 
 /** Props */
 defineProps({
-  msg: {
+  title: {
     type: String,
-    default: 'Welcome to Vuetify.'
+    default: 'QR-Hunt'
   }
 });
 </script>
@@ -16,17 +14,11 @@ defineProps({
   <v-container class="fill-height">
     <v-responsive class="align-center text-center fill-height">
       <v-img src="@/assets/logo.svg" alt="vuetify" :width="256" class="logo mx-auto" />
-      <h1 class="text-h2 font-weight-bold mb-3">
-        Welcome to the Vuetify
-        <v-code tag="code">{{ 'v' + version }}</v-code>
-      </h1>
-      <p>{{ msg }}</p>
+      <h1 class="text-h2 font-weight-bold mb-3">{{ title }}</h1>
+      <p>Beta</p>
       <p class="text-medium-emphasis">
-        <a href="https://github.com/logue/vite-vuetify-ts-starter" target="_blank">
-          vite-vuetify-ts-starter
-        </a>
-        &nbsp;/&nbsp;Build:
-        <time :datetime="Meta.date" v-text="new Date(Meta.date).toLocaleString()" />
+        Build:
+        <time :datetime="Meta.date" v-text="new Date(Meta.date).toISOString()" />
       </p>
       <div class="py-10" />
       <v-row class="d-flex align-center justify-center">
