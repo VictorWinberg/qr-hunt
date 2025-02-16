@@ -15,16 +15,6 @@ const items: DrawerMenuItem[] = [
     title: 'User',
     icon: 'mdi-information',
     to: { name: 'User' }
-  },
-  {
-    title: 'About',
-    icon: 'mdi-information',
-    to: { name: 'About' }
-  },
-  {
-    title: 'Disabled Item',
-    icon: 'mdi-cancel'
-    // empty `to` value becomes to disabled item
   }
 ];
 </script>
