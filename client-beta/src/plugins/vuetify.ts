@@ -16,7 +16,7 @@ import { loadFonts } from '@/plugins/webfontloader';
 import 'vuetify/styles';
 import '@mdi/font/css/materialdesignicons.css';
 
-await loadFonts();
+loadFonts(); //TODO: should it be awaited?
 
 /**
  * Vuetify Components

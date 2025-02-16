@@ -35,11 +35,6 @@ const routes: RouteRecordRaw[] = [
     props: true
   },
   {
-    path: '/about',
-    name: 'About',
-    component: async () => await import('@/views/AboutView.vue')
-  },
-  {
     path: '/:catchAll(.*)',
     component: async () => await import('@/views/NotFoundView.vue')
   }
