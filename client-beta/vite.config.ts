@@ -6,6 +6,7 @@ import { defineConfig, type UserConfig } from 'vite';
 
 import { visualizer } from 'rollup-plugin-visualizer';
 import { checker } from 'vite-plugin-checker';
+import { VitePWA } from 'vite-plugin-pwa';
 import vueDevTools from 'vite-plugin-vue-devtools';
 import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify';
 
@@ -41,10 +42,11 @@ export default defineConfig(({ command, mode }): UserConfig => {
       // https://github.com/fi3ework/vite-plugin-checker
       checker({
         typescript: true
-        // vueTsc: true,
+        // vueTsc: true
         // eslint: { lintCommand: 'eslint' },
-        // stylelint: { lintCommand: 'stylelint' },
-      })
+        // stylelint: { lintCommand: 'stylelint' }
+      }),
+      VitePWA({ registerType: 'autoUpdate' })
     ],
     // Resolver
     resolve: {
