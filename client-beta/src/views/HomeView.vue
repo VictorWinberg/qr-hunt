@@ -1,16 +1,14 @@
-<script lang="ts" setup>
-import HelloWorld from '@/components/HelloWorld.vue';
-</script>
-
 <template>
-  <div class="home">
-    <div class="map-wrapper">
-      TODO: GoogleMaps Component
-      <br />
-      TODO: QRSpot Component
-    </div>
+  <v-container fluid class="home">
+    <v-row>
+      <v-col>
+        TODO: Google Maps Component
+        <br />
+        TODO: QRSpot Component
+      </v-col>
+    </v-row>
     <hello-world />
-  </div>
+  </v-container>
   <teleport to="head">
     <meta name="keyword" content="qr-hunt,qr-game,qr-code,competition" />
     <meta
@@ -19,6 +17,10 @@ import HelloWorld from '@/components/HelloWorld.vue';
     />
   </teleport>
 </template>
+
+<script lang="ts" setup>
+import HelloWorld from '@/components/HelloWorld.vue';
+</script>
 
 <style lang="scss">
 .home {
