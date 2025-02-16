@@ -1,31 +1,35 @@
-<script setup lang="ts">
-// This starter template is using Vue 3 <script setup> SFCs
-// Check out https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup
+<script lang="ts" setup>
 import HelloWorld from '@/components/HelloWorld.vue';
-
-const jsonLd = JSON.stringify(
-  {
-    '@schema': 'https://json.schemastore.org/jsonld.json',
-    '@context': 'http://schema.org',
-    '@type': 'WebSite',
-    name: 'Vite Vue3 Vuetify3 Beta TypeScript Startar',
-    url: 'https://github.com/logue/vite-vuetify-ts-starter',
-    description: 'Vite Vue3 Vuetify3 Beta TypeScript Demo'
-  },
-  null,
-  2
-);
 </script>
 
 <template>
-  <v-container>
+  <div class="home">
+    <div class="map-wrapper">
+      TODO: GoogleMaps Component
+      <br />
+      TODO: QRSpot Component
+    </div>
     <hello-world />
-  </v-container>
+  </div>
   <teleport to="head">
-    <meta name="keyword" content="template,typescript,vue3,vuetify,vite,vite-template,volar" />
-    <meta name="description" content="Vite Vue3 Vuetify TypeScript Demo" />
-    <component :is="'script'" type="application/ld+json">
-      {{ jsonLd }}
-    </component>
+    <meta name="keyword" content="qr-hunt,qr-game,qr-code,competition" />
+    <meta
+      name="description"
+      content="An app that let's you hunt down QR codes, collect points and compete against your friends!"
+    />
   </teleport>
 </template>
+
+<style lang="scss">
+.home {
+  flex: 1;
+  overflow: hidden;
+}
+
+.map-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+</style>
