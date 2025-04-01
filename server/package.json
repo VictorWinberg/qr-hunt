@@ -19,7 +19,7 @@
     "cookie-parser": "1.4.7",
     "cookie-session": "1.4.0",
     "dayjs": "1.11.13",
-    "dotenv": "10.0.0",
+    "dotenv": "16.4.7",
     "express": "4.21.2",
     "googleapis": "100.0.0",
     "node-cache": "5.1.2",
