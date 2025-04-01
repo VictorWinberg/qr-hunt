@@ -20,7 +20,7 @@
     "cookie-session": "1.4.0",
     "dayjs": "1.11.13",
     "dotenv": "10.0.0",
-    "express": "4.21.2",
+    "express": "5.1.0",
     "googleapis": "100.0.0",
     "node-cache": "5.1.2",
     "node-fetch": "2.7.0",
