@@ -1,12 +1,12 @@
-name: Deploy Release
+name: Beta Test Environment
 on:
-  release:
-    types:
-      - published
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - master
 
 jobs:
-  build:
-    name: Build
+  deploy-beta-env:
     runs-on: ubuntu-latest
 
     strategy:
@@ -15,6 +15,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: "0"
+          ref: ${{ github.head_ref }}
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
@@ -32,27 +35,6 @@ jobs:
         env:
           VUE_APP_GOOGLE_API_KEY: ${{ secrets.VUE_APP_GOOGLE_API_KEY }}
 
-      - uses: actions/upload-artifact@v4
-        with:
-          name: dist
-          path: "*/dist"
-
-  deploy:
-    needs: build
-
-    name: Deploy to Server
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: "0"
-          ref: "master"
-
-      - uses: actions/download-artifact@v4
-        with:
-          name: dist
-
       - name: Install SSH key
         uses: shimataro/ssh-key-action@v2
         with:
@@ -60,11 +42,24 @@ jobs:
           name: id_rsa # optional
           known_hosts: ${{ secrets.KNOWN_HOSTS }}
 
-      - name: Push to Server
+      - id: git_push
+        name: Push to Server
         run: |
-          git remote add server git@codies.se:repos/qr-hunt.git
+          git remote add server git@codies.se:repos/qa.git
           git config --global user.email "actions@github.com"
           git config --global user.name "Github Actions"
           git add */dist -f
           git commit -m "Build files"
-          git push -u server master -f
+          exec 5>&1
+          OUTPUT=$(git push --force --set-upstream server HEAD:${GITHUB_REPOSITORY}--${GITHUB_HEAD_REF} 2>&1 | tee /dev/fd/5)
+          echo "GIT_OUTPUT<<EOF" >> $GITHUB_ENV
+          echo "$OUTPUT" | grep "^remote: github:" | sed s/^remote:\ github:\ /""/g >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - uses: marocchino/sticky-pull-request-comment@v2
+        if: ${{ env.GIT_OUTPUT }}
+        with:
+          header: test-env
+          append: true
+          message: |
+            ${{ env.GIT_OUTPUT }}
