@@ -1,0 +1,72 @@
+{
+  "achievements": {
+    "title": "Logros"
+  },
+  "common": {
+    "delete": "Eliminar",
+    "month-names": [
+      "Enero",
+      "Febrero",
+      "Marzo",
+      "Abril",
+      "Mayo",
+      "Junio",
+      "Julio",
+      "Agosto",
+      "Septiembre",
+      "Octubre",
+      "Noviembre",
+      "Diciembre"
+    ],
+    "save": "Guardar",
+    "title": "QR-Hunt"
+  },
+  "google": {
+    "sign-in": "Iniciar sesión con Google"
+  },
+  "leaderboard": {
+    "empty-alternative-texts": [
+      "Sin concursantes",
+      "Sin entradas",
+      "Sin competencia",
+      "Tabla vacía",
+      "W.O.",
+      "Victoria por ausencia",
+      "Nadie aquí"
+    ],
+    "table-distance": "Km",
+    "table-rank": "Rango",
+    "table-score": "Puntaje",
+    "table-user": "Usuario",
+    "title": "Clasificación",
+    "total": "De todos los tiempos"
+  },
+  "qr-spot": {
+    "coordinates": "Coordenadas:",
+    "coordinates-lat": "Lat:",
+    "coordinates-lng": "Lng:",
+    "create-description": "Cuéntanos algo sobre este lugar",
+    "create-hint": "¿Quieres dar una pista de dónde se puede encontrar el lugar?",
+    "create-name": "Dale un nombre genial a tu lugar",
+    "create-title": "Crea tu lugar",
+    "loading-coordinates": "Cargando coordenadas increíbles...",
+    "update-hint": "¿Quieres cambiar la pista de dónde se puede encontrar el lugar?",
+    "update-name": "Actualiza el nombre genial de tu lugar",
+    "view-hint-question": "¿Necesitas una pista?",
+    "replace-qrcode": "¿Reemplazar el código QR que falta?"
+  },
+  "scanner": {
+    "title": "Escanear QR"
+  },
+  "settings": {
+    "delete-account-option": "Eliminar cuenta",
+    "help-option": "Ayuda",
+    "browser-language": "Idioma del navegador",
+    "language-option": "Idioma",
+    "logout-option": "Cerrar sesión",
+    "title": "Configuraciones"
+  },
+  "user": {
+    "experience-points": "xp"
+  }
+}
