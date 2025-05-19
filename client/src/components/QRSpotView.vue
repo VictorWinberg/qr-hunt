@@ -18,12 +18,16 @@
         </transition>
       </div>
     </div>
+    <div class="last-visited" v-if="qrSpot.lastVisitedAt">
+      {{ $t("qr-spot.last-visited") }} {{ formatRelativeTime(qrSpot.lastVisitedAt) }}
+    </div>
   </div>
 </template>
 
 <script>
 import Vue from "vue";
 import { mapState } from "vuex";
+import dayjs from "@/plugins/dayjs";
 
 export default Vue.extend({
   data() {
@@ -37,6 +41,9 @@ export default Vue.extend({
   methods: {
     flipHint() {
       this.showHint = !this.showHint;
+    },
+    formatRelativeTime(date) {
+      return dayjs(date).fromNow();
     }
   }
 });
@@ -95,5 +102,11 @@ export default Vue.extend({
 .hint-card__answer-text {
   max-height: 100%;
   overflow: scroll;
+}
+
+.last-visited {
+  margin-top: 1em;
+  font-size: 0.9em;
+  color: gray;
 }
 </style>
