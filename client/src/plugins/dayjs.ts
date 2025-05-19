@@ -13,15 +13,13 @@ dayjs.extend(total);
 
 dayjs.Ls.en.weekStart = 1;
 
-const loadDayjsLocale = (locale) => {
+const loadDayjsLocale = locale => {
   import(`dayjs/locale/${locale}`)
     .then(() => {
       dayjs.locale(locale);
-      console.log(`dayjs locale updated to: ${locale}`);
     })
     .catch(() => {
-      console.warn(`Failed to load dayjs locale: ${locale}. Falling back to English.`);
-      dayjs.locale('en');
+      dayjs.locale("en");
     });
 };
 
