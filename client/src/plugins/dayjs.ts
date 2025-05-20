@@ -13,7 +13,7 @@ dayjs.extend(total);
 
 dayjs.Ls.en.weekStart = 1;
 
-const allowedLocales = ["en", "se", "es"];
+const allowedLocales = ["en", "sv", "es"];
 const loadDayjsLocale = async (locale) => {
   if (!allowedLocales.includes(locale)) {
     dayjs.locale('en'); // Always set fallback immediately if not allowed
@@ -21,11 +21,11 @@ const loadDayjsLocale = async (locale) => {
   }
 
   switch (locale) {
-    case 'se':
-      await import(/* webpackInclude: /(se)\.js$/ */ 'dayjs/locale/se');
-      break;
     case 'en':
       await import(/* webpackInclude: /(en)\.js$/ */ 'dayjs/locale/en');
+      break;
+    case 'sv':
+      await import(/* webpackInclude: /(sv)\.js$/ */ 'dayjs/locale/sv');
       break;
     case 'es':
       await import(/* webpackInclude: /(es)\.js$/ */ 'dayjs/locale/es');
