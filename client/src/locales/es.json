@@ -53,7 +53,8 @@
     "update-hint": "¿Quieres cambiar la pista de dónde se puede encontrar el lugar?",
     "update-name": "Actualiza el nombre genial de tu lugar",
     "view-hint-question": "¿Necesitas una pista?",
-    "replace-qrcode": "¿Reemplazar el código QR que falta?"
+    "replace-qrcode": "¿Reemplazar el código QR que falta?",
+    "last-visited": "Última visita"
   },
   "scanner": {
     "title": "Escanear QR"
