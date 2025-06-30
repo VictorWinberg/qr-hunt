@@ -27,7 +27,7 @@
   },
   "devDependencies": {
     "@types/googlemaps": "3.43.3",
-    "@types/jest": "29.5.14",
+    "@types/jest": "30.0.0",
     "@types/qrcode": "1.5.5",
     "@vue/cli-plugin-babel": "4.5.19",
     "@vue/cli-plugin-eslint": "4.5.19",
