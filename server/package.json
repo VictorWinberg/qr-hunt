@@ -23,7 +23,7 @@
     "express": "4.21.2",
     "googleapis": "100.0.0",
     "node-cache": "5.1.2",
-    "node-fetch": "2.7.0",
+    "node-fetch": "3.3.2",
     "nodemon": "2.0.22",
     "passport": "0.5.3",
     "passport-google-oauth": "2.0.0",
