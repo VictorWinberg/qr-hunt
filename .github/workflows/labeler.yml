@@ -9,6 +9,7 @@ jobs:
       - uses: actions/labeler@v3
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
+
   pr-labeler:
     name: "Branch Labeler"
     runs-on: ubuntu-latest
