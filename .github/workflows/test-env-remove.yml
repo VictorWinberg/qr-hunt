@@ -25,7 +25,7 @@ jobs:
         git config --global user.email "actions@github.com"
         git config --global user.name "Github Actions"
         git push --delete server ${GITHUB_REPOSITORY}--${GITHUB_HEAD_REF}
-    - uses: marocchino/sticky-pull-request-comment@v2
+    - uses: marocchino/sticky-pull-request-comment@v3
       with:
         header: test-env
         append: true
