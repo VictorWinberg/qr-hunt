@@ -15,7 +15,7 @@
     "@sentry/vue": "6.19.7",
     "core-js": "3.46.0",
     "dayjs": "1.11.18",
-    "intro.js": "4.3.0",
+    "intro.js": "8.3.2",
     "node-snackbar": "0.1.16",
     "qr-scanner": "1.4.2",
     "register-service-worker": "1.7.2",
