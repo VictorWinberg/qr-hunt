@@ -13,7 +13,7 @@
     "url": "https://github.com/VictorWinberg/qr-hunt/issues"
   },
   "engines": {
-    "node": ">=22.0.1",
+    "node": ">=22.22.2",
     "pnpm": ">=10.3.0"
   },
   "packageManager": "pnpm@10.3.0",
@@ -43,7 +43,7 @@
   "devDependencies": {
     "@tsconfig/node-lts": "^22.0.1",
     "@types/jsdom": "^21.1.7",
-    "@types/node": "^22.13.1",
+    "@types/node": "^22.19.0",
     "@types/webfontloader": "^1.6.38",
     "@vitejs/plugin-vue": "^5.2.1",
     "@vue/eslint-config-prettier": "^10.2.0",
