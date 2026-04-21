@@ -4,7 +4,7 @@
 
 ## Prerequisite
 
-- Node v12 (for backend)
+- Node v22 (for backend)
 - Node v14 (for frontend)
 - Postgres v11
 
