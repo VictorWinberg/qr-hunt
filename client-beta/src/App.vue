@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useGlobal, useConfig, useScan } from '@/store';
+import { useGlobal, useScan, useUser } from '@/store';
 import { storeToRefs } from 'pinia';
 import {
   computed,
@@ -15,9 +15,8 @@ import {
 import { useTheme } from 'vuetify';
 
 // Components
-import logo from '@/assets/logo.svg';
 import qrScanBtn from '@/assets/qr-scanner-button.svg?url';
-import DrawerComponent from '@/components/DrawerComponent.vue';
+import userNavSvg from '@/assets/user.svg?raw';
 import GlobalDialog from '@/components/GlobalDialog.vue';
 import QRScanner from '@/components/QRScanner.vue';
 import SignInOverlay from '@/components/SignInOverlay.vue';
@@ -29,20 +28,23 @@ const theme = useTheme();
 /** Global Store */
 const globalStore = useGlobal();
 
-/** Config Store */
-const configStore = useConfig();
-
 const scanStore = useScan();
 const { scanning } = storeToRefs(scanStore);
+const userStore = useUser();
+const { status: userStatus, isAuthenticated } = storeToRefs(userStore);
 const dialog = useDialog();
+
+/** Hide app chrome on the dedicated sign-in screen (map stays underneath). */
+const showAppChrome: ComputedRef<boolean> = computed(
+  () => userStatus.value === 'pending' || isAuthenticated.value
+);
 
 const appVersion = __APP_VERSION__;
 
-/** Title */
+/** App / document title */
 const title = 'QR-Hunt';
 
-/** drawer visibility */
-const drawer: Ref<boolean> = ref(false);
+const logoUrl = `${import.meta.env.BASE_URL}logo.svg`;
 
 /** loading overlay visibility */
 const loading: WritableComputedRef<boolean> = computed({
@@ -58,9 +60,6 @@ const snackbarVisibility: Ref<boolean> = ref(false);
 
 /** Snackbar text */
 const snackbarText: ComputedRef<string> = computed(() => globalStore.message);
-
-/** Toggle Dark mode */
-const isDark: ComputedRef<string> = computed(() => (configStore.theme ? 'dark' : 'light'));
 
 // When snackbar text has been set, show snackbar.
 watch(
@@ -119,22 +118,31 @@ async function viewRelease(): Promise<void> {
 </script>
 
 <template>
-  <v-app :theme="isDark">
+  <v-app theme="dark">
     <sign-in-overlay />
     <global-dialog />
 
-    <v-navigation-drawer v-model="drawer" temporary>
-      <drawer-component />
-    </v-navigation-drawer>
-
-    <v-app-bar>
-      <v-app-bar-nav-icon @click="drawer = !drawer" />
+    <v-app-bar v-if="showAppChrome" color="background" :height="80">
       <v-app-bar-title tag="h1">
-        <router-link class="text-decoration-none text-inherit" :to="{ name: 'Home' }">
-          {{ title }}
+        <router-link
+          class="app-bar-logo text-decoration-none d-inline-flex align-center"
+          :to="{ name: 'Home' }"
+          :aria-label="title"
+        >
+          <v-img class="app-bar-logo__img" :src="logoUrl" alt="" width="52" height="52" contain />
         </router-link>
       </v-app-bar-title>
       <v-spacer />
+      <v-btn
+        class="user-nav-btn"
+        :to="{ name: 'User' }"
+        icon
+        variant="plain"
+        :ripple="false"
+        aria-label="User profile"
+      >
+        <span class="user-nav-img" role="img" aria-hidden="true" v-html="userNavSvg" />
+      </v-btn>
       <v-progress-linear
         v-show="loading"
         :active="loading"
@@ -168,10 +176,31 @@ async function viewRelease(): Promise<void> {
       </template>
     </v-snackbar>
 
-    <v-footer app elevation="3" class="d-flex flex-column align-center pa-0">
-      <div class="d-flex align-center justify-space-between w-100 px-4 py-2">
-        <span>{{ title }}</span>
-        <v-btn class="text-none font-weight-regular" variant="text" @click="viewRelease">
+    <v-footer
+      v-if="showAppChrome"
+      app
+      class="app-footer app-footer--dark pa-0"
+      color="background"
+      elevation="0"
+    >
+      <div class="footer-bar">
+        <span class="footer-bar__title text-body-1 font-weight-medium">{{ title }}</span>
+        <v-btn
+          class="scan-fab"
+          icon
+          size="x-large"
+          variant="plain"
+          :ripple="false"
+          aria-label="Scan QR code"
+          @click="toggleScan"
+        >
+          <v-img :src="qrScanBtn" width="72" height="72" contain />
+        </v-btn>
+        <v-btn
+          class="footer-bar__version text-none font-weight-regular"
+          variant="text"
+          @click="viewRelease"
+        >
           {{ appVersion }}
           <v-icon
             v-if="localAppVersion !== appVersion"
@@ -181,14 +210,10 @@ async function viewRelease(): Promise<void> {
           />
         </v-btn>
       </div>
-      <v-btn class="scan-fab mb-2" icon size="x-large" variant="flat" @click="toggleScan">
-        <v-img :src="qrScanBtn" width="56" height="56" contain />
-      </v-btn>
     </v-footer>
   </v-app>
   <teleport to="head">
-    <meta name="theme-color" :content="theme.computedThemes.value[isDark].colors.primary" />
-    <link rel="icon" :href="logo" type="image/svg+xml" />
+    <meta name="theme-color" :content="theme.computedThemes.value.dark.colors.primary" />
   </teleport>
 </template>
 
@@ -236,9 +261,89 @@ html {
   cursor: pointer;
 }
 
-.scan-fab {
+.app-bar-logo__img {
+  flex-shrink: 0;
+  width: 52px;
+  height: 52px;
+}
+
+// Footer + scan control mirror legacy client: bar with rounded top; QR art overlaps the map.
+.app-footer.v-footer {
+  overflow: visible;
+  z-index: 6;
+  border-top-left-radius: 1.25rem;
+  border-top-right-radius: 1.25rem;
+  box-shadow: 0 -4px 14px rgb(0 0 0 / 22%);
+}
+
+.app-footer--dark .footer-bar {
+  color: rgb(var(--v-theme-on-background));
+}
+
+.footer-bar {
   position: relative;
-  margin-top: -2.5rem;
-  filter: drop-shadow(0 -4px 4px rgb(0 0 0 / 75%));
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  width: 100%;
+  min-height: 3.75rem;
+  padding: 0.75rem 1rem;
+}
+
+.footer-bar__title {
+  grid-column: 1;
+  justify-self: start;
+  z-index: 2;
+}
+
+.footer-bar__version {
+  grid-column: 3;
+  justify-self: end;
+  z-index: 2;
+}
+
+.scan-fab {
+  position: absolute;
+  left: 50%;
+  bottom: 100%;
+  z-index: 3;
+  min-width: 5.5rem;
+  min-height: 5.5rem;
+  margin-bottom: -0.25rem;
+  /* Centered on full footer width; Y offset keeps parchment overlapping the map. */
+  transform: translate(-50%, 38%);
+  filter: drop-shadow(0 4px 10px rgb(0 0 0 / 40%));
+}
+
+.scan-fab.v-btn--variant-plain {
+  opacity: 1;
+  background: transparent;
+}
+
+/* 20px matches Vuetify `.v-toolbar__content > .v-toolbar-title { margin-inline-start: 20px }` */
+.v-app-bar .user-nav-btn.v-btn--variant-plain {
+  width: 46px;
+  height: 46px;
+  min-width: 46px;
+  margin-inline-end: 20px;
+  opacity: 1;
+  background: transparent !important;
+}
+
+.user-nav-img {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  line-height: 0;
+  color: #c99f67;
+}
+
+.user-nav-img :deep(svg) {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 </style>

@@ -53,7 +53,8 @@
     "update-hint": "Do you want to change the hint of where the spot can be found?",
     "update-name": "Update the awesome name for your spot",
     "view-hint-question": "Do you need a hint?",
-    "replace-qrcode": "Replace missing QR code?"
+    "replace-qrcode": "Replace missing QR code?",
+    "last-visited": "Last visited"
   },
   "scanner": {
     "title": "QR Scan"

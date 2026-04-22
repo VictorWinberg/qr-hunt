@@ -2,13 +2,15 @@
   <v-fade-transition>
     <v-overlay
       v-if="visible"
-      class="align-center justify-center"
+      class="sign-in-overlay align-center justify-center"
       persistent
-      scrim="rgba(87, 87, 89, 0.8)"
+      scrim="#242424"
+      :opacity="0.9"
+      :z-index="1000"
       :model-value="true"
     >
-      <div class="sign-in__inner text-center">
-        <h1 class="text-h4 mb-6">{{ t('common.title') }}</h1>
+      <div class="sign-in__inner">
+        <h1>{{ t('common.title') }}</h1>
         <sign-in-google />
       </div>
     </v-overlay>
@@ -30,6 +32,7 @@ const { status, isAuthenticated } = storeToRefs(userStore);
 
 const visible = computed(() => status.value !== 'pending' && !isAuthenticated.value);
 
+
 let offApi: (() => void) | undefined;
 
 onMounted(() => {
@@ -46,6 +49,10 @@ onUnmounted(() => {
 
 <style scoped lang="scss">
 .sign-in__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   margin-bottom: 40vh;
+  text-align: center;
 }
 </style>

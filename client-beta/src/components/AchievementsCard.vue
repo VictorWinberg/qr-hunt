@@ -1,22 +1,25 @@
 <template>
   <div
-    class="ach-root"
     role="button"
     tabindex="0"
     @click="$emit('click')"
     @keydown.enter.prevent="$emit('click')"
     @keydown.space.prevent="$emit('click')"
   >
-    <div v-if="overlay" class="ach-overlay" />
-    <div v-if="count > 1" class="ach-count" :style="{ backgroundColor: hashColor(String(name)) }">
-      <span class="ach-count__text">{{ count }}</span>
+    <div v-if="overlay" class="overlay" />
+    <div
+      v-if="count > 1"
+      class="count"
+      :style="{ backgroundColor: hashColor(String(name)) }"
+    >
+      <p class="count__title">{{ count }}</p>
     </div>
     <div class="hex" :style="{ color: hashColor(String(name)) }">
       <div class="hex hex__inner">
         <div class="hex hex__inner" :style="{ color: hashColor(String(name)) }">
           <div class="hex__icon">
-            <i v-if="isFa" :class="iconClass" />
-            <v-icon v-else size="36" :icon="iconClass" />
+            <i v-if="isFa" class="hex__icon-glyph" :class="[iconClass, 'fa-2x']" />
+            <v-icon v-else class="hex__icon-glyph" size="32" :icon="iconClass" />
             <div class="banner">
               <div class="banner__text">
                 {{ title || name || '…' }}
@@ -62,38 +65,31 @@ const isFa = computed(() => {
 </script>
 
 <style scoped lang="scss">
-.ach-root {
-  position: relative;
-}
 
-.ach-overlay {
+.overlay {
   position: absolute;
   top: -50vh;
-  left: 50%;
-  z-index: 1;
   width: 100vw;
   height: 100vh;
-  margin-left: -50vw;
   background-color: rgb(0 0 0 / 75%);
 }
 
-.ach-count {
+.count {
   position: absolute;
   top: -4px;
   right: 16px;
-  z-index: 2;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 18px;
-  height: 18px;
-  border: solid white 2.5px;
+  width: 20px;
+  height: 20px;
+  border: solid #fff 2.5px;
   border-radius: 50%;
 }
 
-.ach-count__text {
-  font-size: 0.65rem;
-  font-weight: 700;
+.count__title {
+  font-size: 0.6em;
+  font-weight: bold;
 }
 
 .hex {
@@ -103,7 +99,7 @@ const isFa = computed(() => {
   height: 40px;
   margin: 20px 10px;
   font-size: 0.8rem;
-  font-weight: 700;
+  font-weight: bold;
   color: #fff;
   background-color: currentcolor;
 
@@ -135,13 +131,21 @@ const isFa = computed(() => {
   align-items: center;
   justify-content: center;
   margin: 0;
-  transform: scale(0.85);
+  transform: scale(0.85, 0.85);
 }
 
 .hex__icon {
   z-index: 1;
   margin-bottom: 1rem;
   color: #eff0eb;
+}
+
+.hex__icon-glyph {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
 }
 
 .banner {
@@ -167,7 +171,7 @@ const isFa = computed(() => {
     left: -15px;
     z-index: -1;
     display: block;
-    width: 10px;
+    width: 18px;
     height: 0;
     content: '';
     border: 8px solid #9b2;
