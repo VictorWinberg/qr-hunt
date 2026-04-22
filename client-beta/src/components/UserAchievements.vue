@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2 class="text-h6 mb-4">{{ t('achievements.title') }}</h2>
+    <h2 class="text-h6 mb-4 text-center">{{ t('achievements.title') }}</h2>
     <div class="user-achievements">
       <achievements-card
         v-for="a in achievements"
