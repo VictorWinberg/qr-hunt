@@ -1,0 +1,72 @@
+{
+  "achievements": {
+    "title": "Utmärkelser"
+  },
+  "common": {
+    "delete": "Ta bort",
+    "month-names": [
+      "Januari",
+      "Februari",
+      "Mars",
+      "April",
+      "Maj",
+      "Juni",
+      "Juli",
+      "Augusti",
+      "September",
+      "Oktober",
+      "November",
+      "December"
+    ],
+    "save": "Spara",
+    "title": "QR Hunt"
+  },
+  "google": {
+    "sign-in": "Logga in med Google"
+  },
+  "leaderboard": {
+    "empty-alternative-texts": [
+      "Inga deltagare ännu",
+      "Inga poster",
+      "Inga tävlande",
+      "Tom poängtavla",
+      "Enkel match",
+      "Promenadeseger",
+      "Ingen här"
+    ],
+    "table-distance": "Km",
+    "table-rank": "Rank",
+    "table-score": "Poäng",
+    "table-user": "Användare",
+    "title": "Poängställning",
+    "total": "All time"
+  },
+  "qr-spot": {
+    "coordinates": "Koordinater:",
+    "coordinates-lat": "Lat:",
+    "coordinates-lng": "Lng:",
+    "create-description": "Berätta något om den här platsen",
+    "create-hint": "Vill ge en ledtråd på var din QR kod finns någonstans?",
+    "create-name": "Ge din plats ett spännande namn",
+    "create-title": "Skapa din plats",
+    "loading-coordinates": "Laddar fantastiska koordinater...",
+    "update-hint": "Vill du ändra ledtråden på var din QR kod finns någonstans?",
+    "update-name": "Uppdatera namnet på din fantastiska plats",
+    "view-hint-question": "Behöver du en ledtråd?",
+    "replace-qrcode": "Ersätt försvunnen QR kod?"
+  },
+  "scanner": {
+    "title": "QR Scanner"
+  },
+  "settings": {
+    "delete-account-option": "Avsluta konto",
+    "help-option": "Hjälp",
+    "browser-language": "Webbläsarens språk",
+    "language-option": "Språk",
+    "logout-option": "Logga  ut",
+    "title": "Inställningar"
+  },
+  "user": {
+    "experience-points": "xp"
+  }
+}
