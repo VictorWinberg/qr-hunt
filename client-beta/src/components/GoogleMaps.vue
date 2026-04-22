@@ -200,7 +200,7 @@ async function fetchQRSpots(): Promise<void> {
 
 function renderUserMarker(): void {
   if (!googleMap) return;
-  userMarker?.setMap(null);
+  if (userMarker) userMarker.map = null;
   userCircle?.setMap(null);
   userMarker = null;
   userCircle = null;
