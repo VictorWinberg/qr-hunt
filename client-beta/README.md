@@ -12,7 +12,12 @@ In addition, [ESLint](https://eslint.org/), [Stylelint](https://stylelint.io/), 
 
 Also, when the development server is executed, it is checked in real time by [vite-plugin-checker](https://github.com/fi3ework/vite-plugin-checker).
 
-First define `VITE_APP_GOOGLE_API_KEY` in your `.env` file.
+Define in your `.env` file:
+
+- `VITE_APP_GOOGLE_API_KEY` — Google Maps JavaScript API key (required for the map).
+- `VITE_SENTRY_DSN` — optional; production builds fall back to the project DSN if unset.
+
+GitHub Actions pass `VITE_APP_GOOGLE_API_KEY` from the existing `VUE_APP_GOOGLE_API_KEY` repository secret so CI keeps working without renaming the secret.
 
 Versions 1.11 and later use pnpm as the package manager.
 
