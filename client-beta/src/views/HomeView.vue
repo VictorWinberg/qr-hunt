@@ -1,31 +1,45 @@
-<script setup lang="ts">
-// This starter template is using Vue 3 <script setup> SFCs
-// Check out https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup
-import HelloWorld from '@/components/HelloWorld.vue';
+<template>
+  <div class="home">
+    <div class="map-wrapper">
+      <google-maps />
+      <QRSpot />
+    </div>
+    <teleport to="head">
+      <meta name="keyword" content="qr-hunt,qr-game,qr-code,competition" />
+      <meta
+        name="description"
+        content="An app that let's you hunt down QR codes, collect points and compete against your friends!"
+      />
+    </teleport>
+  </div>
+</template>
 
-const jsonLd = JSON.stringify(
-  {
-    '@schema': 'https://json.schemastore.org/jsonld.json',
-    '@context': 'http://schema.org',
-    '@type': 'WebSite',
-    name: 'Vite Vue3 Vuetify3 Beta TypeScript Startar',
-    url: 'https://github.com/logue/vite-vuetify-ts-starter',
-    description: 'Vite Vue3 Vuetify3 Beta TypeScript Demo'
-  },
-  null,
-  2
-);
+<script lang="ts">
+export default { name: 'HomeView' };
 </script>
 
-<template>
-  <v-container>
-    <hello-world msg="⚡Hello Vue 3.3 + Vuetify 3 + TypeScript + Vite⚡" />
-  </v-container>
-  <teleport to="head">
-    <meta name="keyword" content="template,typescript,vue3,vuetify,vite,vite-template,volar" />
-    <meta name="description" content="Vite Vue3 Vuetify TypeScript Demo" />
-    <component :is="'script'" type="application/ld+json">
-      {{ jsonLd }}
-    </component>
-  </teleport>
-</template>
+<script lang="ts" setup>
+import GoogleMaps from '@/components/GoogleMaps.vue';
+import QRSpot from '@/components/QRSpot.vue';
+</script>
+
+<style scoped lang="scss">
+.home {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.map-wrapper {
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+</style>

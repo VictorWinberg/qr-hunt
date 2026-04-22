@@ -31,16 +31,22 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@googlemaps/js-api-loader": "^1.16.8",
     "@mdi/font": "^7.4.47",
+    "@sentry/vue": "^9.5.0",
     "core-js": "^3.40.0",
+    "dayjs": "^1.11.13",
     "pinia": "^3.0.0",
     "pinia-plugin-persistedstate": "^4.2.0",
+    "qr-scanner": "^1.4.2",
     "vue": "^3.5.13",
+    "vue-i18n": "^10.0.6",
     "vue-router": "^4.5.0",
     "vuetify": "^3.7.12",
     "webfontloader": "^1.6.28"
   },
   "devDependencies": {
+    "@types/google.maps": "^3.58.1",
     "@tsconfig/node-lts": "^22.0.1",
     "@types/jsdom": "^21.1.7",
     "@types/node": "^22.19.0",

@@ -1,3 +1,4 @@
+import { execSync } from 'node:child_process';
 import { writeFileSync } from 'node:fs';
 import { fileURLToPath, URL } from 'node:url';
 
@@ -11,6 +12,14 @@ import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify';
 
 import pkg from './package.json';
 
+function getAppVersion(): string {
+  try {
+    return execSync('git describe --tags --abbrev=0', { encoding: 'utf8' }).trim();
+  } catch {
+    return pkg.version;
+  }
+}
+
 /**
  * Vite Configure
  *
@@ -21,7 +30,16 @@ export default defineConfig(({ command, mode }): UserConfig => {
     // https://vitejs.dev/config/shared-options.html#base
     base: './',
     // https://vitejs.dev/config/shared-options.html#define
-    define: { 'process.env': {} },
+    define: {
+      'process.env': {},
+      __APP_VERSION__: JSON.stringify(getAppVersion())
+    },
+    server: {
+      proxy: {
+        '^/api': { target: 'http://localhost:3000', changeOrigin: true },
+        '^/auth': { target: 'http://localhost:3000', changeOrigin: false }
+      }
+    },
     plugins: [
       // Vue3
       vue({

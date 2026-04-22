@@ -21,15 +21,25 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/',
     name: 'Home',
-    component: HomeView
+    component: HomeView,
+    meta: { keepAlive: true }
   },
   {
-    path: '/about',
-    name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (About.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: async () => await import('@/views/AboutView.vue')
+    path: '/user',
+    name: 'User',
+    component: async () => await import('@/views/UserView.vue'),
+    meta: { keepAlive: true }
+  },
+  {
+    path: '/users/:id',
+    name: 'Users',
+    component: async () => await import('@/views/UserView.vue'),
+    props: true,
+    meta: { keepAlive: true }
+  },
+  {
+    path: '/:catchAll(.*)',
+    component: async () => await import('@/views/NotFoundView.vue')
   }
 ];
 
