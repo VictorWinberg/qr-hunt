@@ -30,7 +30,7 @@ jobs:
         run: npm run build
         working-directory: client-beta
         env:
-          VUE_APP_GOOGLE_API_KEY: ${{ secrets.VUE_APP_GOOGLE_API_KEY }}
+          VITE_APP_GOOGLE_API_KEY: ${{ secrets.VUE_APP_GOOGLE_API_KEY }}
 
       - uses: actions/upload-artifact@v4
         with:
