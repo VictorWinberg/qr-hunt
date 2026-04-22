@@ -1,8 +1,13 @@
 <template>
   <div>
-    <h2 class="text-h6 mb-4">{{ t('leaderboard.title') }}</h2>
+    <h2 class="text-h6 mb-4 text-center">{{ t('leaderboard.title') }}</h2>
     <div class="leaderboard__nav position-relative mb-4">
-      <v-btn class="text-h6 text-none mx-auto d-block" variant="text" @click="togglePeriod">
+      <v-btn
+        class="text-h6 text-none mx-auto d-block"
+        color="#9e633b"
+        variant="text"
+        @click="togglePeriod"
+      >
         <span v-if="period === 'total'">{{ t('leaderboard.total') }}</span>
         <span v-else-if="period === 'month'">
           {{ monthNames[month - 1] }} {{ date.format('YYYY') }}
@@ -11,6 +16,7 @@
       </v-btn>
       <v-btn
         class="nav-btn nav-btn--left"
+        color="#9e633b"
         :disabled="first"
         icon="mdi-chevron-left"
         variant="tonal"
@@ -18,6 +24,7 @@
       />
       <v-btn
         class="nav-btn nav-btn--right"
+        color="#9e633b"
         :disabled="last"
         icon="mdi-chevron-right"
         variant="tonal"

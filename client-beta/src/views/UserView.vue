@@ -1,36 +1,66 @@
 <template>
-  <v-container class="user-wrapper pa-4">
-    <v-card class="pa-4 mb-4" variant="tonal">
-      <div class="d-flex flex-column flex-md-row align-center ga-4">
-        <v-avatar size="96" :image="avatarUrl" />
-        <div class="text-center text-md-start">
-          <v-card-title class="pa-0 text-h5">{{ profile.name }}</v-card-title>
-          <v-card-subtitle class="pa-0">{{ profile.email }}</v-card-subtitle>
+  <v-container class="user-wrapper pa-2 pa-sm-4">
+    <v-card class="user-profile-card pa-3 mb-3" variant="tonal">
+      <div class="user-profile-header d-flex align-center ga-3">
+        <v-avatar class="flex-shrink-0" size="64" :image="avatarUrl" />
+        <div class="user-profile-text flex-grow-1 text-start">
+          <div class="text-subtitle-1 font-weight-bold text-truncate">{{ profile.name }}</div>
+          <div class="text-caption text-medium-emphasis text-truncate">{{ profile.email }}</div>
         </div>
       </div>
-      <div class="d-flex flex-wrap align-center justify-center ga-6 mt-4">
-        <div class="text-center">
-          <v-icon size="56" :color="hashColor(profile.lvl ?? 0)">mdi-star</v-icon>
-          <div class="text-h6">{{ profile.lvl != null ? profile.lvl : '?' }}</div>
+
+      <div class="user-profile-xp d-flex align-center mt-3">
+        <div class="lvl-badge flex-shrink-0">
+          <svg class="lvl-badge__star" viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              class="lvl-badge__star-path"
+              :fill="lvlStarFill"
+              stroke="#000000"
+              stroke-linejoin="round"
+              stroke-width="1"
+              paint-order="stroke fill"
+              d="M16.926 20.2a1 1 0 0 1-.466-.115l-4.471-2.352-4.471 2.348a1 1 0 0 1-1.451-1.054l.854-4.98L3.3 10.521a1 1 0 0 1 .555-1.706l5-.727 2.237-4.531A1 1 0 0 1 11.989 3a1 1 0 0 1 .9.558l2.236 4.53 5 .727a1 1 0 0 1 .555 1.706l-3.618 3.527.854 4.98a1 1 0 0 1-.99 1.172z"
+            />
+          </svg>
+          <span class="lvl-badge__num font-weight-bold">
+            {{ profile.lvl != null ? profile.lvl : '?' }}
+          </span>
         </div>
-        <v-progress-linear
-          class="xp-bar flex-grow-1"
-          height="28"
-          rounded
-          :model-value="xpPercent"
-          :color="hashColor((profile.lvl ?? 0) + 1)"
-        >
-          <template #default>
-            <strong class="text-white text-shadow">
-              {{ profile.lvlXp != null ? profile.lvlXp : '-' }} /
-              {{ profile.reqLvlXp != null ? profile.reqLvlXp : '-' }}
-              {{ t('user.experience-points') }}
-            </strong>
-          </template>
-        </v-progress-linear>
-        <div class="d-flex flex-column align-center">
-          <span class="text-h6">{{ profile.maxStreak ?? 0 }}</span>
-          <v-img :src="fireSvg" width="40" height="40" contain />
+        <div class="xp-bar-wrap flex-grow-1">
+          <v-progress-linear
+            class="xp-bar"
+            height="40"
+            rounded
+            :model-value="xpPercent"
+            :color="hashColor(profile.lvl ?? 0)"
+            bg-color="surface-variant"
+          >
+            <template #default>
+              <span class="xp-bar__label-row">
+                <span class="xp-bar__label text-body-2 font-weight-bold text-white text-shadow">
+                  {{ profile.lvlXp != null ? profile.lvlXp : '-' }} /
+                  {{ profile.reqLvlXp != null ? profile.reqLvlXp : '-' }}
+                  {{ t('user.experience-points') }}
+                </span>
+              </span>
+            </template>
+          </v-progress-linear>
+        </div>
+        <div class="streak-badge flex-shrink-0">
+          <svg class="streak-badge__flame" viewBox="0 0 460 520" aria-hidden="true">
+            <path
+              class="streak-badge__flame-path"
+              fill="#d43300"
+              stroke="#000000"
+              stroke-linejoin="round"
+              stroke-width="2"
+              paint-order="stroke fill"
+              d="M 323.56 51.2 C 302.76 70.5 283.98 90.79 267.34 111.17 C 240.08 73.62 206.28 35.53 168 0 C 69.74 91.17 0 209.96 0 281.6 C 0 408.85 100.29 512 224 512 C 347.71 512 448 408.85 448 281.6 C 448 228.33 396.02 118.46 323.56 51.2 L 323.56 51.2 Z"
+            />
+          </svg>
+          <span class="streak-badge__num font-weight-bold">
+            {{ profile.maxStreak ?? 0 }}
+          </span>
         </div>
       </div>
     </v-card>
@@ -38,11 +68,10 @@
     <v-tabs v-model="activeTab" grow>
       <v-tab v-for="tab in tabs" :key="tab.id" :value="tab.id">
         <v-icon start>{{ tab.icon }}</v-icon>
-        {{ tab.label }}
       </v-tab>
     </v-tabs>
 
-    <v-tabs-window v-model="activeTab" class="mt-4">
+    <v-tabs-window v-model="activeTab" class="mt-2 mt-sm-4">
       <v-tabs-window-item v-for="tab in tabs" :key="tab.id" :value="tab.id">
         <v-container fluid class="pa-0 pb-8">
           <component :is="tab.component" />
@@ -64,7 +93,6 @@ import { useRoute } from 'vue-router';
 
 import type { UserProfile } from '@/interfaces/User';
 
-import fireSvg from '@/assets/fire.svg?url';
 import UserAchievements from '@/components/UserAchievements.vue';
 import UserLeaderboard from '@/components/UserLeaderboard.vue';
 import UserSettings from '@/components/UserSettings.vue';
@@ -88,6 +116,9 @@ const xpPercent = computed(() => {
   const req = profile.value.reqLvlXp ?? 1;
   return Math.min(100, (xp / req) * 100);
 });
+
+/** Same hue as XP bar (`v-progress-linear` `:color`). */
+const lvlStarFill = computed(() => hashColor(profile.value.lvl ?? 0));
 
 async function fetchProfile(): Promise<void> {
   const id = route.params.id;
@@ -129,12 +160,113 @@ watch(
   margin: 0 auto;
 }
 
+.user-profile-card {
+  overflow: visible;
+}
+
+.user-profile-text,
+.xp-bar-wrap {
+  min-width: 0;
+}
+
+.user-profile-xp {
+  gap: 0;
+  padding-inline: 2px;
+}
+
+.xp-bar-wrap {
+  position: relative;
+  z-index: 1;
+  padding: 2px;
+  border: 1px solid rgb(var(--v-theme-on-surface) / 28%);
+  border-radius: 9999px;
+  overflow: visible;
+}
+
 .xp-bar {
-  min-width: 200px;
-  max-width: 420px;
+  border-radius: inherit;
+  overflow: visible;
+}
+
+.xp-bar__label-row {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  min-width: 0;
+  padding-inline: 0.5rem;
+}
+
+.xp-bar__label {
+  text-align: center;
+  font-style: italic;
 }
 
 .text-shadow {
-  text-shadow: 0 0 2px #000;
+  text-shadow:
+    0 0 2px #000,
+    0 1px 2px rgb(0 0 0 / 80%);
+}
+
+.lvl-badge,
+.streak-badge {
+  position: relative;
+  z-index: 2;
+  width: 6rem;
+  height: 6rem;
+}
+
+.lvl-badge {
+  margin-right: -2.5rem;
+  margin-left: -1rem;
+}
+
+.streak-badge {
+  margin-left: -2.5rem;
+  margin-right: -1rem;
+}
+
+.lvl-badge__star {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 92px;
+  height: 92px;
+  margin: auto;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.lvl-badge__star-path,
+.streak-badge__flame-path {
+  vector-effect: non-scaling-stroke;
+}
+
+.lvl-badge__num,
+.streak-badge__num {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: #fff;
+  text-shadow:
+    0 0 2px #000,
+    0 0 1px #000;
+  pointer-events: none;
+}
+
+.streak-badge__flame {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 68px;
+  height: 68px;
+  margin: auto;
+  overflow: visible;
+  pointer-events: none;
 }
 </style>
