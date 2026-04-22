@@ -5,9 +5,6 @@ import { ref, type Ref } from 'vue';
 export default defineStore(
   'config',
   () => {
-    /** Dark Theme mode */
-    const theme: Ref<boolean> = ref(window.matchMedia('(prefers-color-scheme: dark)').matches);
-
     const locale: Ref<string> = ref(window.navigator.languages[0] ?? window.navigator.language);
 
     /**
@@ -17,7 +14,7 @@ export default defineStore(
      */
     const setLocale = (l: string) => (locale.value = l);
 
-    return { theme, setLocale };
+    return { locale, setLocale };
   },
   {
     // Data persistence destination

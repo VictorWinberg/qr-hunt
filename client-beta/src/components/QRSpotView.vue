@@ -16,6 +16,9 @@
         </v-fade-transition>
       </v-card-text>
     </v-card>
+    <div v-if="qrSpot.lastVisitedAt" class="last-visited text-medium-emphasis text-body-2">
+      {{ t('qr-spot.last-visited') }} {{ formatRelativeTime(qrSpot.lastVisitedAt) }}
+    </div>
   </div>
 </template>
 
@@ -24,11 +27,16 @@ import { storeToRefs } from 'pinia';
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
+import dayjs from '@/plugins/dayjs';
 import useQrSpot from '@/store/QrSpotStore';
 
 const { t } = useI18n();
 const { qrSpot } = storeToRefs(useQrSpot());
 const showHint = ref(false);
+
+function formatRelativeTime(iso: string): string {
+  return dayjs(iso).fromNow();
+}
 </script>
 
 <style scoped lang="scss">
@@ -47,5 +55,9 @@ const showHint = ref(false);
 
 .hint-card--flipped {
   transform: rotateY(180deg);
+}
+
+.last-visited {
+  margin-top: 1rem;
 }
 </style>

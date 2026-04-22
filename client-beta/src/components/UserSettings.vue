@@ -1,8 +1,8 @@
 <template>
   <div>
-    <h2 class="text-h6 mb-4">{{ t('settings.title') }}</h2>
+    <h2 class="text-h6 mb-4 text-center">{{ t('settings.title') }}</h2>
     <div class="d-flex flex-column ga-3">
-      <v-btn block href="/?intro=start" prepend-icon="mdi-help-circle-outline" variant="tonal">
+      <v-btn block color="primary" href="/?intro=start" prepend-icon="mdi-help-circle-outline" variant="flat">
         {{ t('settings.help-option') }}
       </v-btn>
       <v-select
@@ -15,14 +15,14 @@
         variant="outlined"
         @update:model-value="setLocale"
       />
-      <v-btn block color="secondary" href="/auth/logout" prepend-icon="mdi-logout" variant="tonal">
+      <v-btn block color="primary" href="/auth/logout" prepend-icon="mdi-logout" variant="flat">
         {{ t('settings.logout-option') }}
       </v-btn>
       <v-btn
         block
         color="error"
         prepend-icon="mdi-delete-forever"
-        variant="tonal"
+        variant="flat"
         @click="deleteMe"
       >
         {{ t('settings.delete-account-option') }}
@@ -37,6 +37,7 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
 import { languages } from '@/locales/languages';
+import { loadDayjsLocale } from '@/plugins/dayjs';
 import useDialog from '@/store/DialogStore';
 import useUser from '@/store/UserStore';
 import { api } from '@/utils/api';
@@ -59,6 +60,7 @@ async function setLocale(value: string | null): Promise<void> {
   } else {
     locale.value = navigator.language.split('-')[0] ?? 'en';
   }
+  loadDayjsLocale(locale.value);
   await api.put('/api/user', { body: JSON.stringify({ locale: value }) });
 }
 
