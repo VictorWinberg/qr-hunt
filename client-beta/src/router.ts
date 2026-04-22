@@ -21,18 +21,21 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/',
     name: 'Home',
-    component: HomeView
+    component: HomeView,
+    meta: { keepAlive: true }
   },
   {
     path: '/user',
     name: 'User',
-    component: async () => await import('@/views/UserView.vue')
+    component: async () => await import('@/views/UserView.vue'),
+    meta: { keepAlive: true }
   },
   {
     path: '/users/:id',
     name: 'Users',
     component: async () => await import('@/views/UserView.vue'),
-    props: true
+    props: true,
+    meta: { keepAlive: true }
   },
   {
     path: '/:catchAll(.*)',
