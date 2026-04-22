@@ -13,7 +13,7 @@ const items: DrawerMenuItem[] = [
   },
   {
     title: 'User',
-    icon: 'mdi-information',
+    icon: 'mdi-account',
     to: { name: 'User' }
   }
 ];

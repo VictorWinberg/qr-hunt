@@ -10,8 +10,6 @@ export default defineStore(
 
     const locale: Ref<string> = ref(window.navigator.languages[0] ?? window.navigator.language);
 
-    /** Toggle Dark/Light mode */
-    const toggleTheme = () => (theme.value = !theme.value);
     /**
      * Set Locale.
      *
@@ -19,7 +17,7 @@ export default defineStore(
      */
     const setLocale = (l: string) => (locale.value = l);
 
-    return { theme, toggleTheme, setLocale };
+    return { theme, setLocale };
   },
   {
     // Data persistence destination
