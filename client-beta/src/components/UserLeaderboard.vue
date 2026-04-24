@@ -1,35 +1,40 @@
 <template>
   <div>
-    <h2 class="text-h6 mb-4 text-center">{{ t('leaderboard.title') }}</h2>
-    <div class="leaderboard__nav position-relative mb-4">
-      <v-btn
-        class="text-h6 text-none mx-auto d-block"
-        color="#9e633b"
-        variant="text"
-        @click="togglePeriod"
-      >
-        <span v-if="period === 'total'">{{ t('leaderboard.total') }}</span>
-        <span v-else-if="period === 'month'">
-          {{ monthNames[month - 1] }} {{ date.format('YYYY') }}
-        </span>
-        <span v-else>{{ date.format('YYYY') }}</span>
-      </v-btn>
-      <v-btn
-        class="nav-btn nav-btn--left"
-        color="#9e633b"
-        :disabled="first"
-        icon="mdi-chevron-left"
-        variant="tonal"
-        @click="nav(-1)"
-      />
-      <v-btn
-        class="nav-btn nav-btn--right"
-        color="#9e633b"
-        :disabled="last"
-        icon="mdi-chevron-right"
-        variant="tonal"
-        @click="nav(1)"
-      />
+    <div class="leaderboard__head">
+      <h2 class="text-h6 text-center leaderboard__head-title">{{ t('leaderboard.title') }}</h2>
+      <div class="leaderboard__nav">
+        <v-btn
+          class="leaderboard__period text-subtitle-1 text-none mx-auto d-block"
+          color="on-surface"
+          density="compact"
+          variant="text"
+          @click="togglePeriod"
+        >
+          <span v-if="period === 'total'">{{ t('leaderboard.total') }}</span>
+          <span v-else-if="period === 'month'">
+            {{ monthNames[month - 1] }} {{ date.format('YYYY') }}
+          </span>
+          <span v-else>{{ date.format('YYYY') }}</span>
+        </v-btn>
+        <v-btn
+          class="nav-btn nav-btn--left"
+          color="on-surface"
+          density="compact"
+          :disabled="first"
+          icon="mdi-chevron-left"
+          variant="text"
+          @click="nav(-1)"
+        />
+        <v-btn
+          class="nav-btn nav-btn--right"
+          color="on-surface"
+          density="compact"
+          :disabled="last"
+          icon="mdi-chevron-right"
+          variant="text"
+          @click="nav(1)"
+        />
+      </div>
     </div>
     <v-table
       v-if="leaderboard === null"
@@ -189,13 +194,31 @@ onUnmounted(() => {
 </script>
 
 <style scoped lang="scss">
+.leaderboard__head {
+  margin-bottom: 0.75rem;
+}
+
+.leaderboard__head-title {
+  margin-bottom: 0.125rem;
+  line-height: 1.3;
+}
+
 .leaderboard__nav {
-  min-height: 48px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.25rem;
+}
+
+.leaderboard__period {
+  min-width: 0;
 }
 
 .nav-btn {
   position: absolute;
-  top: 0;
+  top: 50%;
+  transform: translateY(-50%);
 
   &--left {
     left: 0;
