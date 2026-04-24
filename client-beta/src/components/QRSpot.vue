@@ -5,6 +5,17 @@
       rounded
       @click="qrStore.setModalState(QR_SPOT_PANEL.SHOW_DETAILS)"
     >
+      <v-btn
+        v-if="
+          panel === QR_SPOT_PANEL.SHOW_DETAILS &&
+          mode === QR_SPOT_MODE.VIEW &&
+          (qrSpot.isOwner || user.isAdmin)
+        "
+        class="fab-edit"
+        icon="mdi-pencil"
+        :color="!qrSpot.isOwner && user.isAdmin ? 'error' : 'primary'"
+        @click.stop="qrStore.setMode(QR_SPOT_MODE.EDIT)"
+      />
       <v-fade-transition mode="out-in">
         <div v-if="mode === QR_SPOT_MODE.VIEW" key="view">
           <div class="text-h6 mb-2">{{ qrSpot.title }}</div>
@@ -18,16 +29,7 @@
               {{ walkingTimeToMarker(userCoords, qrSpot) }}
             </span>
           </div>
-          <div v-if="panel === QR_SPOT_PANEL.SHOW_DETAILS" class="position-relative mt-4">
-            <v-btn
-              v-if="qrSpot.isOwner || user.isAdmin"
-              class="fab-edit"
-              icon="mdi-pencil"
-              location="top end"
-              position="absolute"
-              :color="!qrSpot.isOwner && user.isAdmin ? 'error' : 'primary'"
-              @click.stop="qrStore.setMode(QR_SPOT_MODE.EDIT)"
-            />
+          <div v-if="panel === QR_SPOT_PANEL.SHOW_DETAILS" class="mt-4">
             <QRSpotView />
           </div>
         </div>
@@ -89,11 +91,17 @@ function walkingTimeToMarker(
     height 500ms 0ms;
 
   &.SHOW_INFO {
-    bottom: 24px;
-    height: 90px;
+    bottom: 1rem;
+    height: 8rem;
     transition:
       all 300ms 200ms,
       height 500ms 0ms;
+
+    .qrspot-container {
+      background-color: rgb(87 87 89 / 0.7);
+      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(12px);
+    }
   }
 
   &.SHOW_DETAILS {
@@ -108,15 +116,20 @@ function walkingTimeToMarker(
 }
 
 .qrspot-container {
+  position: relative;
   box-sizing: border-box;
   height: 100%;
   padding: 1rem;
   overflow: auto;
   cursor: pointer;
   background-color: #575759;
+  padding-bottom: 5rem;
 }
 
 .fab-edit {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
   z-index: 2;
 }
 </style>
