@@ -338,7 +338,7 @@ html {
   width: 46px;
   height: 46px;
   line-height: 0;
-  color: #c99f67;
+  color: rgb(var(--v-theme-primary));
 }
 
 .user-nav-img :deep(svg) {
