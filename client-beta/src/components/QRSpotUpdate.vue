@@ -1,9 +1,11 @@
 <template>
   <div>
-    <v-btn class="mb-4" icon="mdi-arrow-left" variant="text" @click="confirmLeave" />
-    <div class="text-h5 mb-4">
-      <span v-if="mode === QR_SPOT_MODE.CREATE">{{ t('qr-spot.create-title') }}</span>
-      <span v-else>{{ qrSpot.title }}</span>
+    <div class="update-header d-flex align-center ga-2 mb-4">
+      <v-btn icon="mdi-arrow-left" variant="text" @click="confirmLeave" />
+      <div class="text-h5 update-header__title text-truncate">
+        <span v-if="mode === QR_SPOT_MODE.CREATE">{{ t('qr-spot.create-title') }}</span>
+        <span v-else>{{ qrSpot.title }}</span>
+      </div>
     </div>
     <v-form class="d-flex flex-column ga-3" @submit.prevent="saveSpot">
       <v-text-field
@@ -165,3 +167,11 @@ function replaceQRCode(): void {
   scanStore.toggleScan();
 }
 </script>
+
+<style scoped lang="scss">
+/* Let title truncate beside the back button in a flex row */
+.update-header__title {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+</style>
