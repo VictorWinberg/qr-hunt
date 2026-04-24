@@ -119,7 +119,7 @@ function clearMapShapes(): void {
   gCircles.length = 0;
 }
 
-/** Center anchor on lat/lng (legacy Marker used symmetric icon anchors). */
+/** Pin icon: lat/lng at bottom-center (matches classic Marker default). User/puff: centered. */
 function centeredIconContent(url: string, width: number, height: number): HTMLDivElement {
   const wrap = document.createElement('div');
   wrap.style.display = 'flex';
@@ -155,8 +155,9 @@ function renderMarkers(): void {
       map: googleMap,
       position: pos,
       content: centeredIconContent(getIcon(marker), 48, 48),
+      // Bottom-center on lat/lng (legacy Marker with icon URL only uses same default as AdvancedMarkerElement)
       anchorLeft: '-50%',
-      anchorTop: '-50%',
+      anchorTop: '-100%',
       gmpClickable: panel.value !== QR_SPOT_PANEL.SHOW_DETAILS
     });
     m.addListener('click', () => qrStore.select(marker as never));
