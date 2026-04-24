@@ -1,3 +1,4 @@
+import { execSync } from 'node:child_process';
 import { writeFileSync } from 'node:fs';
 import { fileURLToPath, URL } from 'node:url';
 
@@ -6,11 +7,18 @@ import { defineConfig, type UserConfig } from 'vite';
 
 import { visualizer } from 'rollup-plugin-visualizer';
 import { checker } from 'vite-plugin-checker';
-import { VitePWA } from 'vite-plugin-pwa';
 import vueDevTools from 'vite-plugin-vue-devtools';
 import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify';
 
 import pkg from './package.json';
+
+function getAppVersion(): string {
+  try {
+    return execSync('git describe --tags --abbrev=0', { encoding: 'utf8' }).trim();
+  } catch {
+    return pkg.version;
+  }
+}
 
 /**
  * Vite Configure
@@ -22,7 +30,16 @@ export default defineConfig(({ command, mode }): UserConfig => {
     // https://vitejs.dev/config/shared-options.html#base
     base: './',
     // https://vitejs.dev/config/shared-options.html#define
-    define: { 'process.env': {} },
+    define: {
+      'process.env': {},
+      __APP_VERSION__: JSON.stringify(getAppVersion())
+    },
+    server: {
+      proxy: {
+        '^/api': { target: 'http://localhost:3000', changeOrigin: true },
+        '^/auth': { target: 'http://localhost:3000', changeOrigin: false }
+      }
+    },
     plugins: [
       // Vue3
       vue({
@@ -42,38 +59,9 @@ export default defineConfig(({ command, mode }): UserConfig => {
       // https://github.com/fi3ework/vite-plugin-checker
       checker({
         typescript: true
-        // vueTsc: true
+        // vueTsc: true,
         // eslint: { lintCommand: 'eslint' },
-        // stylelint: { lintCommand: 'stylelint' }
-      }),
-      VitePWA({
-        registerType: 'autoUpdate',
-        manifest: {
-          name: 'QR Hunt',
-          short_name: 'QR Hunt',
-          icons: [
-            {
-              src: 'favicon.ico',
-              sizes: '48x48 32x32 16x16',
-              type: 'image/x-icon'
-            },
-            {
-              src: 'icons/favicon-192x192.png',
-              sizes: '192x192',
-              type: 'image/png'
-            },
-            {
-              src: 'icons/favicon-512x512.png',
-              sizes: '512x512',
-              type: 'image/png'
-            }
-          ],
-          start_url: '/',
-          display: 'standalone',
-          orientation: 'portrait',
-          theme_color: '#000',
-          background_color: '#000'
-        }
+        // stylelint: { lintCommand: 'stylelint' },
       })
     ],
     // Resolver
