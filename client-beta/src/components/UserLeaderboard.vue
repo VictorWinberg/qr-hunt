@@ -32,7 +32,52 @@
       />
     </div>
     <v-table
-      v-if="leaderboard && leaderboard.length"
+      v-if="leaderboard === null"
+      density="comfortable"
+      class="leaderboard__table leaderboard__table--skeleton"
+      aria-busy="true"
+    >
+      <thead>
+        <tr>
+          <th>{{ t('leaderboard.table-rank') }}</th>
+          <th />
+          <th>{{ t('leaderboard.table-user') }}</th>
+          <th class="text-end">{{ t('leaderboard.table-distance') }}</th>
+          <th class="text-end">{{ t('leaderboard.table-score') }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="n in 2" :key="`leaderboard-skeleton-${n}`">
+          <td>
+            <v-skeleton-loader boilerplate type="text" width="1.75rem" class="d-inline-block" />
+          </td>
+          <td style="width: 0; padding: 0 8px 0 0">
+            <v-skeleton-loader boilerplate type="avatar" width="32" height="32" />
+          </td>
+          <td>
+            <v-skeleton-loader boilerplate type="text" max-width="220" class="leaderboard__sk-name" />
+          </td>
+          <td class="text-end">
+            <v-skeleton-loader
+              boilerplate
+              type="text"
+              width="2.75rem"
+              class="d-inline-block leaderboard__sk-end"
+            />
+          </td>
+          <td class="text-end">
+            <v-skeleton-loader
+              boilerplate
+              type="text"
+              width="2.25rem"
+              class="d-inline-block leaderboard__sk-end"
+            />
+          </td>
+        </tr>
+      </tbody>
+    </v-table>
+    <v-table
+      v-else-if="leaderboard && leaderboard.length"
       density="comfortable"
       class="leaderboard__table"
     >
@@ -63,7 +108,7 @@
         </tr>
       </tbody>
     </v-table>
-    <h4 v-else-if="leaderboard" class="text-body-1">{{ emptyText }}</h4>
+    <h4 v-else class="text-body-1">{{ emptyText }}</h4>
   </div>
 </template>
 
@@ -168,5 +213,17 @@ onUnmounted(() => {
 .leaderboard__table {
   max-width: 800px;
   margin: auto;
+}
+
+.leaderboard__table--skeleton :deep(.v-skeleton-loader) {
+  margin: 0;
+}
+
+.leaderboard__sk-name {
+  max-width: 220px;
+}
+
+.leaderboard__sk-end {
+  margin-inline-start: auto;
 }
 </style>
