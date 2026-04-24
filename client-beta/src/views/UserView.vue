@@ -2,41 +2,28 @@
   <v-container class="user-wrapper px-2 px-sm-4 pb-2">
     <v-card class="user-profile-card mb-3" variant="tonal">
       <div class="user-profile-avatar-wrap">
-        <v-avatar class="user-profile-avatar" size="88" :image="avatarUrl" />
+        <v-avatar class="user-profile-avatar" size="120" :image="avatarUrl" />
       </div>
-      <div class="user-profile-card__content pa-3">
+      <div class="user-profile-card__content pa-2">
         <div class="user-profile-text text-center">
-          <div class="text-subtitle-1 font-weight-bold text-truncate">{{ profile.name }}</div>
+          <div class="text-subtitle-2 font-weight-bold text-truncate">{{ profile.name }}</div>
           <div class="text-caption text-medium-emphasis text-truncate">{{ profile.email }}</div>
         </div>
 
         <div class="user-profile-xp d-flex align-center">
           <div class="lvl-badge flex-shrink-0">
             <svg class="lvl-badge__star" viewBox="0 0 24 24" aria-hidden="true">
-              <path
-                class="lvl-badge__star-path"
-                :fill="lvlStarFill"
-                stroke="#000000"
-                stroke-linejoin="round"
-                stroke-width="1"
-                paint-order="stroke fill"
-                d="M16.926 20.2a1 1 0 0 1-.466-.115l-4.471-2.352-4.471 2.348a1 1 0 0 1-1.451-1.054l.854-4.98L3.3 10.521a1 1 0 0 1 .555-1.706l5-.727 2.237-4.531A1 1 0 0 1 11.989 3a1 1 0 0 1 .9.558l2.236 4.53 5 .727a1 1 0 0 1 .555 1.706l-3.618 3.527.854 4.98a1 1 0 0 1-.99 1.172z"
-              />
+              <path class="lvl-badge__star-path" :fill="lvlStarFill" stroke="#000000" stroke-linejoin="round"
+                stroke-width="1" paint-order="stroke fill"
+                d="M16.926 20.2a1 1 0 0 1-.466-.115l-4.471-2.352-4.471 2.348a1 1 0 0 1-1.451-1.054l.854-4.98L3.3 10.521a1 1 0 0 1 .555-1.706l5-.727 2.237-4.531A1 1 0 0 1 11.989 3a1 1 0 0 1 .9.558l2.236 4.53 5 .727a1 1 0 0 1 .555 1.706l-3.618 3.527.854 4.98a1 1 0 0 1-.99 1.172z" />
             </svg>
             <span class="lvl-badge__num font-weight-bold">
               {{ profile.lvl != null ? profile.lvl : '?' }}
             </span>
           </div>
           <div class="xp-bar-wrap flex-grow-1">
-            <v-progress-linear
-              class="xp-bar"
-              height="40"
-              rounded
-              rounded-bar
-              :model-value="xpPercent"
-              :color="hashColor(profile.lvl ?? 0)"
-              bg-color="surface-variant"
-            >
+            <v-progress-linear class="xp-bar" height="32" rounded rounded-bar :model-value="xpPercent"
+              :color="hashColor(profile.lvl ?? 0)" bg-color="surface-variant">
               <template #default>
                 <span class="xp-bar__label-row">
                   <span class="xp-bar__label text-body-2 font-weight-bold text-white text-shadow">
@@ -50,15 +37,9 @@
           </div>
           <div class="streak-badge flex-shrink-0">
             <svg class="streak-badge__flame" viewBox="0 0 460 520" aria-hidden="true">
-              <path
-                class="streak-badge__flame-path"
-                fill="#d43300"
-                stroke="#000000"
-                stroke-linejoin="round"
-                stroke-width="2"
-                paint-order="stroke fill"
-                d="M 323.56 51.2 C 302.76 70.5 283.98 90.79 267.34 111.17 C 240.08 73.62 206.28 35.53 168 0 C 69.74 91.17 0 209.96 0 281.6 C 0 408.85 100.29 512 224 512 C 347.71 512 448 408.85 448 281.6 C 448 228.33 396.02 118.46 323.56 51.2 L 323.56 51.2 Z"
-              />
+              <path class="streak-badge__flame-path" fill="#d43300" stroke="#000000" stroke-linejoin="round"
+                stroke-width="2" paint-order="stroke fill"
+                d="M 323.56 51.2 C 302.76 70.5 283.98 90.79 267.34 111.17 C 240.08 73.62 206.28 35.53 168 0 C 69.74 91.17 0 209.96 0 281.6 C 0 408.85 100.29 512 224 512 C 347.71 512 448 408.85 448 281.6 C 448 228.33 396.02 118.46 323.56 51.2 L 323.56 51.2 Z" />
             </svg>
             <span class="streak-badge__num font-weight-bold">
               {{ profile.maxStreak ?? 0 }}
@@ -159,7 +140,7 @@ watch(
 
 <style scoped lang="scss">
 .user-wrapper {
-  --user-avatar-size: 88px;
+  --user-avatar-size: 120px;
   max-width: 900px;
   margin: 0 auto;
   /*
@@ -174,7 +155,7 @@ watch(
 .user-profile-card {
   position: relative;
   overflow: visible;
-  padding-top: calc(var(--user-avatar-size) / 2 + 0.75rem);
+  padding-top: calc(var(--user-avatar-size) / 2 + 0.5rem);
 }
 
 .user-profile-avatar-wrap {
@@ -207,6 +188,8 @@ watch(
 
 .user-profile-text {
   width: 100%;
+  line-height: 1.25;
+  margin-bottom: 0.25rem;
 }
 
 .user-profile-xp {
@@ -252,18 +235,21 @@ watch(
   position: relative;
   /* Above XP bar (z-index 1); stacking is scoped inside card content below the avatar layer */
   z-index: 3;
-  width: 6rem;
-  height: 6rem;
 }
 
 .lvl-badge {
-  margin-right: -2.5rem;
+  width: 6rem;
+  height: 6rem;
+  margin-top: -0.6rem;
+  margin-right: -3rem;
   margin-left: -1rem;
 }
 
 .streak-badge {
+  width: 5rem;
+  height: 5rem;
   margin-left: -2.5rem;
-  margin-right: -1rem;
+  margin-right: -0.85rem;
 }
 
 .lvl-badge__star {
@@ -291,7 +277,6 @@ watch(
   justify-content: center;
   width: 100%;
   height: 100%;
-  font-size: 1.5rem;
   line-height: 1;
   color: #fff;
   text-shadow:
@@ -300,12 +285,20 @@ watch(
   pointer-events: none;
 }
 
+.lvl-badge__num {
+  font-size: 1.5rem;
+}
+
+.streak-badge__num {
+  font-size: 1.35rem;
+}
+
 .streak-badge__flame {
   position: absolute;
   inset: 0;
   display: block;
-  width: 68px;
-  height: 68px;
+  width: 56px;
+  height: 56px;
   margin: auto;
   overflow: visible;
   pointer-events: none;
