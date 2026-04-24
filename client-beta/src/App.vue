@@ -13,6 +13,7 @@ import {
 } from 'vue';
 
 import { useTheme } from 'vuetify';
+import { useRoute } from 'vue-router';
 
 // Components
 import qrScanBtn from '@/assets/qr-scanner-button.svg?url';
@@ -24,6 +25,12 @@ import useDialog from '@/store/DialogStore';
 
 /** Vuetify Theme */
 const theme = useTheme();
+const route = useRoute();
+
+/** User profile avatar extends above the card; avoid clipping under the app bar. */
+const mainOverflowClass = computed(() =>
+  route.name === 'User' || route.name === 'Users' ? 'app-main--profile' : 'overflow-hidden'
+);
 
 /** Global Store */
 const globalStore = useGlobal();
@@ -152,7 +159,7 @@ async function viewRelease(): Promise<void> {
       />
     </v-app-bar>
 
-    <v-main class="d-flex flex-column flex-fill overflow-hidden">
+    <v-main class="d-flex flex-column flex-fill" :class="mainOverflowClass">
       <router-view v-slot="{ Component, route }">
         <template v-if="route.meta.keepAlive">
           <keep-alive>
@@ -251,6 +258,17 @@ html {
   overflow-y: auto;
 }
 
+/*
+ * Default v-main uses overflow-hidden (good for the map). Profile page draws the
+ * avatar above the card with transform; overflow-hidden clips it. Visible overflow
+ * keeps layout padding responsible for clearing the fixed app bar (see UserView).
+ */
+.app-main--profile {
+  /* Map route keeps overflow-hidden; profile needs paint above the main box (avatar). */
+  overflow: visible;
+  min-height: 0;
+}
+
 // Fix app-bar's progress-bar
 .v-app-bar .v-progress-linear {
   position: absolute;
@@ -336,13 +354,15 @@ html {
   align-items: center;
   justify-content: center;
   width: 46px;
+  min-width: 46px;
   height: 46px;
+  min-height: 46px;
   line-height: 0;
-  color: rgb(var(--v-theme-primary));
 }
 
 .user-nav-img :deep(svg) {
   display: block;
+  flex-shrink: 0;
   width: 100%;
   height: 100%;
 }
