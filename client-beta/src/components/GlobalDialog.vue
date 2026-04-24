@@ -19,7 +19,7 @@
           v-for="(opt, idx) in cardPayload.options"
           :key="idx"
           :color="btnColor(opt.type)"
-          :disabled="opt.type === 'disabled'"
+          :disabled="opt.type === 'disabled' && !opt.action"
           :variant="opt.type === 'disabled' ? 'text' : 'flat'"
           @click="runOption(opt)"
         >
