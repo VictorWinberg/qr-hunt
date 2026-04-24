@@ -201,7 +201,7 @@ async function viewRelease(): Promise<void> {
           aria-label="Scan QR code"
           @click="toggleScan"
         >
-          <v-img :src="qrScanBtn" width="72" height="72" contain />
+          <v-img :src="qrScanBtn" width="96" height="96" contain />
         </v-btn>
         <v-btn
           class="footer-bar__version text-none font-weight-regular"
@@ -325,8 +325,8 @@ html {
   left: 50%;
   bottom: 100%;
   z-index: 3;
-  min-width: 5.5rem;
-  min-height: 5.5rem;
+  min-width: 7rem;
+  min-height: 7rem;
   margin-bottom: -0.25rem;
   /* Centered on full footer width; Y offset keeps parchment overlapping the map. */
   transform: translate(-50%, 38%);
