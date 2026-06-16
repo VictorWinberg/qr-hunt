@@ -8,6 +8,7 @@ on:
 jobs:
   update_draft_release:
     runs-on: ubuntu-latest
+
     steps:
       - uses: toolmantim/release-drafter@v5.25.0
         env:

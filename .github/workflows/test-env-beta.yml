@@ -1,12 +1,12 @@
-name: Test Environment - Deploy
+name: Beta Test Environment
 on:
   pull_request:
     types: [opened, synchronize, reopened]
     branches:
-      - beta
+      - master
 
 jobs:
-  deploy-test-env:
+  deploy-beta-env:
     runs-on: ubuntu-latest
 
     strategy:
@@ -14,13 +14,13 @@ jobs:
         node-version: [22.x]
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
         with:
           fetch-depth: "0"
           ref: ${{ github.head_ref }}
 
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
 
