@@ -18,7 +18,7 @@
       />
       <v-fade-transition mode="out-in">
         <div v-if="mode === QR_SPOT_MODE.VIEW" key="view">
-          <div class="text-h6 mb-2">{{ qrSpot.title }}</div>
+          <div class="qrspot-title mb-2 text-center">{{ qrSpot.title }}</div>
           <div class="d-flex flex-wrap justify-center ga-4 text-body-2">
             <span>
               <v-icon size="small" icon="mdi-map-marker-distance" class="mr-1" />
@@ -102,6 +102,10 @@ function walkingTimeToMarker(
       -webkit-backdrop-filter: blur(12px);
       backdrop-filter: blur(12px);
     }
+
+    .qrspot-title {
+      font-size: 1.5rem;
+    }
   }
 
   &.SHOW_DETAILS {
@@ -112,7 +116,17 @@ function walkingTimeToMarker(
     transition:
       all 200ms 0ms,
       height 500ms;
+
+    .qrspot-title {
+      font-size: 2rem;
+    }
   }
+}
+
+.qrspot-title {
+  font-weight: 500;
+  line-height: 1.25;
+  transition: font-size 0.5s;
 }
 
 .qrspot-container {
