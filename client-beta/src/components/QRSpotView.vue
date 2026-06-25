@@ -1,6 +1,6 @@
 <template>
   <div class="view-wrapper">
-    <div class="view-note text-body-1">{{ qrSpot.note }}</div>
+    <div class="view-note">{{ qrSpot.note }}</div>
     <div v-if="qrSpot.hint" class="hint-scene">
       <div
         class="hint-card"
@@ -23,7 +23,7 @@
         </div>
       </div>
     </div>
-    <div v-if="qrSpot.lastVisitedAt" class="last-visited text-medium-emphasis text-body-2">
+    <div v-if="qrSpot.lastVisitedAt" class="last-visited text-body-2">
       {{ t('qr-spot.last-visited') }} {{ formatRelativeTime(qrSpot.lastVisitedAt) }}
     </div>
   </div>
@@ -56,6 +56,7 @@ $hint-question-text: #eff0eb;
 $hint-question-bg: #966840;
 $hint-answer-text: #966840;
 $hint-answer-bg: #242424;
+$muted-text-color: #9e9e9e;
 
 .view-wrapper {
   display: flex;
@@ -68,6 +69,9 @@ $hint-answer-bg: #242424;
   margin-top: 1em;
   overflow-wrap: anywhere;
   white-space: pre-line;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
 }
 
 .hint-scene {
@@ -121,6 +125,7 @@ $hint-answer-bg: #242424;
 
 .last-visited {
   margin-top: 1rem;
+  color: $muted-text-color;
 }
 
 .fade-slow-enter-active,
