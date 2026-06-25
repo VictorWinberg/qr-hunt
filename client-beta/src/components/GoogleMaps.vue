@@ -30,7 +30,7 @@
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
+import { computed, nextTick, onActivated, onMounted, onUnmounted, ref, watch } from 'vue';
 
 import { Loader } from '@googlemaps/js-api-loader';
 
@@ -299,6 +299,20 @@ function resetHeading(): void {
 }
 
 let offQr: (() => void) | undefined;
+
+/** HomeView is keep-alive cached; AdvancedMarker HTML content disappears while hidden. */
+function refreshMapDisplay(): void {
+  if (!googleMap) return;
+  google.maps.event.trigger(googleMap, 'resize');
+  const center = googleMap.getCenter();
+  if (center) googleMap.setCenter(center);
+  renderMarkers();
+  renderUserMarker();
+}
+
+onActivated(() => {
+  void nextTick(refreshMapDisplay);
+});
 
 onMounted(async () => {
   const key = import.meta.env.VITE_APP_GOOGLE_API_KEY;
