@@ -16,7 +16,7 @@ import { loadFonts } from '@/plugins/webfontloader';
 import 'vuetify/styles';
 import '@mdi/font/css/materialdesignicons.css';
 
-loadFonts(); //TODO: should it be awaited?
+await loadFonts();
 
 /**
  * Vuetify Components
@@ -57,7 +57,29 @@ let vuetifyConfig: VuetifyOptions = {
   // Theme
   // https://vuetifyjs.com/en/features/theme/
   theme: {
-    defaultTheme: 'light'
+    defaultTheme: 'dark',
+    themes: {
+      light: {
+        dark: false,
+        colors: {
+          background: '#f5f5f5',
+          surface: '#ffffff',
+          primary: '#966840',
+          secondary: '#575759',
+          error: '#660d00'
+        }
+      },
+      dark: {
+        dark: true,
+        colors: {
+          background: '#242424',
+          surface: '#575759',
+          primary: '#c99f67',
+          secondary: '#575759',
+          error: '#660d00'
+        }
+      }
+    }
   }
 };
 

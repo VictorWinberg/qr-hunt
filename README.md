@@ -12,7 +12,7 @@
 
 There are two env-files that you need to create locally:
 - one in root dir (path: `.env`) for backend
-- one in client dir (path: `client/.env`) for frontend
+- one in `client-beta/.env` for the Vite frontend (or `client/.env` for the legacy Vue 2 app)
 > You can copy the `.env.example` to `.env` and modify the variables as needed
 
 ### Credentials
@@ -26,7 +26,7 @@ See [server/README.md](server/README.md).
 
 ## Frontend (Client)
 
-See [client/README.md](client/README.md).
+The default CI/deploy frontend is [client-beta](client-beta/README.md) (Vue 3 + Vuetify). The legacy app lives under [client](client/README.md).
 
 ## Swagger UI | API Documentation
 Visit `/api/docs`
