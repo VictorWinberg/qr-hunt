@@ -6,13 +6,13 @@ jobs:
     name: "Directory Labeler"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/labeler@v3
+      - uses: actions/labeler@v3.1.0
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
   pr-labeler:
     name: "Branch Labeler"
     runs-on: ubuntu-latest
     steps:
-      - uses: TimonVS/pr-labeler-action@v3
+      - uses: TimonVS/pr-labeler-action@v3.1.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
