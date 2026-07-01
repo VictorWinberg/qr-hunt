@@ -14,18 +14,18 @@ jobs:
         node-version: [14.x]
 
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v6.0.3
       with:
         fetch-depth: '0'
         ref: ${{ github.head_ref }}
 
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v6
+      uses: actions/setup-node@v6.4.0
       with:
         node-version: ${{ matrix.node-version }}
 
     - name: Install and cache client dependencies
-      uses: bahmutov/npm-install@v1
+      uses: bahmutov/npm-install@v1.12.1
       with:
         working-directory: client
 
@@ -36,7 +36,7 @@ jobs:
         VUE_APP_GOOGLE_API_KEY: ${{ secrets.VUE_APP_GOOGLE_API_KEY }}
 
     - name: Install SSH key
-      uses: shimataro/ssh-key-action@v2
+      uses: shimataro/ssh-key-action@v2.8.1
       with:
          key: ${{ secrets.SSH_PRIVATE_KEY }}
          name: id_rsa # optional
@@ -55,7 +55,7 @@ jobs:
         echo "$OUTPUT" | grep "^remote: github:" | sed s/^remote:\ github:\ /""/g >> $GITHUB_ENV
         echo "EOF" >> $GITHUB_ENV
 
-    - uses: marocchino/sticky-pull-request-comment@v2
+    - uses: marocchino/sticky-pull-request-comment@v2.9.4
       if: ${{ env.GIT_OUTPUT }}
       with:
         header: test-env
