@@ -20,7 +20,7 @@ jobs:
       with:
         fetch-depth: '0'
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v6.4.0
+      uses: actions/setup-node@v6.5.0
       with:
         node-version: ${{ matrix.node-version }}
     - uses: preactjs/compressed-size-action@2.10.0
