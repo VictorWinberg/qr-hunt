@@ -1,0 +1,20 @@
+services:
+  qrhunt:
+    build:
+      context: .
+      args:
+        VUE_APP_GOOGLE_API_KEY: ${VUE_APP_GOOGLE_API_KEY:-}
+        VUE_APP_VERSION: ${VUE_APP_VERSION:-local}
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgres://postgres:password@host.docker.internal:5432/qrhunt
+      PORT: "3000"
+      NODE_ENV: production
+    volumes:
+      - ./credentials.json:/app/credentials.json:ro
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
