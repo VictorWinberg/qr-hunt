@@ -7,13 +7,9 @@ RUN npm ci
 
 COPY client/ ./
 ARG VUE_APP_GOOGLE_API_KEY
+ARG VUE_APP_VERSION
 ENV VUE_APP_GOOGLE_API_KEY=$VUE_APP_GOOGLE_API_KEY
-RUN git init \
-  && git config user.email "build@docker" \
-  && git config user.name "Docker" \
-  && git add -A \
-  && git commit -m "build" -q \
-  && git tag v0.0.0
+ENV VUE_APP_VERSION=$VUE_APP_VERSION
 RUN npm run build
 
 FROM node:22-alpine

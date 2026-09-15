@@ -15,6 +15,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Resolve app version
+        run: echo "VUE_APP_VERSION=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
 
       - name: Set image name
         run: echo "IMAGE=ghcr.io/$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
@@ -34,6 +39,7 @@ jobs:
           platforms: linux/arm64
           build-args: |
             VUE_APP_GOOGLE_API_KEY=${{ secrets.VUE_APP_GOOGLE_API_KEY }}
+            VUE_APP_VERSION=${{ env.VUE_APP_VERSION }}
           tags: |
             ${{ env.IMAGE }}:latest
             ${{ env.IMAGE }}:sha-${{ github.sha }}
