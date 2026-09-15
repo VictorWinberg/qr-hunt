@@ -1,9 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const webpack = require("webpack");
-const appVersion = require("child_process")
-  .execSync("git describe --tags --abbrev=0")
-  .toString()
-  .trim();
+
+const appVersion = process.env.VUE_APP_VERSION || "local";
 
 module.exports = {
   configureWebpack: {
