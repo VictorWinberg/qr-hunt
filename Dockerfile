@@ -1,4 +1,4 @@
-FROM node:16 AS build-client
+FROM --platform=$BUILDPLATFORM node:16 AS build-client
 
 WORKDIR /app/client
 
