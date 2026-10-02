@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM node:16 AS build-client
+FROM --platform=$BUILDPLATFORM node:16.20.2 AS build-client
 
 WORKDIR /app/client
 
@@ -12,7 +12,7 @@ ENV VUE_APP_GOOGLE_API_KEY=$VUE_APP_GOOGLE_API_KEY
 ENV VUE_APP_VERSION=$VUE_APP_VERSION
 RUN npm run build
 
-FROM node:22-alpine
+FROM node:22.23.3-alpine
 
 WORKDIR /app
 
