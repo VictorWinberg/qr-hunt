@@ -7,6 +7,7 @@ jobs:
   approve-on-label:
     name: Approve on Label
     runs-on: ubuntu-latest
+
     steps:
       - uses: hmarr/auto-approve-action@v2.4.0
         if: github.event.action == 'labeled' && github.event.label.name == 'Approve'
