@@ -148,7 +148,7 @@ import { EVENT_TYPE, QR_SPOT_MODE, QR_SPOT_PANEL } from "@/constants";
 import { api } from "@/utils";
 import Flame from "@/components/Flame";
 import EventBus from "@/plugins/event-bus";
-import dayjs from "@/plugins/dayjs";
+import { now } from "@/plugins/dayjs";
 
 export default Vue.extend({
   components: {
@@ -284,7 +284,7 @@ export default Vue.extend({
       if (!collectedAt) {
         return require("@/assets/qr-spot-marker--new.svg");
       }
-      if (dayjs().isSame(collectedAt, "day")) {
+      if (now().isSame(collectedAt, "day")) {
         return require("@/assets/qr-spot-marker--used.svg");
       }
       return require("@/assets/qr-spot-marker--free.svg");
@@ -321,7 +321,7 @@ export default Vue.extend({
     },
     recent(markers) {
       return markers.filter(m =>
-        dayjs()
+        now()
           .subtract(1, "day")
           .isBefore(m.lastVisitedAt)
       );

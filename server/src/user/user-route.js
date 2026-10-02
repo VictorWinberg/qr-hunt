@@ -5,6 +5,7 @@ const {
   chaining,
   mapValues
 } = require("../utils");
+const { parse } = require("../dayjs");
 
 const MAX_COLLECT_DISTANCE = 10000; // 10 km
 
@@ -202,7 +203,7 @@ module.exports = ({ app, db, isLoggedIn }) => {
 
     shards = shards.map(shard => ({
       ...shard,
-      date: new Date(shard.created_at).toISOString().split("T")[0]
+      date: parse(shard.created_at).format("YYYY-MM-DD")
     }));
 
     const calcDistance = () => shards => {

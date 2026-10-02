@@ -1,13 +1,11 @@
 const { google } = require("googleapis");
 const fs = require("fs");
 const path = require("path");
-const dayjs = require("dayjs");
-const isBetween = require("dayjs/plugin/isBetween");
 const NodeCache = require("node-cache");
+const { now } = require("../dayjs");
 
 const ACHIEVEMENT_EVENTS = require("./achievement-cal.json");
 const cache = new NodeCache({ stdTTL: 60 * 60 * 24 * 7 }); // cache one week
-dayjs.extend(isBetween);
 
 const calendarIds = [
   "sv.swedish#holiday@group.v.calendar.google.com",
@@ -46,8 +44,8 @@ const calendarEvents = async () => {
     calendarIds.map(async calendarId => {
       const { data } = await calendar.events.list({
         calendarId,
-        timeMin: dayjs().toISOString(),
-        timeMax: dayjs()
+        timeMin: now().toISOString(),
+        timeMax: now()
           .add(1, "year")
           .toISOString(),
         singleEvents: true

@@ -72,8 +72,9 @@ const camelcaseMiddleware = options => [
   }
 ];
 
-const isToday = date =>
-  new Date(date).toDateString() === new Date().toDateString();
+const { now, parse } = require("./dayjs");
+
+const isToday = date => parse(date).isSame(now(), "day");
 
 function distance({ lat: lat1, lng: lng1 }, { lat: lat2, lng: lng2 }) {
   if (!lat1 || !lng1 || !lat2 || !lng2) return 0;

@@ -1,4 +1,5 @@
 const { haveCalled } = require("../utils");
+const { now } = require("../dayjs");
 
 module.exports = {
   USER_HAS_SIGNED_UP: ({ req, res }) => {
@@ -26,28 +27,28 @@ module.exports = {
     return false;
   },
   COLLECT_AT_LEET: ({ req, res }) => {
-    const date = new Date();
+    const date = now();
     return [
       haveCalled(req, res)("/api/qrshards", "POST"),
-      date.getHours() == 13 && date.getMinutes() == 37
+      date.hour() === 13 && date.minute() === 37
     ];
   },
   COLLECT_AT_MORNING: ({ req, res }) => {
-    const hours = new Date().getHours();
+    const hours = now().hour();
     return [
       haveCalled(req, res)("/api/qrshards", "POST"),
       hours >= 5 && hours < 8
     ];
   },
   COLLECT_AT_LUNCH: ({ req, res }) => {
-    const hours = new Date().getHours();
+    const hours = now().hour();
     return [
       haveCalled(req, res)("/api/qrshards", "POST"),
       hours >= 12 && hours < 13
     ];
   },
   COLLECT_AT_NIGHT: ({ req, res }) => {
-    const hours = new Date().getHours();
+    const hours = now().hour();
     return [
       haveCalled(req, res)("/api/qrshards", "POST"),
       hours >= 22 || hours < 5

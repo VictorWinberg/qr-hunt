@@ -1,4 +1,6 @@
-import dayjs from "dayjs";
+import dayjs, { ConfigType } from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
 import isoWeek from "dayjs/plugin/isoWeek";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { total } from "./dayjs-custom";
@@ -7,9 +9,21 @@ import { EVENT_TYPE } from "@/constants";
 import i18n from "@/plugins/i18n";
 import EventBus from "./event-bus";
 
+dayjs.extend(utc);
+dayjs.extend(timezone);
 dayjs.extend(isoWeek);
 dayjs.extend(relativeTime);
 dayjs.extend(total);
+
+export const TZ = "Europe/Stockholm";
+
+export function parse(date: ConfigType) {
+  return dayjs(date).tz(TZ);
+}
+
+export function now() {
+  return dayjs().tz(TZ);
+}
 
 dayjs.Ls.en.weekStart = 1;
 

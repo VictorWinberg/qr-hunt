@@ -1,4 +1,4 @@
-import dayjs from "dayjs";
+import dayjs, { now } from "@/plugins/dayjs";
 import Snackbar from "node-snackbar";
 import { EVENT_TYPE } from "@/constants";
 import EventBus from "./event-bus";
@@ -14,10 +14,10 @@ const welcome = () => {
   let recruit;
   if (!dayjs(latestWelcome).isValid()) {
     recruit = true;
-  } else if (dayjs().diff(latestWelcome, "week") > 1) {
+  } else if (now().diff(latestWelcome, "week") > 1) {
     recruit = false;
   } else {
-    localStorage.setItem("latestWelcome", dayjs().toJSON());
+    localStorage.setItem("latestWelcome", now().toJSON());
     return;
   }
 
@@ -47,7 +47,7 @@ const welcome = () => {
       // @ts-ignore
       Snackbar.close();
 
-      localStorage.setItem("latestWelcome", dayjs().toJSON());
+      localStorage.setItem("latestWelcome", now().toJSON());
     }
   });
 };

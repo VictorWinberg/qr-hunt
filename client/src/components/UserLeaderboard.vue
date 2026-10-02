@@ -61,12 +61,12 @@ import { mapState, mapMutations } from "vuex";
 import { EVENT_TYPE } from "@/constants";
 import { api } from "@/utils";
 import EventBus from "@/plugins/event-bus";
-import dayjs from "@/plugins/dayjs";
+import { now } from "@/plugins/dayjs";
 
 export default Vue.extend({
   data() {
     return {
-      date: dayjs().startOf("month"),
+      date: now().startOf("month"),
       period: "month"
     };
   },
@@ -77,14 +77,14 @@ export default Vue.extend({
       return this.date.format("M");
     },
     year() {
-      if (this.period !== "year" && dayjs().isSame(this.date, "year")) return;
+      if (this.period !== "year" && now().isSame(this.date, "year")) return;
       return this.date.format("YYYY");
     },
     first() {
       return this.date.subtract(1, this.period).isBefore("2021");
     },
     last() {
-      return this.date.add(1, this.period).isAfter(dayjs());
+      return this.date.add(1, this.period).isAfter(now());
     }
   },
   created() {
@@ -112,7 +112,7 @@ export default Vue.extend({
       this.setLeaderboard(null);
       const nextPeriod = { month: "year", year: "total", total: "month" };
       this.period = nextPeriod[this.period];
-      this.date = dayjs().startOf(this.period);
+      this.date = now().startOf(this.period);
       this.fetchLeaderboard();
     },
     emptyLeaderboard(texts) {
