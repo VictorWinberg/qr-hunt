@@ -125,7 +125,7 @@ import { useRouter } from 'vue-router';
 
 import type { LeaderboardRow } from '@/interfaces/User';
 
-import dayjs from '@/plugins/dayjs';
+import { now } from '@/plugins/dayjs';
 import { api } from '@/utils/api';
 import { onApiMutation } from '@/utils/app-events';
 
@@ -133,7 +133,7 @@ const { t, tm } = useI18n();
 const router = useRouter();
 const userStore = useUser();
 
-const date = ref(dayjs().startOf('month'));
+const date = ref(now().startOf('month'));
 const period = ref<'month' | 'year' | 'total'>('month');
 
 const monthNames = tm('common.month-names') as string[];
@@ -141,7 +141,7 @@ const monthNames = tm('common.month-names') as string[];
 const month = computed(() => Number(date.value.format('M')));
 
 const first = computed(() => date.value.subtract(1, period.value as never).isBefore('2021'));
-const last = computed(() => date.value.add(1, period.value as never).isAfter(dayjs()));
+const last = computed(() => date.value.add(1, period.value as never).isAfter(now()));
 
 const leaderboard = computed(() => userStore.leaderboard);
 
@@ -175,7 +175,7 @@ function togglePeriod(): void {
     total: 'month'
   };
   period.value = next[period.value];
-  date.value = dayjs().startOf(period.value as never);
+  date.value = now().startOf(period.value as never);
   void fetchLeaderboard();
 }
 

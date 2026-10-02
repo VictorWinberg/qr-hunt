@@ -45,7 +45,7 @@ import markerUsed from '@/assets/qr-spot-marker--used.svg?url';
 import spinner from '@/assets/spinner.svg?url';
 import Flame from '@/components/Flame.vue';
 import { QR_SPOT_MODE, QR_SPOT_PANEL } from '@/constants';
-import dayjs from '@/plugins/dayjs';
+import { now } from '@/plugins/dayjs';
 import useDialog from '@/store/DialogStore';
 import useQrSpot from '@/store/QrSpotStore';
 import useUser from '@/store/UserStore';
@@ -106,7 +106,7 @@ let listenerTilt: google.maps.MapsEventListener | null = null;
 function getIcon(m: QrMarker): string {
   if (m.missing) return markerMissing;
   if (!m.collectedAt) return markerNew;
-  if (dayjs().isSame(m.collectedAt as string, 'day')) return markerUsed;
+  if (now().isSame(m.collectedAt as string, 'day')) return markerUsed;
   return markerFree;
 }
 
@@ -139,7 +139,7 @@ function recent(ms: QrMarker[]): QrMarker[] {
   return ms.filter(
     m =>
       m.lastVisitedAt &&
-      dayjs()
+      now()
         .subtract(1, 'day')
         .isBefore(m.lastVisitedAt as string)
   );
