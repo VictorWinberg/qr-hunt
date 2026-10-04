@@ -1,5 +1,8 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
+const path = require("path");
 const webpack = require("webpack");
+
+require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
 
 const appVersion = process.env.VUE_APP_VERSION || "local";
 
