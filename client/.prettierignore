@@ -3,6 +3,6 @@
 .yarn/
 coverage/
 dist/
-pnpm-lock.yaml
+package-lock.json
 public/assets/
 test-results/

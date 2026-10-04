@@ -28,7 +28,7 @@ export default defineConfigWithVueTs(
       '**/dist-ssr/**',
       '**/coverage/**',
       'eslint.config.*',
-      'pnpm-lock.yaml',
+      'package-lock.json',
       'test-results',
       'public/',
       'src/**/*.generated.*'

@@ -14,7 +14,7 @@ Also, when the development server is executed, it is checked in real time by [vi
 
 First define `VITE_APP_GOOGLE_API_KEY` in your `.env` file.
 
-Versions 1.11 and later use pnpm as the package manager.
+Use npm as the package manager (`npm install`, `npm run dev`).
 
 ## Recommended IDE Setup
 

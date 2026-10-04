@@ -13,10 +13,8 @@
     "url": "https://github.com/VictorWinberg/qr-hunt/issues"
   },
   "engines": {
-    "node": ">=22.0.1",
-    "pnpm": ">=10.3.0"
+    "node": ">=22.0.1"
   },
-  "packageManager": "pnpm@10.3.0",
   "scripts": {
     "dev": "vite",
     "clean": "rimraf ./node_modules/.vite",
@@ -97,11 +95,11 @@
     "*.{css,sass,scss,vue,htm,html}": "stylelint --fix --cache --cache-location ./node_modules/.vite/vite-plugin-stylelint",
     "*": "prettier -w -u"
   },
-  "resolutions": {
+  "overrides": {
     "json5": ">=2.2.3",
     "yaml": ">=2.3.2"
   },
   "stackblitz": {
-    "startCommand": "pnpm run test:unit"
+    "startCommand": "npm run dev"
   }
 }
