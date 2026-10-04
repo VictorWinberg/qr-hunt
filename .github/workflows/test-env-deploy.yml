@@ -1,64 +1,50 @@
 name: Test Environment - Deploy
+
 on:
   pull_request:
-    types: [ opened, synchronize, reopened ]
+    types: [opened, synchronize, reopened]
     branches:
       - master
 
+permissions:
+  contents: read
+  packages: write
+  pull-requests: write
+
 jobs:
-  deploy-test-env:
+  build:
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [14.x]
-
+    env:
+      IMAGE_TAG: preview-pr-${{ github.event.pull_request.number }}
     steps:
-    - uses: actions/checkout@v7.0.1
-      with:
-        fetch-depth: '0'
-        ref: ${{ github.head_ref }}
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ github.head_ref }}
 
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v6.4.0
-      with:
-        node-version: ${{ matrix.node-version }}
+      - run: echo "IMAGE=ghcr.io/$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_ENV"
 
-    - name: Install and cache client dependencies
-      uses: bahmutov/npm-install@v1.12.1
-      with:
-        working-directory: client
+      - uses: docker/setup-buildx-action@v3.12.0
 
-    - name: Build client
-      run: npm run build
-      working-directory: client
-      env:
-        VUE_APP_GOOGLE_API_KEY: ${{ secrets.VUE_APP_GOOGLE_API_KEY }}
+      - uses: docker/login-action@v3.7.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Install SSH key
-      uses: shimataro/ssh-key-action@v2.8.1
-      with:
-         key: ${{ secrets.SSH_PRIVATE_KEY }}
-         name: id_rsa # optional
-         known_hosts: ${{ secrets.KNOWN_HOSTS }}
-    - id: git_push
-      name: Push to Server
-      run: |
-        git remote add server git@codies.se:repos/qa.git
-        git config --global user.email "actions@github.com"
-        git config --global user.name "Github Actions"
-        git add */dist -f
-        git commit -m "Build files"
-        exec 5>&1
-        OUTPUT=$(git push --force --set-upstream server HEAD:${GITHUB_REPOSITORY}--${GITHUB_HEAD_REF} 2>&1 | tee /dev/fd/5)
-        echo "GIT_OUTPUT<<EOF" >> $GITHUB_ENV
-        echo "$OUTPUT" | grep "^remote: github:" | sed s/^remote:\ github:\ /""/g >> $GITHUB_ENV
-        echo "EOF" >> $GITHUB_ENV
+      - uses: docker/build-push-action@v6.19.2
+        with:
+          context: .
+          push: true
+          platforms: linux/arm64
+          build-args: |
+            VUE_APP_GOOGLE_API_KEY=${{ secrets.VUE_APP_GOOGLE_API_KEY }}
+            VUE_APP_VERSION=${{ env.IMAGE_TAG }}
+          tags: ${{ env.IMAGE }}:${{ env.IMAGE_TAG }}
 
-    - uses: marocchino/sticky-pull-request-comment@v2.9.4
-      if: ${{ env.GIT_OUTPUT }}
-      with:
-        header: test-env
-        append: true
-        message: |
-          ${{ env.GIT_OUTPUT }}
+  deploy:
+    needs: build
+    uses: VictorWinberg/raspberry-pi-setup/.github/workflows/preview-deploy.yml@main
+    with:
+      app: qr-hunt
+      image_tag: preview-pr-${{ github.event.pull_request.number }}
+    secrets: inherit
