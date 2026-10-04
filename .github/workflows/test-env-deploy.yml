@@ -11,7 +11,7 @@ jobs:
     uses: VictorWinberg/raspberry-pi-setup/.github/workflows/preview-deploy.yml@main
     with:
       app: qr-hunt
-      docker_build_args: |
-        VUE_APP_GOOGLE_API_KEY=${{ secrets.VUE_APP_GOOGLE_API_KEY }}
-        VUE_APP_VERSION=preview-pr-${{ github.event.pull_request.number }}
-    secrets: inherit
+    secrets:
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      KNOWN_HOSTS: ${{ secrets.KNOWN_HOSTS }}
+      VUE_APP_GOOGLE_API_KEY: ${{ secrets.VUE_APP_GOOGLE_API_KEY }}
