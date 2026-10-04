@@ -19,6 +19,8 @@ const appVersion = process.env.VITE_APP_VERSION || 'local';
  */
 export default defineConfig(({ command, mode }): UserConfig => {
   const config: UserConfig = {
+    // Load VITE_* vars from repo root .env (same as server/index.js dotenv path).
+    envDir: fileURLToPath(new URL('..', import.meta.url)),
     // https://vitejs.dev/config/shared-options.html#base
     base: './',
     // https://vitejs.dev/config/shared-options.html#define

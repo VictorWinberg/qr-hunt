@@ -316,7 +316,13 @@ onActivated(() => {
 
 onMounted(async () => {
   const key = import.meta.env.VITE_APP_GOOGLE_API_KEY;
-  if (!mapEl.value || !key) return;
+  if (!mapEl.value) return;
+  if (!key) {
+    console.error(
+      'Google Maps API key missing. Set VITE_APP_GOOGLE_API_KEY in the repo root .env file.'
+    );
+    return;
+  }
 
   const loader = new Loader({
     apiKey: key,
