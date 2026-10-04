@@ -10,10 +10,8 @@
 
 ## Environment variables
 
-There are two env-files that you need to create locally:
-- one in root dir (path: `.env`) for backend
-- one in client dir (path: `client/.env`) for frontend
-> You can copy the `.env.example` to `.env` and modify the variables as needed
+Create a root `.env` file for local development (backend runtime and frontend build-time variables).
+> Copy `.env.example` to `.env` and modify the variables as needed
 
 ### Credentials
 
