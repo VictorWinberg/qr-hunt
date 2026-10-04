@@ -32,6 +32,15 @@ export default defineConfig(({ command, mode }): UserConfig => {
         '^/auth': { target: 'http://localhost:3000', changeOrigin: false }
       }
     },
+    optimizeDeps: {
+      include: [
+        'vuetify/components/VOverlay',
+        'vuetify/components/VDialog',
+        'vuetify/components/VMenu',
+        'vuetify/components/VSelect',
+        'vuetify/components/VTooltip'
+      ]
+    },
     plugins: [
       // Vue3
       vue({
