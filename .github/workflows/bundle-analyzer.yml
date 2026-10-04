@@ -2,7 +2,7 @@ name: Bundle Analyzer
 on:
   pull_request:
     branches:
-      - beta
+      - master
     paths:
       - client/src/**
 
