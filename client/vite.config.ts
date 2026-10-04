@@ -22,7 +22,7 @@ export default defineConfig(({ command, mode }): UserConfig => {
     // Load VITE_* vars from repo root .env (same as server/index.js dotenv path).
     envDir: fileURLToPath(new URL('..', import.meta.url)),
     // https://vitejs.dev/config/shared-options.html#base
-    base: './',
+    base: '/',
     // https://vitejs.dev/config/shared-options.html#define
     define: {
       'process.env': {},
@@ -68,6 +68,9 @@ export default defineConfig(({ command, mode }): UserConfig => {
       }),
       VitePWA({
         registerType: 'autoUpdate',
+        workbox: {
+          navigateFallbackDenylist: [/^\/auth/, /^\/api/]
+        },
         manifest: {
           name: 'QR Hunt',
           short_name: 'QR Hunt',

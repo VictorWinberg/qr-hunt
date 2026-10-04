@@ -26,7 +26,7 @@ module.exports = ({ app, passport }) => {
   app.get("/auth/logout", (req, res) => {
     req.logout();
     req.session = null;
-    res.clearCookie("connect.sid");
+    res.clearCookie("session");
     res.redirect("/");
   });
 };

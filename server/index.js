@@ -21,6 +21,8 @@ const {
 
 const app = express();
 
+app.set("trust proxy", 1);
+
 sentry.init(app);
 sentry.beforeHandlers(app);
 
@@ -83,9 +85,7 @@ app.use((err, req, res, next) => achievements(err, req, res, next));
 swagger(app);
 
 app.get("*", (_, res) => {
-  res.sendFile(
-    path.resolve(__dirname, "..", "client", "dist", "index.html")
-  );
+  res.sendFile(path.resolve(__dirname, "..", "client", "dist", "index.html"));
 });
 
 app.use((err, _req, _res, next) => {
