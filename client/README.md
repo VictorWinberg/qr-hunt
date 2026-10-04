@@ -12,7 +12,7 @@ In addition, [ESLint](https://eslint.org/), [Stylelint](https://stylelint.io/), 
 
 Also, when the development server is executed, it is checked in real time by [vite-plugin-checker](https://github.com/fi3ework/vite-plugin-checker).
 
-First define `VITE_APP_GOOGLE_API_KEY` in your `.env` file.
+Copy the repo root `.env.example` to `.env` and set `VITE_APP_GOOGLE_API_KEY` there (the client loads env from the repo root, not from `client/`).
 
 Use npm as the package manager (`npm install`, `npm run dev`).
 
