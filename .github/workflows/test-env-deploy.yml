@@ -6,9 +6,45 @@ on:
     branches:
       - master
 
+permissions:
+  contents: read
+  packages: write
+  pull-requests: write
+
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      IMAGE_TAG: preview-pr-${{ github.event.pull_request.number }}
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ github.head_ref }}
+
+      - run: echo "IMAGE=ghcr.io/$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_ENV"
+
+      - uses: docker/setup-buildx-action@v3.12.0
+
+      - uses: docker/login-action@v3.7.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: docker/build-push-action@v6.19.2
+        with:
+          context: .
+          push: true
+          platforms: linux/arm64
+          build-args: |
+            VUE_APP_GOOGLE_API_KEY=${{ secrets.VUE_APP_GOOGLE_API_KEY }}
+            VUE_APP_VERSION=${{ env.IMAGE_TAG }}
+          tags: ${{ env.IMAGE }}:${{ env.IMAGE_TAG }}
+
   deploy:
-    uses: VictorWinberg/raspberry-pi-setup/.github/workflows/preview-deploy.yml@main
+    needs: build
+    uses: VictorWinberg/raspberry-pi-setup/.github/workflows/preview-deploy.yml@fix/preview-deploy-only
     with:
       app: qr-hunt
+      image_tag: preview-pr-${{ github.event.pull_request.number }}
     secrets: inherit
