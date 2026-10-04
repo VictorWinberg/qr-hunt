@@ -1,23 +1,28 @@
 <template>
-  <div @click="$emit('click')">
-    <div v-if="overlay" class="overlay"></div>
+  <div
+    role="button"
+    tabindex="0"
+    @click="$emit('click')"
+    @keydown.enter.prevent="$emit('click')"
+    @keydown.space.prevent="$emit('click')"
+  >
+    <div v-if="overlay" class="overlay" />
     <div
       v-if="count > 1"
       class="count"
-      :style="{ backgroundColor: hashColor(name) }"
+      :style="{ backgroundColor: hashColor(String(name)) }"
     >
-      <p class="count__title">
-        {{ count }}
-      </p>
+      <p class="count__title">{{ count }}</p>
     </div>
-    <div class="hex" :style="{ color: hashColor(name) }">
+    <div class="hex" :style="{ color: hashColor(String(name)) }">
       <div class="hex hex__inner">
-        <div class="hex hex__inner" :style="{ color: hashColor(name) }">
+        <div class="hex hex__inner" :style="{ color: hashColor(String(name)) }">
           <div class="hex__icon">
-            <i :class="(icon || 'fas fa-question') + ' fa-2x'"></i>
+            <i v-if="isFa" class="hex__icon-glyph" :class="[iconClass, 'fa-2x']" />
+            <v-icon v-else class="hex__icon-glyph" size="32" :icon="iconClass" />
             <div class="banner">
-              <div class="banner__text async async--text">
-                {{ title || name || ". . ." }}
+              <div class="banner__text">
+                {{ title || name || '…' }}
               </div>
             </div>
           </div>
@@ -27,45 +32,46 @@
   </div>
 </template>
 
-<script>
-import { hashColor } from "@/utils";
+<script lang="ts" setup>
+import { computed } from 'vue';
 
-export default {
-  props: {
-    name: {
-      type: String,
-      default: ""
-    },
-    title: {
-      type: String,
-      default: ""
-    },
-    icon: {
-      type: String,
-      default: ""
-    },
-    count: {
-      type: Number,
-      default: 0
-    },
-    overlay: {
-      type: Boolean,
-      default: false
-    }
-  },
-  methods: {
-    hashColor
+import { hashColor } from '@/utils/geo';
+
+const props = withDefaults(
+  defineProps<{
+    name?: string;
+    title?: string;
+    icon?: string;
+    count?: number;
+    overlay?: boolean;
+  }>(),
+  {
+    name: '',
+    title: '',
+    icon: '',
+    count: 0,
+    overlay: false
   }
-};
+);
+
+defineEmits<{ click: [] }>();
+
+const iconClass = computed(() => props.icon || 'fas fa-question');
+
+const isFa = computed(() => {
+  const i = iconClass.value;
+  return i.includes('fa-') || i.includes('fas ') || i.includes('far ');
+});
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
+
 .overlay {
   position: absolute;
   top: -50vh;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.75);
+  background-color: rgb(0 0 0 / 75%);
 }
 
 .count {
@@ -75,9 +81,9 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 16px;
-  height: 16px;
-  border: solid white 2.5px;
+  width: 20px;
+  height: 20px;
+  border: solid #fff 2.5px;
   border-radius: 50%;
 }
 
@@ -94,26 +100,26 @@ export default {
   margin: 20px 10px;
   font-size: 0.8rem;
   font-weight: bold;
-  color: $white;
-  background-color: currentColor;
+  color: #fff;
+  background-color: currentcolor;
 
   &::before,
   &::after {
     position: absolute;
-    content: "";
+    content: '';
     border-right: 35px solid transparent;
     border-left: 35px solid transparent;
   }
 
   &::before {
     top: -20px;
-    border-bottom: 20px solid currentColor;
+    border-bottom: 20px solid currentcolor;
     transform: translateY(0.1px);
   }
 
   &::after {
     bottom: -20px;
-    border-top: 20px solid currentColor;
+    border-top: 20px solid currentcolor;
     transform: translateY(-0.1px);
   }
 }
@@ -131,7 +137,15 @@ export default {
 .hex__icon {
   z-index: 1;
   margin-bottom: 1rem;
-  color: $text-color;
+  color: #eff0eb;
+}
+
+.hex__icon-glyph {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
 }
 
 .banner {
@@ -146,7 +160,9 @@ export default {
   background: #9b2;
   border: 1px solid #8a1;
   border-radius: 4px;
-  box-shadow: 0 0 30px rgba(0, 0, 0, 0.15) inset, 0 6px 10px rgba(0, 0, 0, 0.15);
+  box-shadow:
+    0 0 30px rgb(0 0 0 / 15%) inset,
+    0 6px 10px rgb(0 0 0 / 15%);
 
   &::before,
   &::after {
@@ -155,9 +171,9 @@ export default {
     left: -15px;
     z-index: -1;
     display: block;
-    width: 10px;
+    width: 18px;
     height: 0;
-    content: "";
+    content: '';
     border: 8px solid #9b2;
     border-right: 6px solid #791;
     border-bottom-color: #94b81e;

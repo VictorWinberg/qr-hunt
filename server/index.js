@@ -21,6 +21,8 @@ const {
 
 const app = express();
 
+app.set("trust proxy", 1);
+
 sentry.init(app);
 sentry.beforeHandlers(app);
 

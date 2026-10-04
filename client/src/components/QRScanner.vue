@@ -1,110 +1,117 @@
 <template>
   <div class="qr-scanner-wrapper">
     <div class="qr-scanner">
-      <div class="qr-scanner__camera">
-        <i class="fas fa-camera-retro"></i>
-        {{ $t("scanner.title") }}
+      <div class="qr-scanner__camera text-h6">
+        <v-icon start icon="mdi-camera" />
+        {{ t('scanner.title') }}
       </div>
-      <div v-if="hasFlash" class="qr-scanner__flash" @click="toggleFlash">
-        <i v-if="flashOn" class="fas fa-bolt"></i>
-        <i v-else class="far fa-bolt"></i>
-      </div>
+      <v-btn v-if="hasFlash" class="qr-scanner__flash" icon variant="text" @click="toggleFlash">
+        <v-icon :icon="flashOn ? 'mdi-flash' : 'mdi-flash-off'" />
+      </v-btn>
     </div>
-    <div class="qrscan"><video id="qrscan" ref="qrscan"></video></div>
+    <div class="qrscan">
+      <video id="qrscan" ref="qrscan">
+        <track kind="captions" label="empty" />
+      </video>
+    </div>
   </div>
 </template>
 
-<script>
-import Vue from "vue";
-import { mapState, mapMutations, mapActions } from "vuex";
-import QRScanner from "qr-scanner";
+<script setup lang="ts">
+import { storeToRefs } from 'pinia';
+import { onMounted, onUnmounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRoute, useRouter } from 'vue-router';
 
-import { QR_SPOT_PANEL } from "@/constants";
-import { findCamera } from "@/utils";
+import QrScanner from 'qr-scanner';
+import workerUrl from 'qr-scanner/qr-scanner-worker.min.js?url';
 
-// eslint-disable-next-line import/no-webpack-loader-syntax
-import QRScannerWorkerPath from "!!file-loader!../../node_modules/qr-scanner/qr-scanner-worker.min.js";
-QRScanner.WORKER_PATH = QRScannerWorkerPath;
+import { QR_SPOT_PANEL } from '@/constants';
+import useDialog from '@/store/DialogStore';
+import useQrSpot from '@/store/QrSpotStore';
+import useScan from '@/store/ScanStore';
+import { findCamera } from '@/utils/geo';
 
-export default Vue.extend({
-  name: "QRScanner",
-  data() {
-    return {
-      hasFlash: false,
-      flashOn: false,
-      scanner: undefined,
-      timeout: -1,
-      timeoutMs: 10 * 1000
-    };
-  },
-  computed: {
-    ...mapState("scan", ["scanning"])
-  },
-  created() {
-    const { query } = this.$route;
-    if (this.$route.path !== "/") this.$router.push({ path: "/", query });
+QrScanner.WORKER_PATH = workerUrl;
 
-    this.$store.commit("popup/setPopup", false);
-    this.$store.commit("qrSpot/setModalState", QR_SPOT_PANEL.HIDE);
+const { t } = useI18n();
+const route = useRoute();
+const router = useRouter();
+const scanStore = useScan();
+const qrStore = useQrSpot();
+const dialog = useDialog();
+const { scanning } = storeToRefs(scanStore);
 
-    // DEV ONLY
-    if (query.qrcode) {
-      setTimeout(() => {
-        this.handleQR(query.qrcode);
-        this.stopScan();
-      }, 600);
-    }
-  },
-  mounted() {
-    if (!this.scanning) return;
+const qrscan = ref<HTMLVideoElement | null>(null);
+const hasFlash = ref(false);
+const flashOn = ref(false);
+let scanner: QrScanner | undefined;
+let timeout = -1;
+const timeoutMs = 10 * 1000;
 
-    this.initScanner();
-  },
-  beforeDestroy() {
-    this.scanner && this.scanner.destroy();
-    clearTimeout(this.timeout);
-  },
-  methods: {
-    ...mapMutations("scan", ["stopScan"]),
-    ...mapActions("scan", ["handleQR"]),
-    async initScanner() {
-      await navigator.mediaDevices.getUserMedia({ audio: false, video: true });
-      const devices = await navigator.mediaDevices.enumerateDevices();
-      const camera = findCamera(devices);
-      const { qrscan } = this.$refs;
-      if (!camera.deviceId || !qrscan) return;
-
-      this.scanner = new QRScanner(
-        qrscan,
-        qrcode => {
-          if (qrcode) {
-            this.handleQR(qrcode);
-            this.stopScan();
-            clearTimeout(this.timeout);
-          }
-        },
-        QRScanner._onDecodeError,
-        QRScanner._calculateScanRegion,
-        camera.deviceId
-      );
-      await this.scanner.start();
-      this.hasFlash = await this.scanner.hasFlash();
-
-      this.timeout = window.setTimeout(() => {
-        this.handleQR(null);
-        this.stopScan();
-      }, this.timeoutMs);
-    },
-    async toggleFlash() {
-      if (!this.scanner) return;
-      await this.scanner.toggleFlash();
-      this.flashOn = !this.flashOn;
-    }
+onMounted(async () => {
+  if (route.path !== '/') {
+    await router.replace({ path: '/', query: route.query });
   }
+  dialog.close();
+  qrStore.setModalState(QR_SPOT_PANEL.HIDE);
+
+  const qrcode = route.query.qrcode;
+  if (typeof qrcode === 'string' && qrcode) {
+    setTimeout(() => {
+      void scanStore.handleQR(qrcode);
+      scanStore.stopScan();
+    }, 600);
+    return;
+  }
+
+  if (!scanning.value) return;
+  await initScanner();
 });
+
+onUnmounted(() => {
+  scanner?.destroy();
+  window.clearTimeout(timeout);
+});
+
+async function initScanner(): Promise<void> {
+  await navigator.mediaDevices.getUserMedia({ audio: false, video: true });
+  const devices = await navigator.mediaDevices.enumerateDevices();
+  const camera = findCamera(devices);
+  const el = qrscan.value;
+  if (!camera?.deviceId || !el) return;
+
+  scanner = new QrScanner(
+    el,
+    (result: string | { data: string }) => {
+      const qrcode = typeof result === 'string' ? result : result.data;
+      if (qrcode) {
+        void scanStore.handleQR(qrcode);
+        scanStore.stopScan();
+        window.clearTimeout(timeout);
+      }
+    },
+    () => {},
+    undefined,
+    camera.deviceId
+  );
+  await scanner.start();
+  hasFlash.value = await scanner.hasFlash();
+
+  timeout = window.setTimeout(() => {
+    void scanStore.handleQR(null);
+    scanStore.stopScan();
+  }, timeoutMs);
+}
+
+async function toggleFlash(): Promise<void> {
+  if (!scanner) return;
+  await scanner.toggleFlash();
+  flashOn.value = !flashOn.value;
+}
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 .qr-scanner-wrapper {
   position: absolute;
   right: 0;
@@ -112,47 +119,43 @@ export default Vue.extend({
   left: 0;
   z-index: 5;
   overflow: hidden;
-  background: $secondary-color;
+  background: #575759;
   animation: slide-up 1s forwards;
+}
 
-  .qr-scanner {
-    position: relative;
-    z-index: 1;
+.qr-scanner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+
+  &::after {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
-    height: 100%;
+    height: 20px;
+    pointer-events: none;
+    content: '';
+    background-color: rgb(239 240 235 / 50%);
+    box-shadow: 0 0 50px #eff0eb;
+    animation: scanning 5s infinite cubic-bezier(0.7, 0.3, 0.3, 0.7) 1s;
+  }
 
-    &::after {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 20px;
-      content: "";
-      background-color: rgba($text-color, 0.5);
-      box-shadow: 0 0 50px $text-color;
-      animation: scanning 5s infinite cubic-bezier(0.7, 0.3, 0.3, 0.7);
-      animation-delay: 1s;
-    }
+  .qr-scanner__camera {
+    position: absolute;
+    top: 20px;
+    right: 0;
+    left: 0;
+    font-weight: 700;
+    text-align: center;
+    text-transform: uppercase;
+  }
 
-    .qr-scanner__camera {
-      position: absolute;
-      top: 20px;
-      right: 0;
-      left: 0;
-      font-size: 2rem;
-      font-weight: bold;
-      text-transform: uppercase;
-    }
-
-    .qr-scanner__flash {
-      position: absolute;
-      top: 0;
-      right: 0;
-      width: 40px;
-      height: 40px;
-      padding: 20px;
-      font-size: 2rem;
-    }
+  .qr-scanner__flash {
+    position: absolute;
+    top: 8px;
+    right: 8px;
   }
 }
 

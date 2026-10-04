@@ -1,182 +1,78 @@
 <template>
-  <div
-    style="width: 240px; height: 50px;"
-    class="abcRioButton abcRioButtonBlue"
-    @click="handleClick"
-  >
-    <div class="abcRioButtonContentWrapper">
-      <div class="abcRioButtonIcon" style="padding: 15px;">
-        <div
-          style="width: 18px; height: 18px;"
-          class="abcRioButtonSvgImageWithFallback abcRioButtonIconImage abcRioButtonIconImage18"
-        >
-          <img alt="Google Logo" :src="require('@/assets/google.svg')" />
-        </div>
-      </div>
-      <span
-        style="font-size: 16px; line-height: 48px;"
-        class="abcRioButtonContents"
-      >
-        <span>{{ $t("google.sign-in") }}</span>
-      </span>
-    </div>
-  </div>
+  <a href="/auth/google" class="g-btn">
+    <span class="g-btn__icon">
+      <img alt="" :src="googleLogo" width="18" height="18" />
+    </span>
+    <span class="g-btn__label">{{ t('google.sign-in') }}</span>
+  </a>
 </template>
 
-<script>
-export default {
-  methods: {
-    handleClick() {
-      window.location.href = "/auth/google";
-    }
-  }
-};
+<script setup lang="ts">
+import { useI18n } from 'vue-i18n';
+
+import googleLogo from '@/assets/google.svg';
+
+const { t } = useI18n();
 </script>
 
-<style>
-.abcRioButton {
-  position: relative;
+<style scoped>
+.g-btn,
+.g-btn:visited {
   box-sizing: border-box;
-  width: auto;
-  margin: auto;
+  display: flex;
+  align-items: stretch;
+  width: 240px;
+  max-width: 100%;
+  min-height: 50px;
+  margin-inline: auto;
+  padding: 0;
   overflow: hidden;
-  color: #262626;
-  text-align: center;
-  white-space: nowrap;
-  vertical-align: middle;
-  cursor: pointer;
-  -webkit-user-select: none;
-  background-color: #fff;
-  background-image: none;
-  border-radius: 1px;
-  outline: none;
-  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.25);
-  transition: background-color 0.218s, border-color 0.218s, box-shadow 0.218s;
-  -webkit-appearance: none;
-}
-
-.abcRioButton:hover {
-  box-shadow: 0 0 3px 3px rgba(66, 133, 244, 0.3);
-}
-
-.abcRioButtonBlue {
   color: #fff;
+  font: inherit;
+  text-decoration: none;
+  text-transform: none;
+  white-space: nowrap;
+  cursor: pointer;
   background-color: #4285f4;
-  border: none;
+  border-radius: 1px;
+  box-shadow: 0 2px 4px 0 rgb(0 0 0 / 25%);
+  transition:
+    background-color 0.218s,
+    box-shadow 0.218s;
 }
 
-.abcRioButtonBlue:hover {
-  background-color: #4285f4;
+.g-btn:hover {
+  box-shadow: 0 0 3px 3px rgb(66 133 244 / 30%);
 }
 
-.abcRioButtonBlue:active {
+.g-btn:active {
   background-color: #3367d6;
 }
 
-.abcRioButtonLightBlue {
-  color: #757575;
-  background-color: #fff;
+.g-btn:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
 }
 
-.abcRioButtonLightBlue:active {
-  color: #6d6d6d;
-  background-color: #eee;
+.g-btn__icon,
+.g-btn__label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.abcRioButtonIcon {
-  float: left;
-}
-
-.abcRioButtonBlue .abcRioButtonIcon {
+.g-btn__icon {
+  flex-shrink: 0;
+  width: 48px;
   background-color: #fff;
   border-radius: 1px;
 }
 
-.abcRioButtonSvg {
-  display: block;
-}
-
-.abcRioButtonContents {
-  margin-right: 6px;
-  margin-left: 6px;
+.g-btn__label {
+  flex: 1;
   font-family: Roboto, arial, sans-serif;
-  font-size: 1rem;
+  font-size: 16px;
   font-weight: 500;
   letter-spacing: 0.21px;
-  vertical-align: top;
-}
-
-.abcRioButtonContentWrapper {
-  width: 100%;
-  height: 100%;
-}
-
-.abcRioButtonBlue .abcRioButtonContentWrapper {
-  border: 1px solid transparent;
-}
-
-.abcRioButtonErrorWrapper,
-.abcRioButtonWorkingWrapper {
-  display: none;
-  width: 100%;
-  height: 100%;
-}
-
-.abcRioButtonErrorIcon,
-.abcRioButtonWorkingIcon {
-  margin-right: auto;
-  margin-left: auto;
-}
-
-.abcRioButtonErrorState,
-.abcRioButtonWorkingState {
-  color: #262626;
-  border: 1px solid #d5d5d5;
-  border: 1px solid rgba(0, 0, 0, 0.17);
-  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.05);
-}
-
-.abcRioButtonErrorState,
-.abcRioButtonErrorState:hover {
-  background-color: #fff;
-}
-
-.abcRioButtonWorkingState,
-.abcRioButtonWorkingState:hover {
-  background-color: #f5f5f5;
-}
-
-.abcRioButtonErrorState:hover,
-.abcRioButtonWorkingState:hover {
-  border: 1px solid #aaa;
-  border: 1px solid rgba(0, 0, 0, 0.25);
-  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
-}
-
-.abcRioButtonErrorState:active,
-.abcRioButtonWorkingState:active {
-  color: #262626;
-  border: 1px solid #aaa;
-  border: 1px solid rgba(0, 0, 0, 0.25);
-  box-shadow: inset 0 1px 0 #ddd;
-}
-
-.abcRioButtonWorkingState:active {
-  background-color: #e5e5e5;
-}
-
-.abcRioButtonErrorState:active {
-  background-color: #e5e5e5;
-}
-
-.abcRioButtonWorkingState .abcRioButtonWorkingWrapper,
-.abcRioButtonErrorState .abcRioButtonErrorWrapper {
-  display: block;
-}
-
-.abcRioButtonErrorState .abcRioButtonContentWrapper,
-.abcRioButtonWorkingState .abcRioButtonContentWrapper,
-.abcRioButtonErrorState .abcRioButtonWorkingWrapper {
-  display: none;
 }
 </style>

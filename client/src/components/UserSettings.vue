@@ -1,138 +1,91 @@
 <template>
   <div>
-    <h2 class="settings__title">
-      {{ $t("settings.title") }}
-    </h2>
-    <div class="settings__buttons">
-      <a href="/?intro=start" class="help-me">
-        {{ $t("settings.help-option") }}
-      </a>
-
-      <div class="select-language">
-        {{ $t("settings.language-option") }}
-        <select :value="user.locale" @change="setLocale">
-          <option :value="null">
-            {{ $t("settings.browser-language") }}
-          </option>
-          <option
-            v-for="(locale, i) in locales"
-            :key="`locale-${i}`"
-            :value="locale"
-          >
-            {{ locale }}
-          </option>
-        </select>
-      </div>
-
-      <a href="/auth/logout" class="log-out">
-        {{ $t("settings.logout-option") }}
-      </a>
-      <a class="user-remove" @click="deleteMe">
-        {{ $t("settings.delete-account-option") }}
-      </a>
+    <h2 class="text-h6 mb-4 text-center">{{ t('settings.title') }}</h2>
+    <div class="d-flex flex-column ga-3">
+      <v-btn block color="primary" href="/?intro=start" prepend-icon="mdi-help-circle-outline" variant="flat">
+        {{ t('settings.help-option') }}
+      </v-btn>
+      <v-select
+        :model-value="user.locale ?? null"
+        hide-details
+        item-title="title"
+        item-value="value"
+        :items="localeItems"
+        :label="t('settings.language-option')"
+        variant="outlined"
+        @update:model-value="setLocale"
+      />
+      <v-btn block color="primary" href="/auth/logout" prepend-icon="mdi-logout" variant="flat">
+        {{ t('settings.logout-option') }}
+      </v-btn>
+      <v-btn
+        block
+        color="error"
+        prepend-icon="mdi-delete-forever"
+        variant="flat"
+        @click="deleteMe"
+      >
+        {{ t('settings.delete-account-option') }}
+      </v-btn>
     </div>
   </div>
 </template>
 
-<script>
-import { mapState, mapMutations } from "vuex";
-import { api } from "@/utils";
-import i18n from "@/plugins/i18n";
-import { languages } from "../locales";
+<script lang="ts" setup>
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
 
-export default {
-  data() {
-    return {
-      locales: languages || []
-    };
-  },
-  computed: {
-    ...mapState("user", ["user"])
-  },
-  methods: {
-    ...mapMutations("user", ["setAuth"]),
-    async setLocale(event) {
-      const locale = event.target.value || null;
-      if (locale) {
-        i18n.locale = locale;
-      } else {
-        i18n.locale = navigator.language.split("-")[0];
-      }
-      await api.put("/api/user", { body: JSON.stringify({ locale }) });
-    },
-    async deleteMe() {
-      this.$store.commit("popup/setPopup", {
-        title: "Delete account",
-        subtitle: "Are you sure you want to delete your account?",
-        options: [
-          {
-            name: "Cancel",
-            type: "disabled",
-            action: async () => {
-              this.$store.commit("popup/setPopup", false);
-            }
-          },
-          {
-            name: "Delete",
-            type: "danger",
-            action: async () => {
-              this.$store.commit("popup/setPopup", false);
+import { languages } from '@/locales/languages';
+import { loadDayjsLocale } from '@/plugins/dayjs';
+import useDialog from '@/store/DialogStore';
+import useUser from '@/store/UserStore';
+import { api } from '@/utils/api';
 
-              const user = await api.delete("/api/user");
-              if (user.err) return;
+const { t, locale } = useI18n();
+const router = useRouter();
+const userStore = useUser();
+const dialog = useDialog();
 
-              this.setAuth({ isAuthenticated: false });
-              this.$router.push("/");
-            }
-          }
-        ]
-      });
-    }
+const user = computed(() => userStore.user);
+
+const localeItems = computed(() => [
+  { title: t('settings.browser-language'), value: null },
+  ...languages.map(l => ({ title: l, value: l }))
+]);
+
+async function setLocale(value: string | null): Promise<void> {
+  if (value) {
+    locale.value = value;
+  } else {
+    locale.value = navigator.language.split('-')[0] ?? 'en';
   }
-};
+  loadDayjsLocale(locale.value);
+  await api.put('/api/user', { body: JSON.stringify({ locale: value }) });
+}
+
+function deleteMe(): void {
+  dialog.setDialog({
+    title: 'Delete account',
+    subtitle: 'Are you sure you want to delete your account?',
+    options: [
+      {
+        name: 'Cancel',
+        type: 'disabled',
+        action: async () => dialog.close()
+      },
+      {
+        name: 'Delete',
+        type: 'danger',
+        action: async () => {
+          dialog.close();
+          const res = await api.delete('/api/user');
+          if (res.err) return;
+          userStore.setAuth({ isAuthenticated: false });
+          await router.push('/');
+        }
+      }
+    ]
+  });
+}
 </script>
-
-<style lang="scss">
-.settings__buttons {
-  display: flex;
-  flex-direction: column;
-  margin-top: auto;
-  margin-bottom: 20px;
-}
-
-select {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  font-size: 0;
-  background-color: transparent;
-  border: none;
-  appearance: none;
-}
-
-.select-language,
-.user-remove,
-.help-me,
-.log-out {
-  position: relative;
-  display: block;
-  padding: 1rem 2rem;
-  margin: 1rem;
-  color: white;
-  text-decoration: none;
-  text-transform: uppercase;
-  cursor: pointer;
-}
-
-.select-language,
-.help-me,
-.log-out {
-  background: $grey-800;
-}
-
-.user-remove {
-  background: $danger;
-}
-</style>

@@ -1,55 +1,63 @@
 <template>
   <div class="view-wrapper">
     <div class="view-note">{{ qrSpot.note }}</div>
-    <div
-      v-if="qrSpot.hint"
-      class="hint-card"
-      :class="{ 'show-hint': showHint }"
-      @click="flipHint()"
-    >
-      <div class="hint-card__question">
-        {{ $t("qr-spot.view-hint-question") }}
-      </div>
-      <div class="hint-card__answer">
-        <transition name="fade-slow">
-          <div v-if="showHint" class="hint-card__answer-text">
-            {{ qrSpot.hint }}
-          </div>
-        </transition>
+    <div v-if="qrSpot.hint" class="hint-scene">
+      <div
+        class="hint-card"
+        :class="{ 'hint-card--show-hint': showHint }"
+        role="button"
+        tabindex="0"
+        @click="flipHint"
+        @keydown.enter.prevent="flipHint"
+        @keydown.space.prevent="flipHint"
+      >
+        <div class="hint-card__question">
+          {{ t('qr-spot.view-hint-question') }}
+        </div>
+        <div class="hint-card__answer">
+          <transition name="fade-slow">
+            <div v-if="showHint" class="hint-card__answer-text">
+              {{ qrSpot.hint }}
+            </div>
+          </transition>
+        </div>
       </div>
     </div>
-    <div class="last-visited" v-if="qrSpot.lastVisitedAt">
-      {{ $t("qr-spot.last-visited") }} {{ formatRelativeTime(qrSpot.lastVisitedAt) }}
+    <div v-if="qrSpot.lastVisitedAt" class="last-visited text-body-2">
+      {{ t('qr-spot.last-visited') }} {{ formatRelativeTime(qrSpot.lastVisitedAt) }}
     </div>
   </div>
 </template>
 
-<script>
-import Vue from "vue";
-import { mapState } from "vuex";
-import dayjs from "@/plugins/dayjs";
+<script setup lang="ts">
+import { storeToRefs } from 'pinia';
+import { ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-export default Vue.extend({
-  data() {
-    return {
-      showHint: false
-    };
-  },
-  computed: {
-    ...mapState("qrSpot", ["qrSpot"])
-  },
-  methods: {
-    flipHint() {
-      this.showHint = !this.showHint;
-    },
-    formatRelativeTime(date) {
-      return dayjs(date).fromNow();
-    }
-  }
-});
+import dayjs from '@/plugins/dayjs';
+import useQrSpot from '@/store/QrSpotStore';
+
+const { t } = useI18n();
+const { qrSpot } = storeToRefs(useQrSpot());
+const showHint = ref(false);
+
+function flipHint(): void {
+  showHint.value = !showHint.value;
+}
+
+function formatRelativeTime(iso: string): string {
+  return dayjs(iso).fromNow();
+}
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
+// Match legacy client `client/src/assets/scss/_variables.scss` hint card palette
+$hint-question-text: #eff0eb;
+$hint-question-bg: #966840;
+$hint-answer-text: #966840;
+$hint-answer-bg: #242424;
+$muted-text-color: #9e9e9e;
+
 .view-wrapper {
   display: flex;
   flex-direction: column;
@@ -59,20 +67,29 @@ export default Vue.extend({
 .view-note {
   max-width: 100%;
   margin-top: 1em;
-  word-wrap: break-word;
+  overflow-wrap: anywhere;
   white-space: pre-line;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.hint-scene {
+  margin-top: 1em;
+  perspective: 900px;
 }
 
 .hint-card {
+  position: relative;
   width: 300px;
   height: 3em;
-  margin-top: 1em;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  box-shadow: 0 4px 8px 0 rgb(0 0 0 / 20%);
   transition: transform 1s;
   transform-style: preserve-3d;
 }
 
-.hint-card.show-hint {
+.hint-card--show-hint {
   transform: rotateY(180deg);
 }
 
@@ -89,24 +106,37 @@ export default Vue.extend({
 }
 
 .hint-card__question {
-  color: $text-color;
-  background-color: $dark-brand-color;
+  color: $hint-question-text;
+  background-color: $hint-question-bg;
 }
 
 .hint-card__answer {
-  color: $dark-brand-color;
-  background-color: $primary-color;
+  color: $hint-answer-text;
+  background-color: $hint-answer-bg;
   transform: rotateY(180deg);
 }
 
 .hint-card__answer-text {
   max-height: 100%;
-  overflow: scroll;
+  padding: 0 0.5rem;
+  overflow: auto;
+  text-align: center;
 }
 
 .last-visited {
-  margin-top: 1em;
-  font-size: 0.9em;
-  color: gray;
+  margin-top: 1rem;
+  color: $muted-text-color;
+}
+
+.fade-slow-enter-active,
+.fade-slow-leave-active {
+  transition: opacity;
+  transition-delay: 1s;
+  transition-duration: 2s;
+}
+
+.fade-slow-enter-from,
+.fade-slow-leave-to {
+  opacity: 0;
 }
 </style>

@@ -1,402 +1,529 @@
 <template>
-  <GmapMap
-    ref="mapRef"
-    :center="mapCoords"
-    :zoom="mapZoom"
-    :options="{
-      mapId: '153063bbe11287f1',
-      gestureHandling: 'greedy',
-      zoomControl: true,
-      zoomControlOptions: { position: 3 },
-      scaleControl: false,
-      rotateControl: false,
-      mapTypeControl: false,
-      fullscreenControl: false,
-      clickableIcons: false,
-      draggable: panel !== QR_SPOT_PANEL.SHOW_DETAILS
-    }"
-    :class="
-      panel == QR_SPOT_PANEL.SHOW_DETAILS ? 'collapsed-map' : 'expanded-map'
-    "
-    @click="deselect"
-    @dragend="handleDrag"
-    @zoom_changed="handleZoom"
-    @heading_changed="heading => (mapHeading = heading)"
-    @tilt_changed="tilt => (mapTilt = tilt)"
-  >
-    <GmapInfoWindow
-      :options="infoWindow.options"
-      :position="infoWindow.coords"
-      :opened="infoWindow.open"
-      @closeclick="infoWindow.open = false"
-    />
-
-    <GmapMarker
-      v-if="userCoords"
-      :position="userCoords"
-      :z-index="100"
-      :icon="{
-        url: require('@/assets/position-marker.svg'),
-        anchor: { x: 12, y: 12 }
-      }"
-      @click="centerMapToUser"
-    />
-    <GmapMarker
-      v-else
-      :position="{ lat: 0, lng: 0 }"
-      :z-index="100"
-      :icon="{
-        url: require('@/assets/spinner.svg'),
-        anchor: { x: 50, y: 50 },
-        scaledSize: { width: 100, height: 100 }
-      }"
-      :label="{
-        text: 'Please enable location access',
-        fontSize: '1rem',
-        color: '#242424'
-      }"
-      @click="centerMapToUser"
-    />
-
-    <GmapCircle
-      v-if="userCoords"
-      :center="userCoords"
-      :radius="20"
-      :options="{
-        clickable: false,
-        fillColor: '#0042FF',
-        fillOpacity: '0.15',
-        strokeColor: '#FFFFFF',
-        strokeOpacity: '0.5',
-        strokeWeight: '2'
-      }"
-    />
-
-    <GmapMarker
-      v-for="(marker, index) in markers"
-      :key="index"
-      :position="{ lat: Number(marker.lat), lng: Number(marker.lng) }"
-      :clickable="panel !== QR_SPOT_PANEL.SHOW_DETAILS"
-      :icon="getIcon(marker)"
-      @click="() => select(marker)"
-    />
-
-    <GmapCircle
-      v-for="(marker, index) in markers.filter(m => !m.missing)"
-      :key="`${index}-c`"
-      :center="{ lat: Number(marker.lat), lng: Number(marker.lng) }"
-      :radius="15"
-      :options="{
-        clickable: false,
-        fillColor: '#54341f',
-        fillOpacity: '0.2',
-        strokeColor: '#54341f',
-        strokeOpacity: '0.5',
-        strokeWeight: '2'
-      }"
-    />
-
-    <GmapMarker
-      v-for="(marker, index) in recent(markers)"
-      :key="`${index}-o`"
-      :position="{ lat: Number(marker.lat), lng: Number(marker.lng) }"
-      :clickable="false"
-      :icon="{
-        url: require('@/assets/puff.svg'),
-        anchor: { x: 32, y: 32 },
-        scaledSize: { width: 64, height: 64 }
-      }"
-    />
-
-    <div id="streak-button" class="control-button" @click="explainStreak">
-      <div class="control-button__streak" :class="{ 'no-streak': !showStreak }">
-        <Flame v-if="showStreak" />
-        <p class="control-button__streak__count">
-          {{ user.streak }}
-        </p>
-      </div>
-    </div>
-
-    <div id="position-button" class="control-button" @click="centerMapToUser">
-      <img
-        alt="My Location"
-        class="control-button__icon"
-        :src="require('@/assets/position-button.svg')"
-      />
-    </div>
-
-    <div id="compass-button" class="control-button" @click="resetHeading">
-      <div
-        class="control-button__inner"
-        :style="`transform: rotateX(-${mapTilt}deg)`"
+  <div class="map-shell" :class="shellClass">
+    <div ref="mapEl" class="map-canvas" />
+    <div class="map-ui map-ui--lb">
+      <v-btn id="streak-button" class="control-button" icon variant="flat" @click="explainStreak">
+        <div class="streak-wrap" :class="{ 'streak-wrap--dim': !showStreak }">
+          <flame v-if="showStreak" />
+          <span class="streak-count">{{ user.streak ?? 0 }}</span>
+        </div>
+      </v-btn>
+      <v-btn
+        id="position-button"
+        class="control-button"
+        icon
+        variant="flat"
+        @click="centerMapToUser()"
       >
-        <img
-          :style="`transform: rotate(-${mapHeading}deg)`"
-          alt="Compass"
-          class="control-button__icon"
-          :src="require('@/assets/compass.svg')"
-        />
-      </div>
+        <v-img :src="positionBtn" alt="" width="28" height="28" contain />
+      </v-btn>
     </div>
-  </GmapMap>
+    <div class="map-ui map-ui--tl">
+      <v-btn id="compass-button" class="control-button" icon variant="flat" @click="resetHeading">
+        <div class="compass-tilt" :style="tiltStyle">
+          <v-img :src="compassImg" alt="" width="28" height="28" contain :style="headingStyle" />
+        </div>
+      </v-btn>
+    </div>
+  </div>
 </template>
 
-<script>
-import Vue from "vue";
-import { mapState, mapMutations, mapActions } from "vuex";
-import { EVENT_TYPE, QR_SPOT_MODE, QR_SPOT_PANEL } from "@/constants";
-import { api } from "@/utils";
-import Flame from "@/components/Flame";
-import EventBus from "@/plugins/event-bus";
-import { now } from "@/plugins/dayjs";
+<script setup lang="ts">
+import { storeToRefs } from 'pinia';
+import { computed, nextTick, onActivated, onMounted, onUnmounted, ref, watch } from 'vue';
 
-export default Vue.extend({
-  components: {
-    Flame
-  },
-  data() {
-    const { mapCoords, mapZoom } = localStorage;
-    return {
-      infoWindow: {
-        coords: null,
-        open: false,
-        options: {
-          content: "",
-          pixelOffset: {
-            width: 0,
-            height: -35
-          }
-        }
-      },
-      mapCoords: mapCoords ? JSON.parse(mapCoords) : { lat: 0, lng: 0 },
-      mapZoom: mapZoom ? Number(mapZoom) : 14,
-      mapHeading: 0,
-      mapTilt: 0,
-      QR_SPOT_MODE,
-      QR_SPOT_PANEL,
-      markers: [],
-      zoomChange: -1
-    };
-  },
-  computed: {
-    ...mapState("qrSpot", ["map", "qrSpot", "mode", "panel"]),
-    ...mapState("user", ["user"]),
-    ...mapState({ userCoords: state => state.user.coords }),
-    showStreak() {
-      return this.user.streak > 2;
-    }
-  },
-  watch: {
-    mapCoords(newCoords) {
-      localStorage.setItem("mapCoords", JSON.stringify(newCoords));
-    },
-    mapZoom(newZoom) {
-      localStorage.setItem("mapZoom", newZoom);
-    },
-    panel() {
-      if (this.panel === QR_SPOT_PANEL.SHOW_DETAILS) {
-        const position =
-          this.mode === this.QR_SPOT_MODE.CREATE
-            ? this.userCoords
-            : this.qrSpot;
-        setTimeout(
-          () =>
-            this.map.panTo(new google.maps.LatLng(position.lat, position.lng)),
-          200
-        );
-      }
-    }
-  },
-  created() {
-    this.fetchQRSpots();
-    EventBus.$on(EVENT_TYPE.QR_SPOTS_UPDATE, this.fetchQRSpots);
-  },
-  beforeDestroy() {
-    EventBus.$off(EVENT_TYPE.QR_SPOTS_UPDATE, this.fetchQRSpots);
-  },
-  async mounted() {
-    const map = await this.$refs.mapRef.$mapPromise;
-    this.setMap(map);
-    this.watchCurrentPosition();
-    this.createMapElements();
-  },
-  methods: {
-    ...mapMutations("qrSpot", ["setMap"]),
-    ...mapMutations("user", ["setCoords"]),
-    ...mapActions("qrSpot", ["select", "deselect"]),
-    async fetchQRSpots() {
-      const qrspots = await api.get("/api/qrspots");
-      if (!qrspots.err) this.markers = qrspots.data;
-    },
-    createMapElements() {
-      /** Create button for centering position at user */
-      const {
-        TOP_LEFT,
-        RIGHT_BOTTOM,
-        LEFT_BOTTOM
-      } = google.maps.ControlPosition;
-      const myStreak = document.getElementById("streak-button");
-      const positionControl = document.getElementById("position-button");
-      const compassControl = document.getElementById("compass-button");
+import { Loader } from '@googlemaps/js-api-loader';
 
-      this.map.controls[LEFT_BOTTOM].push(myStreak);
-      this.map.controls[RIGHT_BOTTOM].push(positionControl);
-      this.map.controls[TOP_LEFT].push(compassControl);
-    },
-    handleDrag() {
-      if (!this.map) return;
-      const center = this.map.getCenter();
-      this.mapCoords = { lat: center.lat(), lng: center.lng() };
-    },
-    handleZoom(zoom) {
-      clearTimeout(this.zoomChange);
-      this.zoomChange = setTimeout(() => {
-        this.mapZoom = zoom;
-      }, 1000);
-    },
-    watchCurrentPosition() {
-      const watchOptions = {
-        timeout: 60 * 60 * 1000,
-        maxAge: 0,
-        enableHighAccuracy: true
-      };
+import compassImg from '@/assets/compass.svg?url';
+import positionBtn from '@/assets/position-button.svg?url';
+import positionMarker from '@/assets/position-marker.svg?url';
+import puff from '@/assets/puff.svg?url';
+import markerFree from '@/assets/qr-spot-marker--free.svg?url';
+import markerMissing from '@/assets/qr-spot-marker--missing.svg?url';
+import markerNew from '@/assets/qr-spot-marker--new.svg?url';
+import markerUsed from '@/assets/qr-spot-marker--used.svg?url';
+import spinner from '@/assets/spinner.svg?url';
+import Flame from '@/components/Flame.vue';
+import { QR_SPOT_MODE, QR_SPOT_PANEL } from '@/constants';
+import { now } from '@/plugins/dayjs';
+import useDialog from '@/store/DialogStore';
+import useQrSpot from '@/store/QrSpotStore';
+import useUser from '@/store/UserStore';
+import { api } from '@/utils/api';
+import { onQrSpotsUpdate } from '@/utils/app-events';
 
-      navigator.geolocation.getCurrentPosition(
-        ({ coords }) => {
-          this.setCoords(coords);
-          this.centerMapToUser({ zoom: false });
-        },
-        // eslint-disable-next-line no-console
-        console.error,
-        watchOptions
-      );
-      navigator.geolocation.watchPosition(
-        ({ coords }) => this.setCoords(coords),
-        // eslint-disable-next-line no-console
-        console.error,
-        watchOptions
-      );
-    },
-    getIcon({ missing, collectedAt }) {
-      if (missing) {
-        return require("@/assets/qr-spot-marker--missing.svg");
-      }
-      if (!collectedAt) {
-        return require("@/assets/qr-spot-marker--new.svg");
-      }
-      if (now().isSame(collectedAt, "day")) {
-        return require("@/assets/qr-spot-marker--used.svg");
-      }
-      return require("@/assets/qr-spot-marker--free.svg");
-    },
-    centerMapToUser({ zoom = true }) {
-      if (!this.userCoords) return;
-      this.map.panTo(new google.maps.LatLng(this.userCoords));
-      localStorage.setItem("mapCoords", JSON.stringify(this.userCoords));
-      if (zoom && this.map.zoom < 15) this.map.setZoom(15);
-    },
-    explainStreak() {
-      this.$store.commit("popup/setPopup", {
-        title: "Your streak",
-        subtitle:
-          "This number shows how many days in a row you have collected a QR shard. 🔥",
-        options: [
-          {
-            name: "OK, got it!",
-            type: "success",
-            action: async () => {
-              this.$store.commit("popup/setPopup", false);
-            }
-          }
-        ]
+interface QrMarker {
+  lat: string | number;
+  lng: string | number;
+  missing?: boolean;
+  collectedAt?: string | null;
+  lastVisitedAt?: string | null;
+}
+
+const mapEl = ref<HTMLElement | null>(null);
+const mapCoords = ref<{ lat: number; lng: number }>(
+  localStorage.getItem('mapCoords')
+    ? JSON.parse(localStorage.getItem('mapCoords')!)
+    : { lat: 0, lng: 0 }
+);
+const mapZoom = ref(Number(localStorage.getItem('mapZoom') ?? 14));
+const mapHeading = ref(0);
+const mapTilt = ref(0);
+const markers = ref<QrMarker[]>([]);
+let zoomTimer: ReturnType<typeof setTimeout> | null = null;
+
+const qrStore = useQrSpot();
+const userStore = useUser();
+const dialog = useDialog();
+const { qrSpot, mode, panel } = storeToRefs(qrStore);
+const { user, coords: userCoords } = storeToRefs(userStore);
+
+const shellClass = computed(() =>
+  panel.value === QR_SPOT_PANEL.SHOW_DETAILS ? 'map-shell--collapsed' : 'map-shell--expanded'
+);
+
+const showStreak = computed(() => (user.value.streak ?? 0) > 2);
+
+const headingStyle = computed(() => ({
+  transform: `rotate(-${mapHeading.value}deg)`
+}));
+
+const tiltStyle = computed(() => ({
+  transform: `rotateX(-${mapTilt.value}deg)`
+}));
+
+let googleMap: google.maps.Map | null = null;
+const gMarkers: google.maps.marker.AdvancedMarkerElement[] = [];
+const gCircles: google.maps.Circle[] = [];
+let userMarker: google.maps.marker.AdvancedMarkerElement | null = null;
+let userCircle: google.maps.Circle | null = null;
+let listenerClick: google.maps.MapsEventListener | null = null;
+let listenerDrag: google.maps.MapsEventListener | null = null;
+let listenerZoom: google.maps.MapsEventListener | null = null;
+let listenerHeading: google.maps.MapsEventListener | null = null;
+let listenerTilt: google.maps.MapsEventListener | null = null;
+
+function getIcon(m: QrMarker): string {
+  if (m.missing) return markerMissing;
+  if (!m.collectedAt) return markerNew;
+  if (now().isSame(m.collectedAt as string, 'day')) return markerUsed;
+  return markerFree;
+}
+
+function clearMapShapes(): void {
+  gMarkers.forEach(x => {
+    x.map = null;
+  });
+  gCircles.forEach(x => x.setMap(null));
+  gMarkers.length = 0;
+  gCircles.length = 0;
+}
+
+/** Pin icon: lat/lng at bottom-center (matches classic Marker default). User/puff: centered. */
+function centeredIconContent(url: string, width: number, height: number): HTMLDivElement {
+  const wrap = document.createElement('div');
+  wrap.style.display = 'flex';
+  wrap.style.alignItems = 'center';
+  wrap.style.justifyContent = 'center';
+  const img = document.createElement('img');
+  img.src = url;
+  img.width = width;
+  img.height = height;
+  img.alt = '';
+  img.draggable = false;
+  wrap.appendChild(img);
+  return wrap;
+}
+
+function recent(ms: QrMarker[]): QrMarker[] {
+  return ms.filter(
+    m =>
+      m.lastVisitedAt &&
+      now()
+        .subtract(1, 'day')
+        .isBefore(m.lastVisitedAt as string)
+  );
+}
+
+function renderMarkers(): void {
+  if (!googleMap) return;
+  clearMapShapes();
+
+  for (const marker of markers.value) {
+    const pos = { lat: Number(marker.lat), lng: Number(marker.lng) };
+    const m = new google.maps.marker.AdvancedMarkerElement({
+      map: googleMap,
+      position: pos,
+      content: centeredIconContent(getIcon(marker), 48, 48),
+      // Bottom-center on lat/lng (legacy Marker with icon URL only uses same default as AdvancedMarkerElement)
+      anchorLeft: '-50%',
+      anchorTop: '-100%',
+      gmpClickable: panel.value !== QR_SPOT_PANEL.SHOW_DETAILS
+    });
+    m.addListener('click', () => qrStore.select(marker as never));
+    gMarkers.push(m);
+
+    if (!marker.missing) {
+      const c = new google.maps.Circle({
+        map: googleMap,
+        center: pos,
+        radius: 15,
+        strokeColor: '#54341f',
+        strokeOpacity: 0.5,
+        strokeWeight: 2,
+        fillColor: '#54341f',
+        fillOpacity: 0.2,
+        clickable: false
       });
-    },
-    resetHeading() {
-      if (this.mapHeading === 0 && this.mapTilt === 0) {
-        this.map.setTilt(45);
-      } else {
-        this.map.setHeading(0);
-        this.map.setTilt(0);
+      gCircles.push(c);
+    }
+  }
+
+  for (const marker of recent(markers.value)) {
+    const pos = { lat: Number(marker.lat), lng: Number(marker.lng) };
+    const m = new google.maps.marker.AdvancedMarkerElement({
+      map: googleMap,
+      position: pos,
+      content: centeredIconContent(puff, 64, 64),
+      anchorLeft: '-50%',
+      anchorTop: '-50%',
+      zIndex: 50
+    });
+    gMarkers.push(m);
+  }
+}
+
+async function fetchQRSpots(): Promise<void> {
+  const res = await api.get('/api/qrspots');
+  if (!res.err) markers.value = res.data as QrMarker[];
+  renderMarkers();
+}
+
+function renderUserMarker(): void {
+  if (!googleMap) return;
+  if (userMarker) userMarker.map = null;
+  userCircle?.setMap(null);
+  userMarker = null;
+  userCircle = null;
+
+  const c = userCoords.value;
+  if (c) {
+    userMarker = new google.maps.marker.AdvancedMarkerElement({
+      map: googleMap,
+      position: c,
+      zIndex: 100,
+      content: centeredIconContent(positionMarker, 24, 24),
+      anchorLeft: '-50%',
+      anchorTop: '-50%',
+      gmpClickable: true
+    });
+    userMarker.addListener('click', () => centerMapToUser());
+    userCircle = new google.maps.Circle({
+      map: googleMap,
+      center: c,
+      radius: 20,
+      strokeColor: '#FFFFFF',
+      strokeOpacity: 0.5,
+      strokeWeight: 2,
+      fillColor: '#0042FF',
+      fillOpacity: 0.15,
+      clickable: false
+    });
+  } else {
+    const wrap = document.createElement('div');
+    wrap.style.display = 'flex';
+    wrap.style.flexDirection = 'column';
+    wrap.style.alignItems = 'center';
+    wrap.style.textAlign = 'center';
+    const img = document.createElement('img');
+    img.src = spinner;
+    img.width = 100;
+    img.height = 100;
+    img.alt = '';
+    img.draggable = false;
+    wrap.appendChild(img);
+    const label = document.createElement('div');
+    label.textContent = 'Please enable location access';
+    label.style.fontSize = '1rem';
+    label.style.color = '#242424';
+    wrap.appendChild(label);
+
+    userMarker = new google.maps.marker.AdvancedMarkerElement({
+      map: googleMap,
+      position: { lat: 0, lng: 0 },
+      zIndex: 100,
+      content: wrap,
+      anchorLeft: '-50%',
+      anchorTop: '-50%',
+      gmpClickable: true
+    });
+    userMarker.addListener('click', () => centerMapToUser());
+  }
+}
+
+function centerMapToUser(opts: { zoom?: boolean } = {}): void {
+  const m = googleMap;
+  const c = userCoords.value;
+  if (!m || !c) return;
+  m.panTo(new google.maps.LatLng(c.lat, c.lng));
+  localStorage.setItem('mapCoords', JSON.stringify(c));
+  const zoom = opts.zoom !== false;
+  if (zoom && m.getZoom()! < 15) m.setZoom(15);
+}
+
+function explainStreak(): void {
+  dialog.setDialog({
+    title: 'Your streak',
+    subtitle: 'This number shows how many days in a row you have collected a QR shard. 🔥',
+    options: [
+      {
+        name: 'OK, got it!',
+        type: 'success',
+        action: async () => {
+          dialog.close();
+        }
       }
-    },
-    recent(markers) {
-      return markers.filter(m =>
-        now()
-          .subtract(1, "day")
-          .isBefore(m.lastVisitedAt)
-      );
+    ]
+  });
+}
+
+function resetHeading(): void {
+  const m = googleMap;
+  if (!m) return;
+  if (mapHeading.value === 0 && mapTilt.value === 0) {
+    m.setTilt(45);
+  } else {
+    m.setHeading(0);
+    m.setTilt(0);
+  }
+}
+
+let offQr: (() => void) | undefined;
+
+/** HomeView is keep-alive cached; AdvancedMarker HTML content disappears while hidden. */
+function refreshMapDisplay(): void {
+  if (!googleMap) return;
+  google.maps.event.trigger(googleMap, 'resize');
+  const center = googleMap.getCenter();
+  if (center) googleMap.setCenter(center);
+  renderMarkers();
+  renderUserMarker();
+}
+
+onActivated(() => {
+  void nextTick(refreshMapDisplay);
+});
+
+onMounted(async () => {
+  const key = import.meta.env.VITE_APP_GOOGLE_API_KEY;
+  if (!mapEl.value) return;
+  if (!key) {
+    console.error(
+      'Google Maps API key missing. Set VITE_APP_GOOGLE_API_KEY in the repo root .env file.'
+    );
+    return;
+  }
+
+  const loader = new Loader({
+    apiKey: key,
+    version: 'weekly'
+  });
+  await loader.load();
+  await google.maps.importLibrary('marker');
+
+  googleMap = new google.maps.Map(mapEl.value, {
+    center: mapCoords.value,
+    zoom: mapZoom.value,
+    mapId: '153063bbe11287f1',
+    gestureHandling: 'greedy',
+    zoomControl: true,
+    zoomControlOptions: { position: 3 },
+    scaleControl: false,
+    rotateControl: false,
+    mapTypeControl: false,
+    fullscreenControl: false,
+    clickableIcons: false,
+    draggable: panel.value !== QR_SPOT_PANEL.SHOW_DETAILS
+  });
+
+  qrStore.setMap(googleMap);
+
+  listenerClick = google.maps.event.addListener(googleMap, 'click', () => qrStore.deselect());
+  listenerDrag = google.maps.event.addListener(googleMap, 'dragend', () => {
+    const center = googleMap!.getCenter();
+    if (center) mapCoords.value = { lat: center.lat(), lng: center.lng() };
+  });
+  listenerZoom = google.maps.event.addListener(googleMap, 'zoom_changed', () => {
+    const z = googleMap!.getZoom();
+    if (zoomTimer) clearTimeout(zoomTimer);
+    zoomTimer = setTimeout(() => {
+      if (z != null) mapZoom.value = z;
+    }, 1000);
+  });
+  listenerHeading = google.maps.event.addListener(googleMap, 'heading_changed', () => {
+    mapHeading.value = googleMap!.getHeading() ?? 0;
+  });
+  listenerTilt = google.maps.event.addListener(googleMap, 'tilt_changed', () => {
+    mapTilt.value = googleMap!.getTilt() ?? 0;
+  });
+
+  await fetchQRSpots();
+  offQr = onQrSpotsUpdate(fetchQRSpots);
+
+  watchCurrentPosition();
+  renderUserMarker();
+});
+
+onUnmounted(() => {
+  offQr?.();
+  if (listenerClick) google.maps.event.removeListener(listenerClick);
+  if (listenerDrag) google.maps.event.removeListener(listenerDrag);
+  if (listenerZoom) google.maps.event.removeListener(listenerZoom);
+  if (listenerHeading) google.maps.event.removeListener(listenerHeading);
+  if (listenerTilt) google.maps.event.removeListener(listenerTilt);
+  clearMapShapes();
+  if (userMarker) userMarker.map = null;
+  userCircle?.setMap(null);
+  qrStore.setMap(null);
+});
+
+watch(mapCoords, v => localStorage.setItem('mapCoords', JSON.stringify(v)));
+watch(mapZoom, z => localStorage.setItem('mapZoom', String(z)));
+
+watch(panel, () => {
+  if (!googleMap) return;
+  googleMap.setOptions({
+    draggable: panel.value !== QR_SPOT_PANEL.SHOW_DETAILS
+  });
+  if (panel.value === QR_SPOT_PANEL.SHOW_DETAILS) {
+    const position =
+      mode.value === QR_SPOT_MODE.CREATE
+        ? userCoords.value
+        : { lat: Number(qrSpot.value.lat), lng: Number(qrSpot.value.lng) };
+    if (position && position.lat != null && position.lng != null) {
+      setTimeout(() => {
+        googleMap?.panTo(new google.maps.LatLng(position.lat, position.lng));
+      }, 200);
     }
   }
 });
+
+watch(markers, renderMarkers);
+watch(userCoords, renderUserMarker);
+
+function watchCurrentPosition(): void {
+  const watchOptions: PositionOptions = {
+    timeout: 60 * 60 * 1000,
+    maximumAge: 0,
+    enableHighAccuracy: true
+  };
+
+  navigator.geolocation.getCurrentPosition(
+    ({ coords }) => {
+      userStore.setCoords(coords);
+      centerMapToUser({ zoom: false });
+    },
+    err => console.error(err),
+    watchOptions
+  );
+  navigator.geolocation.watchPosition(
+    ({ coords }) => userStore.setCoords(coords),
+    err => console.error(err),
+    watchOptions
+  );
+}
 </script>
 
-<style lang="scss">
-.control-button {
+<style scoped lang="scss">
+.map-shell {
+  position: relative;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex: 1;
+  flex-direction: column;
+  width: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.map-shell--collapsed .map-canvas {
+  height: 25%;
+  transition: height 300ms 200ms;
+}
+
+.map-shell--collapsed .map-ui--lb {
+  opacity: 0;
+  transition: opacity 200ms;
+}
+
+.map-shell--expanded .map-canvas {
+  height: 100%;
+  transition: height 300ms 0ms;
+}
+
+.map-shell--expanded .map-ui--lb {
+  opacity: 1;
+  transition: opacity 200ms 500ms;
+}
+
+.map-canvas {
+  width: 100%;
+  min-height: 120px;
+}
+
+.map-ui {
+  position: absolute;
+  z-index: 2;
+  display: flex;
+  pointer-events: none;
+
+  & > * {
+    pointer-events: auto;
+  }
+}
+
+.map-ui--lb {
+  bottom: 12px;
+  left: 12px;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.map-ui--tl {
+  top: 12px;
+  left: 12px;
+}
+
+.control-button {
   width: 40px;
   height: 40px;
-  margin: 10px 10px 0 10px;
-  cursor: pointer;
-  background-color: $white;
-  border-radius: 2px;
-  box-shadow: $shadow-color;
+  background-color: #fff !important;
+  box-shadow: rgb(0 0 0 / 30%) 0 1px 4px -1px;
 }
 
-.control-button__inner {
-  transition: transform 500ms;
-}
-
-.control-button__icon {
-  width: 70%;
-}
-
-.control-button__streak {
+.streak-wrap {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
   height: 100%;
 
-  &.no-streak {
+  &--dim {
     filter: opacity(0.1);
   }
 }
 
-.control-button__streak__count {
+.streak-count {
   position: absolute;
-  font-family: "Syne", sans-serif;
-  font-size: 300%;
+  font-family: Syne, Roboto, sans-serif;
+  font-size: 1.75rem;
+  font-weight: 700;
   line-height: 1;
-  color: $primary-color;
-  text-shadow: -1px -1px 1px #24242485;
+  color: #242424;
+  text-shadow: -1px -1px 1px rgb(36 36 36 / 52%);
 }
 
-.vue-map-container {
-  &.collapsed-map {
-    height: 25%;
-    transition: all 300ms 200ms;
-
-    .gmnoprint,
-    #streak-button,
-    #position-button {
-      display: flex !important;
-      opacity: 0;
-    }
-  }
-
-  &.expanded-map {
-    height: 100%;
-    transition: all 300ms 0ms;
-
-    .gmnoprint,
-    #streak-button,
-    #position-button {
-      display: flex !important;
-      opacity: 1;
-      transition: opacity 200ms 500ms;
-    }
-  }
+.compass-tilt {
+  transition: transform 500ms;
 }
 </style>

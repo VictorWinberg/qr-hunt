@@ -3,8 +3,8 @@ services:
     build:
       context: .
       args:
-        VUE_APP_GOOGLE_API_KEY: ${VUE_APP_GOOGLE_API_KEY:-}
-        VUE_APP_VERSION: ${VUE_APP_VERSION:-local}
+        VITE_APP_GOOGLE_API_KEY: ${VITE_APP_GOOGLE_API_KEY:-}
+        VITE_APP_VERSION: ${VITE_APP_VERSION:-local}
     restart: unless-stopped
     ports:
       - "3000:3000"
