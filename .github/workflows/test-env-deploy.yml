@@ -4,7 +4,7 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
     branches:
-      - master
+      - beta
 
 permissions:
   contents: read
@@ -34,6 +34,7 @@ jobs:
       - uses: docker/build-push-action@v6.19.2
         with:
           context: .
+          file: Dockerfile.beta
           push: true
           platforms: linux/arm64
           build-args: |
