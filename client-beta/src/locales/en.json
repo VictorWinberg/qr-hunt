@@ -1,0 +1,73 @@
+{
+  "achievements": {
+    "title": "Achievements"
+  },
+  "common": {
+    "delete": "Delete",
+    "month-names": [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December"
+    ],
+    "save": "Save",
+    "title": "QR Hunt"
+  },
+  "google": {
+    "sign-in": "Sign in with Google"
+  },
+  "leaderboard": {
+    "empty-alternative-texts": [
+      "No contestants",
+      "No entries",
+      "No competition",
+      "Empty leaderboard",
+      "W.O.",
+      "Walkover",
+      "No one here"
+    ],
+    "table-distance": "Km",
+    "table-rank": "Rank",
+    "table-score": "Score",
+    "table-user": "User",
+    "title": "Leaderboard",
+    "total": "All time"
+  },
+  "qr-spot": {
+    "coordinates": "Coordinates:",
+    "coordinates-lat": "Lat:",
+    "coordinates-lng": "Lng:",
+    "create-description": "Tell us something about this spot",
+    "create-hint": "Do you want to give a hint of where the spot can be found?",
+    "create-name": "Give your awesome spot a name",
+    "create-title": "Create your spot",
+    "loading-coordinates": "Loading amazing coordinates...",
+    "update-hint": "Do you want to change the hint of where the spot can be found?",
+    "update-name": "Update the awesome name for your spot",
+    "view-hint-question": "Do you need a hint?",
+    "replace-qrcode": "Replace missing QR code?",
+    "last-visited": "Last visited"
+  },
+  "scanner": {
+    "title": "QR Scan"
+  },
+  "settings": {
+    "delete-account-option": "Delete account",
+    "help-option": "Help",
+    "browser-language": "Browser language",
+    "language-option": "Language",
+    "logout-option": "Log out",
+    "title": "Settings"
+  },
+  "user": {
+    "experience-points": "xp"
+  }
+}
