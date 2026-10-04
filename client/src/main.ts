@@ -1,23 +1,28 @@
-import Vue, { VNode } from "vue";
+/**
+ * Vue3 Main script
+ */
 
-import App from "./App.vue";
-import router from "./router";
-import store from "./store/store";
-import i18n from "./plugins/i18n";
-import "./plugins/achievements";
-import "./plugins/google-maps";
-import "./plugins/intro";
-import "./plugins/sentry";
-import "./plugins/welcome";
-import "./registerServiceWorker";
+import '@/plugins/achievements';
 
-import "./assets/scss/app.scss";
+import store from '@/store';
+import { createApp } from 'vue';
 
-Vue.config.productionTip = false;
+import App from '@/App.vue';
+import { i18n } from '@/plugins/i18n';
+import { initSentry } from '@/plugins/sentry';
+import vuetify from '@/plugins/vuetify';
+import router from '@/router';
 
-new Vue({
-  router,
-  store,
-  i18n,
-  render: (h): VNode => h(App)
-}).$mount("#app");
+/** Register Vue */
+const vue = createApp(App);
+initSentry(vue);
+vue.use(router);
+vue.use(store);
+vue.use(i18n);
+vue.use(vuetify);
+
+// Run!
+router
+  .isReady()
+  .then(() => vue.mount('#app'))
+  .catch((e: unknown) => console.error(e));

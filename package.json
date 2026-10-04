@@ -5,9 +5,7 @@
   "scripts": {
     "install-server": "cd server && npm install",
     "vue-lint": "cd client && npm run lint",
-    "stylelint": "cd client && npm run stylelint",
-    "vue-lint-beta": "cd client-beta && npm run lint",
-    "vue-lint-style-beta": "cd client-beta && npm run lint:style",
+    "vue-lint-style": "cd client && npm run lint:style",
     "prettier-server": "cd server && npm run prettier",
     "eslint-server": "cd server && npm run eslint"
   },
@@ -28,12 +26,10 @@
   },
   "lint-staged": {
     "client/**/*.{vue,ts}": [
-      "npm run vue-lint",
-      "npm run vue-lint-beta"
+      "npm run vue-lint"
     ],
-    "client/**/*.{vue,scss}": [
-      "npm run stylelint",
-      "npm run vue-lint-style-beta"
+    "client/**/*.{vue,scss,css}": [
+      "npm run vue-lint-style"
     ],
     "server/**/*.js": [
       "npm run eslint-server",

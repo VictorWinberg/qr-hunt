@@ -4,8 +4,7 @@
 
 ## Prerequisite
 
-- Node v22 (for backend)
-- Node v14 (for frontend)
+- Node v22 (for backend and frontend)
 - Postgres v11
 
 ## Environment variables

@@ -18,11 +18,13 @@
   </div>
 </template>
 
-<script>
-export default {};
+<script lang="ts">
+export default { name: 'FlameVisual' };
 </script>
 
-<style lang="scss">
+<script setup lang="ts"></script>
+
+<style scoped lang="scss">
 @keyframes scaleUpDown {
   0%,
   100% {
@@ -99,19 +101,13 @@ export default {};
   position: absolute;
   width: 100%;
   height: 100%;
-  animation: scaleUpDown 3s ease-out;
-  animation-iteration-count: infinite;
-  animation-fill-mode: both;
+  animation: scaleUpDown 3s ease-out infinite both;
 
   .main-fire {
     position: absolute;
     width: 100%;
     height: 100%;
-    background-image: radial-gradient(
-      farthest-corner at 10px 0,
-      #d43300 0%,
-      #ef5a00 95%
-    );
+    background-image: radial-gradient(farthest-corner at 10px 0, #d43300 0%, #ef5a00 95%);
     filter: drop-shadow(0 0 10px #d43322);
     border-radius: 0 40% 60% 40%;
     transform: scaleX(0.8) rotate(45deg);
@@ -126,9 +122,7 @@ export default {};
     background-color: #ef5a00;
     filter: drop-shadow(0 0 10px #d43322);
     border-radius: 50%;
-    animation: particleUp 2s ease-out 0;
-    animation-iteration-count: infinite;
-    animation-fill-mode: both;
+    animation: particleUp 2s ease-out infinite both;
   }
 }
 
@@ -136,9 +130,7 @@ export default {};
   position: absolute;
   width: 100%;
   height: 100%;
-  animation: shake 2s ease-out 0;
-  animation-iteration-count: infinite;
-  animation-fill-mode: both;
+  animation: shake 2s ease-out infinite both;
 
   .main-fire {
     position: absolute;
@@ -162,9 +154,7 @@ export default {};
     filter: drop-shadow(0 0 10px #d43322);
     border-radius: 50%;
     transform: scaleX(0.8) rotate(45deg);
-    animation: particleUp 2s ease-out 0;
-    animation-iteration-count: infinite;
-    animation-fill-mode: both;
+    animation: particleUp 2s ease-out infinite both;
   }
 }
 
@@ -172,9 +162,7 @@ export default {};
   position: absolute;
   width: 100%;
   height: 100%;
-  animation: shake 3s ease-out 0;
-  animation-iteration-count: infinite;
-  animation-fill-mode: both;
+  animation: shake 3s ease-out infinite both;
 
   .main-fire {
     position: absolute;
@@ -197,8 +185,7 @@ export default {};
     background-color: #ef5a00;
     filter: drop-shadow(0 0 10px #d43322);
     border-radius: 50%;
-    animation: particleUp 3s infinite ease-out 0;
-    animation-fill-mode: both;
+    animation: particleUp 3s infinite ease-out both;
   }
 }
 
@@ -212,8 +199,6 @@ export default {};
   filter: blur(10px);
   border-radius: 0 40% 100% 40%;
   transform: scaleX(0.8) rotate(45deg);
-  animation: glow 2s ease-out 0;
-  animation-iteration-count: infinite;
-  animation-fill-mode: both;
+  animation: glow 2s ease-out infinite both;
 }
 </style>

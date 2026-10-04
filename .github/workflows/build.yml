@@ -29,14 +29,14 @@ jobs:
       - name: Install and cache dependencies
         uses: bahmutov/npm-install@v1.12.1
         with:
-          working-directory: client-beta
+          working-directory: client
 
       - name: Build client
         run: npm run build
-        working-directory: client-beta
+        working-directory: client
         env:
-          VUE_APP_GOOGLE_API_KEY: ${{ secrets.VUE_APP_GOOGLE_API_KEY }}
+          VITE_APP_GOOGLE_API_KEY: ${{ secrets.VUE_APP_GOOGLE_API_KEY }}
 
       - name: Lint client
         run: npm run lint
-        working-directory: client-beta
+        working-directory: client

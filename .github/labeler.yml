@@ -1,8 +1,6 @@
 frontend:
   - client/*
   - client/**/*
-  - client-beta/*
-  - client-beta/**/*
 backend:
   - server/*
   - server/**/*
@@ -14,8 +12,6 @@ npm:
   - package-lock.json
   - client/package.json
   - client/package-lock.json
-  - client-beta/package.json
-  - client-beta/package-lock.json
   - server/package.json
   - server/package-lock.json
 migration:

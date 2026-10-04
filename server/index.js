@@ -45,7 +45,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // serve static client build
-app.use(express.static(path.resolve(__dirname, "..", "client-beta", "dist")));
+app.use(express.static(path.resolve(__dirname, "..", "client", "dist")));
 
 // connect to our database
 const pg = new PGClient(DATABASE_URL);
@@ -84,7 +84,7 @@ swagger(app);
 
 app.get("*", (_, res) => {
   res.sendFile(
-    path.resolve(__dirname, "..", "client-beta", "dist", "index.html")
+    path.resolve(__dirname, "..", "client", "dist", "index.html")
   );
 });
 

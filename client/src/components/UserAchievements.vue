@@ -1,90 +1,88 @@
 <template>
   <div>
-    <h2 class="user-achievements__title">
-      {{ $t("achievements.title") }}
-    </h2>
+    <h2 class="text-h6 mb-4 text-center">{{ t('achievements.title') }}</h2>
     <div class="user-achievements">
-      <AchievementsCard
-        v-for="achievement in achievements"
-        :key="achievement.name"
-        :name="achievement.name"
-        :title="achievement.title"
-        :icon="achievement.icon"
-        :count="achievement.count"
+      <achievements-card
+        v-for="a in achievements"
+        :key="a.name"
+        :name="a.name"
+        :title="a.title"
+        :icon="a.icon"
+        :count="a.count"
         class="user-achievements__card"
-        @click="selectAchievement(achievement)"
+        @click="selectAchievement(a)"
       />
     </div>
-    <AchievementsCard
-      v-if="selectedAchievement"
-      ref="selectedAchievement"
-      :name="selectedAchievement.name"
-      :title="selectedAchievement.title"
-      :icon="selectedAchievement.icon"
-      :count="selectedAchievement.count"
-      class="user-achievements__card selected"
-      :overlay="true"
-      @click="selectAchievement(null)"
-    />
+    <teleport to="body">
+      <achievements-card
+        v-if="selectedAchievement"
+        :name="selectedAchievement.name"
+        :title="selectedAchievement.title"
+        :icon="selectedAchievement.icon"
+        :count="selectedAchievement.count"
+        class="user-achievements__card user-achievements__card--selected"
+        overlay
+        @click="selectAchievement(null)"
+      />
+    </teleport>
   </div>
 </template>
 
-<script>
-import Vue from "vue";
-import EventBus from "@/plugins/event-bus";
-import AchievementsCard from "@/components/AchievementsCard.vue";
-import { EVENT_TYPE } from "@/constants";
-import { api, hashColor } from "@/utils";
+<script lang="ts" setup>
+import { onMounted, onUnmounted, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRoute } from 'vue-router';
 
-export default {
-  components: {
-    AchievementsCard
-  },
-  data() {
-    return {
-      achievements: [{}, {}],
-      selectedAchievement: null
-    };
-  },
-  watch: {
-    $route: ["fetchAchievements"]
-  },
-  created() {
-    this.fetchAchievements();
-    EventBus.$on(EVENT_TYPE.API_REQUEST_UPDATE, this.fetchAchievements);
-  },
-  beforeDestroy() {
-    EventBus.$off(EVENT_TYPE.API_REQUEST_UPDATE, this.fetchAchievements);
-  },
-  methods: {
-    hashColor,
-    selectAchievement(achievement) {
-      if (achievement === this.selectedAchievement) {
-        this.selectedAchievement = null;
-      } else {
-        this.selectedAchievement = achievement;
-      }
-      Vue.nextTick(() => {
-        const element = this.$refs?.selectedAchievement?.$el;
-        if (element) {
-          document.getElementById("app").appendChild(element);
-        }
-      });
-    },
-    async fetchAchievements() {
-      const { params } = this.$route;
-      const achievements = params.id
-        ? await api.get("/api/user_achievements/" + params.id)
-        : await api.get("/api/achievements");
+import AchievementsCard from '@/components/AchievementsCard.vue';
+import { api } from '@/utils/api';
+import { onApiMutation } from '@/utils/app-events';
 
-      if (achievements.err) return;
-      this.achievements = achievements.data;
-    }
+const { t } = useI18n();
+const route = useRoute();
+
+interface Achievement {
+  name: string;
+  title?: string;
+  icon?: string;
+  count: number;
+}
+
+const achievements = ref<Achievement[]>([]);
+const selectedAchievement = ref<Achievement | null>(null);
+
+let offApi: (() => void) | undefined;
+
+async function fetchAchievements(): Promise<void> {
+  const id = route.params.id;
+  const res =
+    typeof id === 'string' && id
+      ? await api.get('/api/user_achievements/' + id)
+      : await api.get('/api/achievements');
+  if (res.err) return;
+  achievements.value = res.data as Achievement[];
+}
+
+function selectAchievement(a: Achievement | null): void {
+  if (a && selectedAchievement.value?.name === a.name) {
+    selectedAchievement.value = null;
+  } else {
+    selectedAchievement.value = a;
   }
-};
+}
+
+watch(() => route.params.id, fetchAchievements);
+
+onMounted(() => {
+  void fetchAchievements();
+  offApi = onApiMutation(fetchAchievements);
+});
+
+onUnmounted(() => {
+  offApi?.();
+});
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 .user-achievements {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(100px, max-content));
@@ -97,15 +95,14 @@ export default {
   display: flex;
   justify-content: center;
   width: 100px;
+}
 
-  &.selected {
-    position: absolute;
-    right: 0;
-    left: 0;
-    z-index: 1;
-    margin-right: auto;
-    margin-left: auto;
-    transform: scale(3);
-  }
+.user-achievements__card--selected {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 3000;
+  margin: 0;
+  transform: translate(-50%, -50%) scale(2.5);
 }
 </style>

@@ -34,7 +34,6 @@ jobs:
       - uses: docker/build-push-action@v6.19.2
         with:
           context: .
-          file: Dockerfile.beta
           push: true
           platforms: linux/arm64
           build-args: |

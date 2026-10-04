@@ -1,83 +1,107 @@
 {
   "name": "qr-hunt-client",
   "version": "0.1.0",
+  "license": "MIT",
+  "type": "module",
   "private": true,
-  "scripts": {
-    "serve": "vue-cli-service serve --open",
-    "build": "vue-cli-service build --report-json",
-    "lint": "vue-cli-service lint",
-    "bundle-analyze": "webpack-bundle-analyzer dist/report.json",
-    "i18n:report": "vue-cli-service i18n:report --src \"./src/**/*.?(js|vue)\" --locales \"./src/locales/**/*.json\"",
-    "stylelint": "stylelint --fix",
-    "test": "vue-cli-service test:unit --coverage"
+  "homepage": "https://github.com/VictorWinberg/qr-hunt",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:VictorWinberg/qr-hunt.git"
   },
-  "dependencies": {
-    "@sentry/vue": "6.19.7",
-    "core-js": "3.49.0",
-    "dayjs": "1.11.20",
-    "intro.js": "4.3.0",
-    "node-snackbar": "0.1.16",
-    "qr-scanner": "1.4.2",
-    "register-service-worker": "1.7.2",
-    "vue": "2.7.16",
-    "vue-i18n": "8.28.2",
-    "vue-router": "3.6.5",
-    "vue2-google-maps": "0.10.7",
-    "vuex": "3.6.2"
-  },
-  "devDependencies": {
-    "@types/googlemaps": "3.43.3",
-    "@types/jest": "29.5.14",
-    "@types/qrcode": "1.5.6",
-    "@vue/cli-plugin-babel": "4.5.19",
-    "@vue/cli-plugin-eslint": "4.5.19",
-    "@vue/cli-plugin-pwa": "4.5.19",
-    "@vue/cli-plugin-typescript": "4.5.19",
-    "@vue/cli-plugin-unit-jest": "4.5.19",
-    "@vue/cli-service": "4.5.19",
-    "@vue/eslint-config-prettier": "6.0.0",
-    "@vue/eslint-config-standard": "5.1.2",
-    "@vue/eslint-config-typescript": "4.0.0",
-    "@vue/test-utils": "1.3.6",
-    "@babel/eslint-parser": "7.28.6",
-    "eslint": "7.32.0",
-    "eslint-plugin-import": "2.32.0",
-    "eslint-plugin-node": "11.1.0",
-    "eslint-plugin-prettier": "4.2.5",
-    "eslint-plugin-promise": "6.6.0",
-    "eslint-plugin-standard": "5.0.0",
-    "eslint-plugin-vue": "7.20.0",
-    "file-loader": "6.2.0",
-    "node-sass": "6.0.1",
-    "prettier": "1.19.1",
-    "sass": "1.99.0",
-    "sass-loader": "8.0.2",
-    "stylelint": "13.13.1",
-    "stylelint-config-recess-order": "2.6.0",
-    "stylelint-config-standard": "20.0.0",
-    "typescript": "3.9.10",
-    "vue-cli-plugin-i18n": "2.3.2",
-    "vue-template-compiler": "2.7.16",
-    "webpack-bundle-analyzer": "4.10.2"
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions"
-  ],
-  "jest": {
-    "preset": "@vue/cli-plugin-unit-jest/presets/typescript-and-babel",
-    "collectCoverage": true,
-    "collectCoverageFrom": [
-      "src/**/*.{ts,vue}"
-    ]
+  "bugs": {
+    "url": "https://github.com/VictorWinberg/qr-hunt/issues"
   },
   "engines": {
-    "node": "14.x"
+    "node": ">=22.0.1",
+    "pnpm": ">=10.3.0"
   },
-  "stylelint": {
-    "extends": [
-      "stylelint-config-standard",
-      "stylelint-config-recess-order"
-    ]
+  "packageManager": "pnpm@10.3.0",
+  "scripts": {
+    "dev": "vite",
+    "clean": "rimraf ./node_modules/.vite",
+    "build": "run-p type-check \"build-only {@}\" --",
+    "build:analyze": "vite build --mode analyze",
+    "build:clean": "rimraf dist",
+    "lint": "eslint . --fix --cache --cache-location ./node_modules/.vite/vite-plugin-eslint && prettier . -w -u",
+    "lint:style": "stylelint \"./**/*.{css,sass,scss,htm,html,vue}\" --fix --cache-location ./node_modules/.vite/vite-plugin-stylelint && prettier \"./**/*.{css,sass,scss,htm,html,vue}\" -w -u",
+    "preview": "vite preview",
+    "build-only": "vite build",
+    "type-check": "vue-tsc --build --force",
+    "prepare": "husky"
+  },
+  "dependencies": {
+    "@googlemaps/js-api-loader": "^1.16.8",
+    "@mdi/font": "^7.4.47",
+    "@sentry/vue": "^9.5.0",
+    "core-js": "^3.40.0",
+    "dayjs": "^1.11.13",
+    "pinia": "^3.0.0",
+    "pinia-plugin-persistedstate": "^4.2.0",
+    "qr-scanner": "^1.4.2",
+    "vue": "^3.5.13",
+    "vue-i18n": "^10.0.6",
+    "vue-router": "^4.5.0",
+    "vuetify": "^3.7.12",
+    "webfontloader": "^1.6.28"
+  },
+  "devDependencies": {
+    "@types/google.maps": "^3.58.1",
+    "@tsconfig/node-lts": "^22.0.1",
+    "@types/jsdom": "^21.1.7",
+    "@types/node": "^22.13.1",
+    "@types/webfontloader": "^1.6.38",
+    "@vitejs/plugin-vue": "^5.2.1",
+    "@vue/eslint-config-prettier": "^10.2.0",
+    "@vue/eslint-config-typescript": "^14.4.0",
+    "@vue/test-utils": "^2.4.6",
+    "@vue/tsconfig": "^0.7.0",
+    "eslint": "^9.20.1",
+    "eslint-import-resolver-custom-alias": "^1.3.2",
+    "eslint-import-resolver-typescript": "^3.7.0",
+    "eslint-plugin-import": "^2.30.0",
+    "eslint-plugin-vue": "^9.32.0",
+    "eslint-plugin-vuejs-accessibility": "^2.4.1",
+    "eslint-plugin-vuetify": "^2.5.1",
+    "husky": "^9.1.7",
+    "jiti": "^2.4.2",
+    "jsdom": "^26.0.0",
+    "lint-staged": "^15.4.3",
+    "npm-run-all2": "^7.0.2",
+    "postcss-html": "^1.8.0",
+    "prettier": "^3.5.0",
+    "resize-observer-polyfill": "^1.5.1",
+    "rimraf": "^6.0.1",
+    "rollup-plugin-visualizer": "^5.14.0",
+    "sass": "^1.84.0",
+    "stylelint": "^16.14.1",
+    "stylelint-config-recommended-scss": "^14.1.0",
+    "stylelint-config-recommended-vue": "^1.6.0",
+    "stylelint-order": "^6.0.4",
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.24.0",
+    "vite": "^6.1.0",
+    "vite-plugin-checker": "0.8.0",
+    "vite-plugin-pwa": "^0.21.1",
+    "vite-plugin-vue-devtools": "^7.7.1",
+    "vite-plugin-vuetify": "^2.1.0",
+    "vue-tsc": "^2.1.6"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,ts,json,yaml,yml,vue,htm,html,md}": "eslint --fix --cache --cache-location ./node_modules/.vite/vite-plugin-eslint",
+    "*.{css,sass,scss,vue,htm,html}": "stylelint --fix --cache --cache-location ./node_modules/.vite/vite-plugin-stylelint",
+    "*": "prettier -w -u"
+  },
+  "resolutions": {
+    "json5": ">=2.2.3",
+    "yaml": ">=2.3.2"
+  },
+  "stackblitz": {
+    "startCommand": "pnpm run test:unit"
   }
 }

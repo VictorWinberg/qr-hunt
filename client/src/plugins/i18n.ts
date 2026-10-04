@@ -1,37 +1,39 @@
-import { EVENT_TYPE } from "@/constants";
-import Vue from "vue";
-import VueI18n, { LocaleMessages } from "vue-i18n";
-import EventBus from "./event-bus";
+import { createI18n } from 'vue-i18n';
 
-Vue.use(VueI18n);
+import en from '@/locales/en.json';
+import es from '@/locales/es.json';
+import { languages } from '@/locales/languages';
+import sv from '@/locales/sv.json';
+import { loadDayjsLocale } from '@/plugins/dayjs';
+import useUser from '@/store/UserStore';
+import { onAuthChange } from '@/utils/app-events';
 
-function loadLocaleMessages(): LocaleMessages {
-  const locales = require.context(
-    "../locales",
-    true,
-    /[A-Za-z0-9-_,\s]+\.json$/i
-  );
-  const messages: LocaleMessages = {};
-  locales.keys().forEach(key => {
-    const matched = key.match(/([A-Za-z0-9-_]+)\./i);
-    if (matched && matched.length > 1) {
-      const locale = matched[1];
-      messages[locale] = locales(key);
-    }
-  });
-  return messages;
+const browserLocale = navigator.language.split('-')[0] ?? 'en';
+const initialLocale = (languages as readonly string[]).includes(browserLocale)
+  ? browserLocale
+  : 'en';
+
+export const i18n = createI18n({
+  legacy: false,
+  locale: initialLocale,
+  fallbackLocale: 'en',
+  messages: { en, sv, es }
+});
+
+loadDayjsLocale(initialLocale);
+
+function syncLocaleFromUser(): void {
+  const user = useUser();
+  if (user.isAuthenticated && user.user.locale) {
+    (i18n.global.locale as { value: string }).value = String(user.user.locale);
+  }
 }
 
-const i18n = new VueI18n({
-  locale: navigator.language.split("-")[0],
-  fallbackLocale: "en",
-  messages: loadLocaleMessages()
-});
+function syncDayjsWithI18n(): void {
+  syncLocaleFromUser();
+  loadDayjsLocale((i18n.global.locale as { value: string }).value);
+}
 
-EventBus.$on(EVENT_TYPE.AUTH_CHANGE, ({ isAuthenticated, locale }) => {
-  if (isAuthenticated && locale) {
-    i18n.locale = locale;
-  }
-});
+onAuthChange(syncDayjsWithI18n);
 
-export default i18n;
+export { languages };

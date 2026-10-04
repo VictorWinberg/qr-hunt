@@ -1,25 +1,14 @@
-/* eslint-disable no-console */
+import type { App } from 'vue';
 
-import Vue from "vue";
-import * as Sentry from "@sentry/vue";
+import * as Sentry from '@sentry/vue';
 
-const publicKey = "785c1ccde4314c398c91d4b78e9ae3ee";
-const domain = "o1006021.ingest.sentry.io";
-const projectId = "5966493";
+const defaultDsn = 'https://785c1ccde4314c398c91d4b78e9ae3ee@o1006021.ingest.sentry.io/5966493';
 
-if (process.env.NODE_ENV === "production") {
+export function initSentry(app: App): void {
+  if (!import.meta.env.PROD) return;
   Sentry.init({
-    Vue,
-    dsn: `https://${publicKey}@${domain}/${projectId}`,
-    beforeSend: (event, hint) => {
-      if (hint) {
-        console.error(hint.originalException || hint.syntheticException);
-      }
-      return event;
-    },
-    // Set tracesSampleRate to 1.0 to capture 100%
-    // of transactions for performance monitoring.
-    // We recommend adjusting this value in production
+    app,
+    dsn: import.meta.env.VITE_SENTRY_DSN || defaultDsn,
     tracesSampleRate: 0.2
   });
 }
