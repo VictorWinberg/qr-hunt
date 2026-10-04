@@ -43,7 +43,7 @@ jobs:
 
   deploy:
     needs: build
-    uses: VictorWinberg/raspberry-pi-setup/.github/workflows/preview-deploy.yml@fix/preview-deploy-only
+    uses: VictorWinberg/raspberry-pi-setup/.github/workflows/preview-deploy.yml@main
     with:
       app: qr-hunt
       image_tag: preview-pr-${{ github.event.pull_request.number }}
