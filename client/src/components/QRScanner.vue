@@ -113,9 +113,11 @@ async function toggleFlash(): Promise<void> {
 
 <style scoped lang="scss">
 .qr-scanner-wrapper {
-  position: fixed;
-  inset: 0;
-  z-index: 2000;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 5;
   overflow: hidden;
   background: #575759;
   animation: slide-up 1s forwards;
@@ -190,11 +192,11 @@ async function toggleFlash(): Promise<void> {
 
 @keyframes slide-up {
   0% {
-    transform: translateY(100%);
+    top: 100%;
   }
 
   100% {
-    transform: translateY(0);
+    top: 0;
   }
 }
 </style>

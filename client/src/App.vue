@@ -17,7 +17,6 @@ import { useRoute } from 'vue-router';
 
 // Components
 import qrScanBtn from '@/assets/qr-scanner-button.svg?url';
-import userNavSvg from '@/assets/user.svg?raw';
 import GlobalDialog from '@/components/GlobalDialog.vue';
 import QRScanner from '@/components/QRScanner.vue';
 import SignInOverlay from '@/components/SignInOverlay.vue';
@@ -146,9 +145,9 @@ async function viewRelease(): Promise<void> {
         icon
         variant="plain"
         :ripple="false"
-        aria-label="User profile"
+        aria-label="User menu"
       >
-        <span class="user-nav-img" role="img" aria-hidden="true" v-html="userNavSvg" />
+        <v-icon icon="mdi-menu" color="primary" size="52" />
       </v-btn>
       <v-progress-linear
         v-show="loading"
@@ -220,7 +219,7 @@ async function viewRelease(): Promise<void> {
     </v-footer>
   </v-app>
   <teleport to="head">
-    <meta name="theme-color" :content="theme.computedThemes.value.dark.colors.primary" />
+    <meta name="theme-color" :content="String(theme.computedThemes.value.dark.colors.primary)" />
   </teleport>
 </template>
 
@@ -255,6 +254,7 @@ html {
 
 // Fixed a bug that the theme color is interrupted when scrolling
 .v-application {
+  position: relative;
   overflow-y: auto;
 }
 
@@ -340,30 +340,11 @@ html {
 
 /* 20px matches Vuetify `.v-toolbar__content > .v-toolbar-title { margin-inline-start: 20px }` */
 .v-app-bar .user-nav-btn.v-btn--variant-plain {
-  width: 46px;
-  height: 46px;
-  min-width: 46px;
-  margin-inline-end: 20px;
+  width: 52px;
+  height: 52px;
+  min-width: 52px;
+  margin-inline-end: 24px;
   opacity: 1;
   background: transparent !important;
-}
-
-.user-nav-img {
-  flex-shrink: 0;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 46px;
-  min-width: 46px;
-  height: 46px;
-  min-height: 46px;
-  line-height: 0;
-}
-
-.user-nav-img :deep(svg) {
-  display: block;
-  flex-shrink: 0;
-  width: 100%;
-  height: 100%;
 }
 </style>

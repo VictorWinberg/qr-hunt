@@ -39,7 +39,8 @@
     <v-table
       v-if="leaderboard === null"
       density="comfortable"
-      class="leaderboard__table leaderboard__table--skeleton"
+      class="leaderboard__table leaderboard__table--skeleton bg-transparent"
+      striped="even"
       aria-busy="true"
     >
       <thead>
@@ -84,7 +85,9 @@
     <v-table
       v-else-if="leaderboard && leaderboard.length"
       density="comfortable"
-      class="leaderboard__table"
+      class="leaderboard__table bg-transparent"
+      striped="even"
+      hover
     >
       <thead>
         <tr>

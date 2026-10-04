@@ -8,7 +8,7 @@
   >
     <v-card v-if="cardPayload" class="position-relative">
       <v-btn class="dialog-close" icon="mdi-close" variant="text" @click="close" />
-      <v-card-title class="text-h5 pr-10">{{ cardPayload.title }}</v-card-title>
+      <v-card-title class="text-h5 pl-6 pr-10 pt-4">{{ cardPayload.title }}</v-card-title>
       <v-card-text>
         <!-- eslint-disable-next-line vue/no-v-html -->
         <div class="dialog-subtitle" v-html="cardPayload.subtitle" />

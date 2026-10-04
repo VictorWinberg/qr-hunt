@@ -49,9 +49,9 @@
       </div>
     </v-card>
 
-    <v-tabs v-model="activeTab" grow>
+    <v-tabs v-model="activeTab" class="user-tabs" grow height="56">
       <v-tab v-for="tab in tabs" :key="tab.id" :value="tab.id">
-        <v-icon start>{{ tab.icon }}</v-icon>
+        <v-icon :icon="tab.icon" size="32" />
       </v-tab>
     </v-tabs>
 
@@ -302,5 +302,10 @@ watch(
   margin: auto;
   overflow: visible;
   pointer-events: none;
+}
+
+/* Legacy tabs were 3.5em tall with full-size FA icons. */
+.user-tabs :deep(.v-tab) {
+  min-width: 0;
 }
 </style>
