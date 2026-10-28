@@ -280,7 +280,7 @@ export default Vue.extend({
     isStaleLastVisit(lastVisitedAt) {
       if (!lastVisitedAt) return false;
       return now()
-        .subtract(7, "month")
+        .subtract(6, "month")
         .isAfter(parse(lastVisitedAt));
     },
     getIcon({ missing, collectedAt, lastVisitedAt }) {
