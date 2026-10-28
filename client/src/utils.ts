@@ -48,12 +48,11 @@ export function md5(str) {
   const rotL = (lVal, iShift) => (lVal << iShift) | (lVal >>> (32 - iShift));
 
   const uInt = (lX, lY) => {
-    let lX4, lY4, lX8, lY8, lRes;
-    lX8 = lX & 0x80000000;
-    lY8 = lY & 0x80000000;
-    lX4 = lX & 0x40000000;
-    lY4 = lY & 0x40000000;
-    lRes = (lX & 0x3fffffff) + (lY & 0x3fffffff);
+    const lX8 = lX & 0x80000000;
+    const lY8 = lY & 0x80000000;
+    const lX4 = lX & 0x40000000;
+    const lY4 = lY & 0x40000000;
+    const lRes = (lX & 0x3fffffff) + (lY & 0x3fffffff);
     if (lX4 & lY4) return lRes ^ 0x80000000 ^ lX8 ^ lY8;
     if (lX4 | lY4) {
       if (lRes & 0x40000000) return lRes ^ 0xc0000000 ^ lX8 ^ lY8;
