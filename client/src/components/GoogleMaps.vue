@@ -148,7 +148,7 @@ import { EVENT_TYPE, QR_SPOT_MODE, QR_SPOT_PANEL } from "@/constants";
 import { api } from "@/utils";
 import Flame from "@/components/Flame";
 import EventBus from "@/plugins/event-bus";
-import { now } from "@/plugins/dayjs";
+import { now, parse } from "@/plugins/dayjs";
 
 export default Vue.extend({
   components: {
@@ -277,9 +277,18 @@ export default Vue.extend({
         watchOptions
       );
     },
-    getIcon({ missing, collectedAt }) {
+    isStaleLastVisit(lastVisitedAt) {
+      if (!lastVisitedAt) return false;
+      return now()
+        .subtract(6, "month")
+        .isAfter(parse(lastVisitedAt));
+    },
+    getIcon({ missing, collectedAt, lastVisitedAt }) {
       if (missing) {
         return require("@/assets/qr-spot-marker--missing.svg");
+      }
+      if (this.isStaleLastVisit(lastVisitedAt)) {
+        return require("@/assets/qr-spot-marker--stale.svg");
       }
       if (!collectedAt) {
         return require("@/assets/qr-spot-marker--new.svg");
