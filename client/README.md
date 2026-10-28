@@ -2,7 +2,7 @@
 
 ## Prerequisite
 
-- Node v14 (for frontend)
+- Node v16 (for frontend)
 
 ## Project setup
 
