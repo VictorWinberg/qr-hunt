@@ -48,7 +48,7 @@ export function md5(str) {
   const rotL = (lVal, iShift) => (lVal << iShift) | (lVal >>> (32 - iShift));
 
   const uInt = (lX, lY) => {
-    var lX4, lY4, lX8, lY8, lRes;
+    let lX4, lY4, lX8, lY8, lRes;
     lX8 = lX & 0x80000000;
     lY8 = lY & 0x80000000;
     lX4 = lX & 0x40000000;
@@ -85,14 +85,14 @@ export function md5(str) {
   };
 
   const w2arr = str => {
-    var lWC;
-    var lMsgLng = str.length;
-    var lWC1 = lMsgLng + 8;
-    var lWC2 = (lWC1 - (lWC1 % 64)) / 64;
-    var lWCTot = (lWC2 + 1) * 16;
-    var lWordArr = Array(lWCTot - 1);
-    var lBytePos = 0;
-    var lByteCount = 0;
+    let lWC;
+    const lMsgLng = str.length;
+    const lWC1 = lMsgLng + 8;
+    const lWC2 = (lWC1 - (lWC1 % 64)) / 64;
+    const lWCTot = (lWC2 + 1) * 16;
+    const lWordArr = Array(lWCTot - 1);
+    let lBytePos = 0;
+    let lByteCount = 0;
     while (lByteCount < lMsgLng) {
       lWC = (lByteCount - (lByteCount % 4)) / 4;
       lBytePos = (lByteCount % 4) * 8;
@@ -109,10 +109,10 @@ export function md5(str) {
 
   const utf8enc = str => {
     str = str.replace(/\r\n/g, "\n");
-    var utftext = "";
+    let utftext = "";
 
-    for (var n = 0; n < str.length; n++) {
-      var c = str.charCodeAt(n);
+    for (let n = 0; n < str.length; n++) {
+      const c = str.charCodeAt(n);
       if (c < 128) {
         utftext += String.fromCharCode(c);
       } else if (c > 127 && c < 2048) {
@@ -128,24 +128,24 @@ export function md5(str) {
     return utftext;
   };
 
-  var x: string[] = [];
-  var k, AA, BB, CC, DD, a, b, c, d;
-  var S11 = 7;
-  var S12 = 12;
-  var S13 = 17;
-  var S14 = 22;
-  var S21 = 5;
-  var S22 = 9;
-  var S23 = 14;
-  var S24 = 20;
-  var S31 = 4;
-  var S32 = 11;
-  var S33 = 16;
-  var S34 = 23;
-  var S41 = 6;
-  var S42 = 10;
-  var S43 = 15;
-  var S44 = 21;
+  let x: string[] = [];
+  let k, AA, BB, CC, DD, a, b, c, d;
+  const S11 = 7;
+  const S12 = 12;
+  const S13 = 17;
+  const S14 = 22;
+  const S21 = 5;
+  const S22 = 9;
+  const S23 = 14;
+  const S24 = 20;
+  const S31 = 4;
+  const S32 = 11;
+  const S33 = 16;
+  const S34 = 23;
+  const S41 = 6;
+  const S42 = 10;
+  const S43 = 15;
+  const S44 = 21;
 
   str = utf8enc(str);
 

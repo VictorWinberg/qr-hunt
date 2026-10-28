@@ -18,8 +18,9 @@
         </transition>
       </div>
     </div>
-    <div class="last-visited" v-if="qrSpot.lastVisitedAt">
-      {{ $t("qr-spot.last-visited") }} {{ formatRelativeTime(qrSpot.lastVisitedAt) }}
+    <div v-if="qrSpot.lastVisitedAt" class="last-visited">
+      {{ $t("qr-spot.last-visited") }}
+      {{ formatRelativeTime(qrSpot.lastVisitedAt) }}
     </div>
   </div>
 </template>
