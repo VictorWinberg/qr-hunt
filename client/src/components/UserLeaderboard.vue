@@ -59,7 +59,7 @@
 import Vue from "vue";
 import { mapState, mapMutations } from "vuex";
 import { EVENT_TYPE } from "@/constants";
-import { api } from "@/utils";
+import { api } from "@/utils/api";
 import EventBus from "@/plugins/event-bus";
 import { now } from "@/plugins/dayjs";
 

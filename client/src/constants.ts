@@ -16,3 +16,24 @@ export const EVENT_TYPE = {
   API_REQUEST_UPDATE: "API_REQUEST_UPDATE",
   AUTH_CHANGE: "AUTH_CHANGE"
 };
+
+export const MAX_COLLECT_DISTANCE = 10000;
+
+export const ROUTE_PLAN_MODE = {
+  COUNT: "count",
+  TIME: "time"
+} as const;
+
+export const ROUTE_PLAN_COUNT = {
+  min: 1,
+  max: 20,
+  step: 1,
+  default: 5
+} as const;
+
+export const ROUTE_PLAN_TIME = {
+  min: 15,
+  max: 120,
+  step: 15,
+  default: 45
+} as const;

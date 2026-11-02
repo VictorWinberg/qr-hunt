@@ -1,5 +1,5 @@
 import { EVENT_TYPE, QR_SPOT_PANEL, QR_SPOT_MODE } from "@/constants";
-import { api } from "@/utils";
+import { api } from "@/utils/api";
 import Snackbar from "@/plugins/snackbar";
 import EventBus from "@/plugins/event-bus";
 
@@ -9,11 +9,15 @@ export default {
     map: null,
     qrSpot: {},
     mode: QR_SPOT_MODE.VIEW,
-    panel: QR_SPOT_PANEL.HIDE
+    panel: QR_SPOT_PANEL.HIDE,
+    markers: []
   }),
   mutations: {
     setMap(state, value) {
       state.map = value;
+    },
+    setMarkers(state, value) {
+      state.markers = value;
     },
     setQRSpot(state, value) {
       state.qrSpot = value;

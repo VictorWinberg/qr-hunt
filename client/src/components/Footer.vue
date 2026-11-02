@@ -97,7 +97,7 @@ footer {
   width: 100%;
   height: 100%;
   background: $primary-color;
-  box-shadow: 0 -2px 6px 0 rgba($black, 0.2);
+  box-shadow: $bottom-sheet-shadow;
 }
 
 .app__name,

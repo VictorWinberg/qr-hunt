@@ -34,7 +34,8 @@ import Vue from "vue";
 import EventBus from "@/plugins/event-bus";
 import AchievementsCard from "@/components/AchievementsCard.vue";
 import { EVENT_TYPE } from "@/constants";
-import { api, hashColor } from "@/utils";
+import { api } from "@/utils/api";
+import { hashColor } from "@/utils/color";
 
 export default {
   components: {

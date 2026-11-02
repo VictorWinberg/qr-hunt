@@ -41,6 +41,22 @@
     "title": "Leaderboard",
     "total": "All time"
   },
+  "route-planner": {
+    "title": "Route planner",
+    "mode-count": "Spots",
+    "mode-time": "Time",
+    "input-count": "How many spots?",
+    "input-time": "How many minutes?",
+    "plan": "Plan route",
+    "clear": "Clear route",
+    "summary": "{count} spots · {distance} · ~{minutes} min",
+    "empty-pool": "No collectable spots along this route (10 km of start/end or detour limit)",
+    "time-too-short": "No route fits in that time",
+    "partial-k": "Only {actual} of {requested} spots available on this route",
+    "alternative": "Route {current} of {total}",
+    "prev-route": "Previous route",
+    "next-route": "Next route"
+  },
   "qr-spot": {
     "coordinates": "Coordinates:",
     "coordinates-lat": "Lat:",

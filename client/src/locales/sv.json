@@ -41,6 +41,22 @@
     "title": "Poängställning",
     "total": "All time"
   },
+  "route-planner": {
+    "title": "Ruttplanerare",
+    "mode-count": "Platser",
+    "mode-time": "Tid",
+    "input-count": "Hur många platser?",
+    "input-time": "Hur många minuter?",
+    "plan": "Planera rutt",
+    "clear": "Rensa rutt",
+    "summary": "{count} platser · {distance} · ~{minutes} min",
+    "empty-pool": "Inga samlingsbara platser längs rutten (10 km från start/slut eller omvägsgräns)",
+    "time-too-short": "Ingen rutt får plats på den tiden",
+    "partial-k": "Bara {actual} av {requested} platser finns längs rutten",
+    "alternative": "Rutt {current} av {total}",
+    "prev-route": "Föregående rutt",
+    "next-route": "Nästa rutt"
+  },
   "qr-spot": {
     "coordinates": "Koordinater:",
     "coordinates-lat": "Lat:",

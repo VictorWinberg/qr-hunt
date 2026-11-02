@@ -55,8 +55,8 @@ export default {
   width: 100%;
   max-width: 500px;
   max-height: 100%;
-  overflow-y: scroll;
   margin: 20px;
+  overflow-y: scroll;
   color: $text-color;
   background-color: $primary-color;
   box-shadow: 0 2px 6px 0 rgba(#000, 0.2);

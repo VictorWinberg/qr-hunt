@@ -13,12 +13,10 @@
       mapTypeControl: false,
       fullscreenControl: false,
       clickableIcons: false,
-      draggable: panel !== QR_SPOT_PANEL.SHOW_DETAILS
+      draggable: !spotDetailsOpen
     }"
-    :class="
-      panel == QR_SPOT_PANEL.SHOW_DETAILS ? 'collapsed-map' : 'expanded-map'
-    "
-    @click="deselect"
+    :class="mapContainerClass"
+    @click="onMapClick"
     @dragend="handleDrag"
     @zoom_changed="handleZoom"
     @heading_changed="heading => (mapHeading = heading)"
@@ -76,9 +74,9 @@
       v-for="(marker, index) in markers"
       :key="index"
       :position="{ lat: Number(marker.lat), lng: Number(marker.lng) }"
-      :clickable="panel !== QR_SPOT_PANEL.SHOW_DETAILS"
+      :clickable="!spotDetailsOpen"
       :icon="getIcon(marker)"
-      @click="() => select(marker)"
+      @click="() => onMarkerClick(marker)"
     />
 
     <GmapCircle
@@ -108,6 +106,105 @@
       }"
     />
 
+    <GmapPolyline
+      v-if="routePath.length"
+      :path="routePath"
+      :options="{
+        clickable: false,
+        strokeColor: '#c99f67',
+        strokeOpacity: 0.9,
+        strokeWeight: 4
+      }"
+    />
+
+    <GmapMarker
+      v-if="routeStartMarker && routeEndpointsSame && !routeEndpointsDraggable"
+      :position="routeStartMarker"
+      :z-index="130"
+      :label="{
+        text: 'A/B',
+        color: '#ffffff',
+        fontWeight: 'bold',
+        fontSize: '10px'
+      }"
+      :icon="{
+        path: 0,
+        scale: 14,
+        fillColor: '#c99f67',
+        fillOpacity: 1,
+        strokeColor: '#242424',
+        strokeWeight: 1
+      }"
+    />
+
+    <GmapMarker
+      v-if="
+        routeStartMarker && (routeEndpointsDraggable || !routeEndpointsSame)
+      "
+      :position="routeStartMarker"
+      :draggable="routeEndpointsDraggable"
+      :z-index="131"
+      :label="{
+        text: 'A',
+        color: '#ffffff',
+        fontWeight: 'bold',
+        fontSize: '12px'
+      }"
+      :icon="{
+        path: 0,
+        scale: 11,
+        fillColor: '#4caf50',
+        fillOpacity: 1,
+        strokeColor: '#242424',
+        strokeWeight: 1
+      }"
+      @dragend="event => onRouteEndpointDrag('start', event)"
+    />
+
+    <GmapMarker
+      v-if="routeEndMarker && (routeEndpointsDraggable || !routeEndpointsSame)"
+      :position="routeEndMarker"
+      :draggable="routeEndpointsDraggable"
+      :z-index="132"
+      :label="{
+        text: 'B',
+        color: '#ffffff',
+        fontWeight: 'bold',
+        fontSize: '12px'
+      }"
+      :icon="{
+        path: 0,
+        scale: 11,
+        fillColor: '#e57373',
+        fillOpacity: 1,
+        strokeColor: '#242424',
+        strokeWeight: 1
+      }"
+      @dragend="event => onRouteEndpointDrag('end', event)"
+    />
+
+    <GmapMarker
+      v-for="(stop, index) in routeStops"
+      :key="`route-${stop.id || index}`"
+      :position="{ lat: Number(stop.lat), lng: Number(stop.lng) }"
+      :z-index="120"
+      :label="{
+        text: String(index + 1),
+        color: '#242424',
+        fontWeight: 'bold',
+        fontSize: '12px'
+      }"
+      :icon="{
+        path: 0,
+        scale: 10,
+        fillColor: '#c99f67',
+        fillOpacity: 1,
+        strokeColor: '#242424',
+        strokeWeight: 1
+      }"
+      @click="() => select(stop)"
+    />
+
     <div id="streak-button" class="control-button" @click="explainStreak">
       <div class="control-button__streak" :class="{ 'no-streak': !showStreak }">
         <Flame v-if="showStreak" />
@@ -123,6 +220,15 @@
         class="control-button__icon"
         :src="require('@/assets/position-button.svg')"
       />
+    </div>
+
+    <div
+      id="route-button"
+      class="control-button"
+      :class="{ active: routeOpen }"
+      @click="toggleRoutePlanner"
+    >
+      <i class="fas fa-route control-button__fa"></i>
     </div>
 
     <div id="compass-button" class="control-button" @click="resetHeading">
@@ -143,9 +249,9 @@
 
 <script>
 import Vue from "vue";
-import { mapState, mapMutations, mapActions } from "vuex";
+import { mapState, mapGetters, mapMutations, mapActions } from "vuex";
 import { EVENT_TYPE, QR_SPOT_MODE, QR_SPOT_PANEL } from "@/constants";
-import { api } from "@/utils";
+import { api } from "@/utils/api";
 import Flame from "@/components/Flame";
 import EventBus from "@/plugins/event-bus";
 import { now, parse } from "@/plugins/dayjs";
@@ -173,17 +279,41 @@ export default Vue.extend({
       mapHeading: 0,
       mapTilt: 0,
       QR_SPOT_MODE,
-      QR_SPOT_PANEL,
-      markers: [],
       zoomChange: -1
     };
   },
   computed: {
-    ...mapState("qrSpot", ["map", "qrSpot", "mode", "panel"]),
+    ...mapState("qrSpot", ["map", "qrSpot", "mode", "panel", "markers"]),
     ...mapState("user", ["user"]),
+    ...mapState("route", {
+      routeOpen: "open",
+      routePlan: "plan"
+    }),
+    ...mapGetters("route", {
+      routePath: "routePath",
+      routeStartMarker: "effectiveStart",
+      routeEndMarker: "effectiveEnd",
+      routeEndpointsSame: "routeEndpointsSame",
+      routeEndpointsDraggable: "routeEndpointsDraggable"
+    }),
     ...mapState({ userCoords: state => state.user.coords }),
     showStreak() {
       return this.user.streak > 2;
+    },
+    spotDetailsOpen() {
+      return this.panel === QR_SPOT_PANEL.SHOW_DETAILS;
+    },
+    mapContainerClass() {
+      if (this.spotDetailsOpen) {
+        return ["collapsed-map", "collapsed-map--spot"];
+      }
+      if (this.routeOpen) {
+        return ["collapsed-map", "collapsed-map--route"];
+      }
+      return ["expanded-map"];
+    },
+    routeStops() {
+      return (this.routePlan && this.routePlan.stops) || [];
     }
   },
   watch: {
@@ -194,7 +324,7 @@ export default Vue.extend({
       localStorage.setItem("mapZoom", newZoom);
     },
     panel() {
-      if (this.panel === QR_SPOT_PANEL.SHOW_DETAILS) {
+      if (this.spotDetailsOpen) {
         const position =
           this.mode === this.QR_SPOT_MODE.CREATE
             ? this.userCoords
@@ -209,10 +339,10 @@ export default Vue.extend({
   },
   created() {
     this.fetchQRSpots();
-    EventBus.$on(EVENT_TYPE.QR_SPOTS_UPDATE, this.fetchQRSpots);
+    EventBus.$on(EVENT_TYPE.QR_SPOTS_UPDATE, this.onQRSpotsUpdate);
   },
   beforeDestroy() {
-    EventBus.$off(EVENT_TYPE.QR_SPOTS_UPDATE, this.fetchQRSpots);
+    EventBus.$off(EVENT_TYPE.QR_SPOTS_UPDATE, this.onQRSpotsUpdate);
   },
   async mounted() {
     const map = await this.$refs.mapRef.$mapPromise;
@@ -221,12 +351,42 @@ export default Vue.extend({
     this.createMapElements();
   },
   methods: {
-    ...mapMutations("qrSpot", ["setMap"]),
+    ...mapMutations("qrSpot", ["setMap", "setMarkers"]),
     ...mapMutations("user", ["setCoords"]),
     ...mapActions("qrSpot", ["select", "deselect"]),
+    ...mapActions("route", {
+      toggleRouteOpen: "toggleOpen",
+      closeRoutePlanner: "close",
+      clearRoute: "clear",
+      seedRouteEndpoints: "seedEndpoints",
+      setRouteEndpoint: "setEndpoint"
+    }),
+    onMapClick() {
+      if (this.routeOpen) {
+        this.closeRoutePlanner();
+      }
+      this.deselect();
+    },
+    onMarkerClick(marker) {
+      this.select(marker);
+    },
+    onRouteEndpointDrag(point, event) {
+      if (!event || !event.latLng) return;
+      this.setRouteEndpoint({
+        point,
+        coords: {
+          lat: event.latLng.lat(),
+          lng: event.latLng.lng()
+        }
+      });
+    },
     async fetchQRSpots() {
       const qrspots = await api.get("/api/qrspots");
-      if (!qrspots.err) this.markers = qrspots.data;
+      if (!qrspots.err) this.setMarkers(qrspots.data);
+    },
+    onQRSpotsUpdate() {
+      this.clearRoute();
+      this.fetchQRSpots();
     },
     createMapElements() {
       /** Create button for centering position at user */
@@ -237,11 +397,23 @@ export default Vue.extend({
       } = google.maps.ControlPosition;
       const myStreak = document.getElementById("streak-button");
       const positionControl = document.getElementById("position-button");
+      const routeControl = document.getElementById("route-button");
       const compassControl = document.getElementById("compass-button");
 
       this.map.controls[LEFT_BOTTOM].push(myStreak);
       this.map.controls[RIGHT_BOTTOM].push(positionControl);
+      this.map.controls[RIGHT_BOTTOM].push(routeControl);
       this.map.controls[TOP_LEFT].push(compassControl);
+    },
+    toggleRoutePlanner() {
+      if (!this.userCoords) {
+        return;
+      }
+      const wasOpen = this.routeOpen;
+      this.toggleRouteOpen();
+      if (!wasOpen) {
+        this.seedRouteEndpoints({ userCoords: this.userCoords });
+      }
     },
     handleDrag() {
       if (!this.map) return;
@@ -351,6 +523,10 @@ export default Vue.extend({
   background-color: $white;
   border-radius: 2px;
   box-shadow: $shadow-color;
+
+  &.active {
+    background-color: $light-brand-color;
+  }
 }
 
 .control-button__inner {
@@ -359,6 +535,11 @@ export default Vue.extend({
 
 .control-button__icon {
   width: 70%;
+}
+
+.control-button__fa {
+  font-size: 1.1rem;
+  color: $primary-color;
 }
 
 .control-button__streak {
@@ -384,14 +565,22 @@ export default Vue.extend({
 
 .vue-map-container {
   &.collapsed-map {
-    height: 25%;
     transition: all 300ms 200ms;
 
-    .gmnoprint,
-    #streak-button,
-    #position-button {
-      display: flex !important;
-      opacity: 0;
+    &.collapsed-map--spot {
+      height: calc(100% - #{$qr-spot-panel-height});
+
+      .gmnoprint,
+      #streak-button,
+      #position-button,
+      #route-button {
+        display: flex !important;
+        opacity: 0;
+      }
+    }
+
+    &.collapsed-map--route {
+      height: $route-planner-panel-height;
     }
   }
 
@@ -401,7 +590,8 @@ export default Vue.extend({
 
     .gmnoprint,
     #streak-button,
-    #position-button {
+    #position-button,
+    #route-button {
       display: flex !important;
       opacity: 1;
       transition: opacity 200ms 500ms;

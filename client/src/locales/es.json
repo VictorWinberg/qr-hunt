@@ -41,6 +41,22 @@
     "title": "Clasificación",
     "total": "De todos los tiempos"
   },
+  "route-planner": {
+    "title": "Planificador de ruta",
+    "mode-count": "Lugares",
+    "mode-time": "Tiempo",
+    "input-count": "¿Cuántos lugares?",
+    "input-time": "¿Cuántos minutos?",
+    "plan": "Planificar ruta",
+    "clear": "Borrar ruta",
+    "summary": "{count} lugares · {distance} · ~{minutes} min",
+    "empty-pool": "No hay lugares recolectables en esta ruta (10 km de inicio/fin o límite de desvío)",
+    "time-too-short": "Ninguna ruta cabe en ese tiempo",
+    "partial-k": "Solo {actual} de {requested} lugares disponibles en esta ruta",
+    "alternative": "Ruta {current} de {total}",
+    "prev-route": "Ruta anterior",
+    "next-route": "Ruta siguiente"
+  },
   "qr-spot": {
     "coordinates": "Coordenadas:",
     "coordinates-lat": "Lat:",

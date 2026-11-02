@@ -1,6 +1,6 @@
 import Snackbar from "node-snackbar";
 import { EVENT_TYPE } from "@/constants";
-import { api } from "@/utils";
+import { api } from "@/utils/api";
 import EventBus from "./event-bus";
 
 const delay = 3 * 1000;

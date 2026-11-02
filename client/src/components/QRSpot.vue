@@ -48,7 +48,7 @@ import { mapState, mapMutations } from "vuex";
 import { QR_SPOT_MODE, QR_SPOT_PANEL } from "@/constants";
 import QRSpotView from "./QRSpotView";
 import QRSpotUpdate from "./QRSpotUpdate";
-import { distance, calculateWalkingTime } from "@/utils";
+import { calculateWalkingTime, distance } from "@/utils/geo";
 
 export default Vue.extend({
   name: "QRSpot",
@@ -90,26 +90,26 @@ export default Vue.extend({
 <style lang="scss">
 .qrspot-wrapper {
   position: absolute;
-  box-shadow: 0 -2px 6px 0 rgba($black, 0.2);
+  box-shadow: $bottom-sheet-shadow;
 
   .qrspot-title {
     transition: all 0.5s;
   }
 
   &.HIDE {
-    right: 60px;
+    right: $qr-spot-compact-inset-x;
     bottom: -65px;
-    left: 60px;
+    left: $qr-spot-compact-inset-x;
     height: 0;
     transition: bottom 500ms 0ms, left 0ms 500ms, right 0ms 500ms,
       height 500ms 0ms;
   }
 
   &.SHOW_INFO {
-    right: 60px;
-    bottom: 24px;
-    left: 60px;
-    height: 90px;
+    right: $qr-spot-compact-inset-x;
+    bottom: $qr-spot-info-bottom;
+    left: $qr-spot-compact-inset-x;
+    height: $qr-spot-info-height;
     transition: all 300ms 200ms, height 500ms 0ms;
 
     .qrspot-title {
@@ -121,7 +121,7 @@ export default Vue.extend({
     right: 0;
     bottom: 0;
     left: 0;
-    height: 75%;
+    height: $qr-spot-panel-height;
     transition: all 200ms 0ms, height 500ms;
 
     .qrspot-title {
