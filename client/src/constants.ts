@@ -23,3 +23,17 @@ export const ROUTE_PLAN_MODE = {
   COUNT: "count",
   TIME: "time"
 } as const;
+
+export const ROUTE_PLAN_COUNT = {
+  min: 1,
+  max: 20,
+  step: 1,
+  default: 5
+} as const;
+
+export const ROUTE_PLAN_TIME = {
+  min: 15,
+  max: 120,
+  step: 15,
+  default: 45
+} as const;

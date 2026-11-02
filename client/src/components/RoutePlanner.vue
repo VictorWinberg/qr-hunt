@@ -90,7 +90,7 @@
         <p>
           {{
             $t("route-planner.summary", {
-              count: plan.actualK,
+              count: plan.stopCount,
               distance: formatDistance(plan.totalMeters),
               minutes: plan.totalMinutes
             })
@@ -122,8 +122,12 @@
 <script>
 import Vue from "vue";
 import { mapState, mapGetters, mapActions } from "vuex";
-import { ROUTE_PLAN_MODE } from "@/constants";
-import { distance } from "@/geo";
+import {
+  ROUTE_PLAN_COUNT,
+  ROUTE_PLAN_MODE,
+  ROUTE_PLAN_TIME
+} from "@/constants";
+import { distance, formatDistance } from "@/utils/geo";
 
 export default Vue.extend({
   name: "RoutePlanner",
@@ -140,21 +144,16 @@ export default Vue.extend({
       "warning"
     ]),
     ...mapState("qrSpot", ["markers"]),
-    ...mapGetters("route", ["inputValue"]),
+    ...mapGetters("route", ["inputValue", "selectOptions"]),
     ...mapState({ userCoords: state => state.user.coords }),
-    selectOptions() {
-      if (this.mode === ROUTE_PLAN_MODE.COUNT) {
-        return Array.from({ length: 20 }, (_, i) => i + 1);
-      }
-      const minutes = [];
-      for (let m = 15; m <= 120; m += 15) minutes.push(m);
-      return minutes;
-    },
     selectedOptionValue() {
       const options = this.selectOptions;
       const current = Number(this.inputValue);
       if (options.includes(current)) return String(current);
-      const fallback = this.mode === ROUTE_PLAN_MODE.TIME ? 45 : 5;
+      const fallback =
+        this.mode === ROUTE_PLAN_MODE.TIME
+          ? ROUTE_PLAN_TIME.default
+          : ROUTE_PLAN_COUNT.default;
       return String(fallback);
     }
   },
@@ -183,7 +182,11 @@ export default Vue.extend({
       const options = this.selectOptions;
       const current = Number(this.inputValue);
       if (options.includes(current)) return;
-      this.setInputValue(this.mode === ROUTE_PLAN_MODE.TIME ? 45 : 5);
+      this.setInputValue(
+        this.mode === ROUTE_PLAN_MODE.TIME
+          ? ROUTE_PLAN_TIME.default
+          : ROUTE_PLAN_COUNT.default
+      );
     },
     onPlan() {
       this.planRoute({ markers: this.markers, userCoords: this.userCoords });
@@ -194,12 +197,7 @@ export default Vue.extend({
     selectStop(stop) {
       this.select(stop);
     },
-    formatDistance(meters) {
-      if (meters == null || Number.isNaN(meters)) return "N/A";
-      return meters < 1000
-        ? `${meters.toFixed(0)} m`
-        : `${(meters / 1000).toFixed(1)} km`;
-    },
+    formatDistance,
     legDistance(index) {
       if (!this.plan) return 0;
       const prev = index === 0 ? this.plan.start : this.plan.stops[index - 1];
@@ -223,11 +221,11 @@ export default Vue.extend({
   height: 0;
   overflow: hidden;
   pointer-events: none;
-  box-shadow: 0 -2px 6px 0 rgba($black, 0.2);
+  box-shadow: $bottom-sheet-shadow;
   transition: all 200ms 0ms, height 500ms;
 
   &.open {
-    height: 50%;
+    height: $route-planner-panel-height;
     pointer-events: auto;
   }
 }

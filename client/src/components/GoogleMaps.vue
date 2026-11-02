@@ -1,264 +1,257 @@
 <template>
   <GmapMap
-      ref="mapRef"
-      :center="mapCoords"
-      :zoom="mapZoom"
-      :options="{
-        mapId: '153063bbe11287f1',
-        gestureHandling: 'greedy',
-        zoomControl: true,
-        zoomControlOptions: { position: 3 },
-        scaleControl: false,
-        rotateControl: false,
-        mapTypeControl: false,
-        fullscreenControl: false,
-        clickableIcons: false,
-        draggable: !spotDetailsOpen
+    ref="mapRef"
+    :center="mapCoords"
+    :zoom="mapZoom"
+    :options="{
+      mapId: '153063bbe11287f1',
+      gestureHandling: 'greedy',
+      zoomControl: true,
+      zoomControlOptions: { position: 3 },
+      scaleControl: false,
+      rotateControl: false,
+      mapTypeControl: false,
+      fullscreenControl: false,
+      clickableIcons: false,
+      draggable: !spotDetailsOpen
+    }"
+    :class="mapContainerClass"
+    @click="onMapClick"
+    @dragend="handleDrag"
+    @zoom_changed="handleZoom"
+    @heading_changed="heading => (mapHeading = heading)"
+    @tilt_changed="tilt => (mapTilt = tilt)"
+  >
+    <GmapInfoWindow
+      :options="infoWindow.options"
+      :position="infoWindow.coords"
+      :opened="infoWindow.open"
+      @closeclick="infoWindow.open = false"
+    />
+
+    <GmapMarker
+      v-if="userCoords"
+      :position="userCoords"
+      :z-index="100"
+      :icon="{
+        url: require('@/assets/position-marker.svg'),
+        anchor: { x: 12, y: 12 }
       }"
-      :class="mapContainerClass"
-      @click="onMapClick"
-      @dragend="handleDrag"
-      @zoom_changed="handleZoom"
-      @heading_changed="heading => (mapHeading = heading)"
-      @tilt_changed="tilt => (mapTilt = tilt)"
-    >
-      <GmapInfoWindow
-        :options="infoWindow.options"
-        :position="infoWindow.coords"
-        :opened="infoWindow.open"
-        @closeclick="infoWindow.open = false"
-      />
+      @click="centerMapToUser"
+    />
+    <GmapMarker
+      v-else
+      :position="{ lat: 0, lng: 0 }"
+      :z-index="100"
+      :icon="{
+        url: require('@/assets/spinner.svg'),
+        anchor: { x: 50, y: 50 },
+        scaledSize: { width: 100, height: 100 }
+      }"
+      :label="{
+        text: 'Please enable location access',
+        fontSize: '1rem',
+        color: '#242424'
+      }"
+      @click="centerMapToUser"
+    />
 
-      <GmapMarker
-        v-if="userCoords"
-        :position="userCoords"
-        :z-index="100"
-        :icon="{
-          url: require('@/assets/position-marker.svg'),
-          anchor: { x: 12, y: 12 }
-        }"
-        @click="centerMapToUser"
-      />
-      <GmapMarker
-        v-else
-        :position="{ lat: 0, lng: 0 }"
-        :z-index="100"
-        :icon="{
-          url: require('@/assets/spinner.svg'),
-          anchor: { x: 50, y: 50 },
-          scaledSize: { width: 100, height: 100 }
-        }"
-        :label="{
-          text: 'Please enable location access',
-          fontSize: '1rem',
-          color: '#242424'
-        }"
-        @click="centerMapToUser"
-      />
+    <GmapCircle
+      v-if="userCoords"
+      :center="userCoords"
+      :radius="20"
+      :options="{
+        clickable: false,
+        fillColor: '#0042FF',
+        fillOpacity: '0.15',
+        strokeColor: '#FFFFFF',
+        strokeOpacity: '0.5',
+        strokeWeight: '2'
+      }"
+    />
 
-      <GmapCircle
-        v-if="userCoords"
-        :center="userCoords"
-        :radius="20"
-        :options="{
-          clickable: false,
-          fillColor: '#0042FF',
-          fillOpacity: '0.15',
-          strokeColor: '#FFFFFF',
-          strokeOpacity: '0.5',
-          strokeWeight: '2'
-        }"
-      />
+    <GmapMarker
+      v-for="(marker, index) in markers"
+      :key="index"
+      :position="{ lat: Number(marker.lat), lng: Number(marker.lng) }"
+      :clickable="!spotDetailsOpen"
+      :icon="getIcon(marker)"
+      @click="() => onMarkerClick(marker)"
+    />
 
-      <GmapMarker
-        v-for="(marker, index) in markers"
-        :key="index"
-        :position="{ lat: Number(marker.lat), lng: Number(marker.lng) }"
-        :clickable="!spotDetailsOpen"
-        :icon="getIcon(marker)"
-        @click="() => onMarkerClick(marker)"
-      />
+    <GmapCircle
+      v-for="(marker, index) in markers.filter(m => !m.missing)"
+      :key="`${index}-c`"
+      :center="{ lat: Number(marker.lat), lng: Number(marker.lng) }"
+      :radius="15"
+      :options="{
+        clickable: false,
+        fillColor: '#54341f',
+        fillOpacity: '0.2',
+        strokeColor: '#54341f',
+        strokeOpacity: '0.5',
+        strokeWeight: '2'
+      }"
+    />
 
-      <GmapCircle
-        v-for="(marker, index) in markers.filter(m => !m.missing)"
-        :key="`${index}-c`"
-        :center="{ lat: Number(marker.lat), lng: Number(marker.lng) }"
-        :radius="15"
-        :options="{
-          clickable: false,
-          fillColor: '#54341f',
-          fillOpacity: '0.2',
-          strokeColor: '#54341f',
-          strokeOpacity: '0.5',
-          strokeWeight: '2'
-        }"
-      />
+    <GmapMarker
+      v-for="(marker, index) in recent(markers)"
+      :key="`${index}-o`"
+      :position="{ lat: Number(marker.lat), lng: Number(marker.lng) }"
+      :clickable="false"
+      :icon="{
+        url: require('@/assets/puff.svg'),
+        anchor: { x: 32, y: 32 },
+        scaledSize: { width: 64, height: 64 }
+      }"
+    />
 
-      <GmapMarker
-        v-for="(marker, index) in recent(markers)"
-        :key="`${index}-o`"
-        :position="{ lat: Number(marker.lat), lng: Number(marker.lng) }"
-        :clickable="false"
-        :icon="{
-          url: require('@/assets/puff.svg'),
-          anchor: { x: 32, y: 32 },
-          scaledSize: { width: 64, height: 64 }
-        }"
-      />
+    <GmapPolyline
+      v-if="routePath.length"
+      :path="routePath"
+      :options="{
+        clickable: false,
+        strokeColor: '#c99f67',
+        strokeOpacity: 0.9,
+        strokeWeight: 4
+      }"
+    />
 
-      <GmapPolyline
-        v-if="routePath.length"
-        :path="routePath"
-        :options="{
-          clickable: false,
-          strokeColor: '#c99f67',
-          strokeOpacity: 0.9,
-          strokeWeight: 4
-        }"
-      />
+    <GmapMarker
+      v-if="routeStartMarker && routeEndpointsSame && !routeEndpointsDraggable"
+      :position="routeStartMarker"
+      :z-index="130"
+      :label="{
+        text: 'A/B',
+        color: '#ffffff',
+        fontWeight: 'bold',
+        fontSize: '10px'
+      }"
+      :icon="{
+        path: 0,
+        scale: 14,
+        fillColor: '#c99f67',
+        fillOpacity: 1,
+        strokeColor: '#242424',
+        strokeWeight: 1
+      }"
+    />
 
-      <GmapMarker
-        v-if="
-          routeStartMarker && routeEndpointsSame && !routeEndpointsDraggable
-        "
-        :position="routeStartMarker"
-        :z-index="130"
-        :label="{
-          text: 'A/B',
-          color: '#ffffff',
-          fontWeight: 'bold',
-          fontSize: '10px'
-        }"
-        :icon="{
-          path: 0,
-          scale: 14,
-          fillColor: '#c99f67',
-          fillOpacity: 1,
-          strokeColor: '#242424',
-          strokeWeight: 1
-        }"
-      />
+    <GmapMarker
+      v-if="
+        routeStartMarker && (routeEndpointsDraggable || !routeEndpointsSame)
+      "
+      :position="routeStartMarker"
+      :draggable="routeEndpointsDraggable"
+      :z-index="131"
+      :label="{
+        text: 'A',
+        color: '#ffffff',
+        fontWeight: 'bold',
+        fontSize: '12px'
+      }"
+      :icon="{
+        path: 0,
+        scale: 11,
+        fillColor: '#4caf50',
+        fillOpacity: 1,
+        strokeColor: '#242424',
+        strokeWeight: 1
+      }"
+      @dragend="event => onRouteEndpointDrag('start', event)"
+    />
 
-      <GmapMarker
-        v-if="
-          routeStartMarker && (routeEndpointsDraggable || !routeEndpointsSame)
-        "
-        :position="routeStartMarker"
-        :draggable="routeEndpointsDraggable"
-        :z-index="131"
-        :label="{
-          text: 'A',
-          color: '#ffffff',
-          fontWeight: 'bold',
-          fontSize: '12px'
-        }"
-        :icon="{
-          path: 0,
-          scale: 11,
-          fillColor: '#4caf50',
-          fillOpacity: 1,
-          strokeColor: '#242424',
-          strokeWeight: 1
-        }"
-        @dragend="event => onRouteEndpointDrag('start', event)"
-      />
+    <GmapMarker
+      v-if="routeEndMarker && (routeEndpointsDraggable || !routeEndpointsSame)"
+      :position="routeEndMarker"
+      :draggable="routeEndpointsDraggable"
+      :z-index="132"
+      :label="{
+        text: 'B',
+        color: '#ffffff',
+        fontWeight: 'bold',
+        fontSize: '12px'
+      }"
+      :icon="{
+        path: 0,
+        scale: 11,
+        fillColor: '#e57373',
+        fillOpacity: 1,
+        strokeColor: '#242424',
+        strokeWeight: 1
+      }"
+      @dragend="event => onRouteEndpointDrag('end', event)"
+    />
 
-      <GmapMarker
-        v-if="
-          routeEndMarker && (routeEndpointsDraggable || !routeEndpointsSame)
-        "
-        :position="routeEndMarker"
-        :draggable="routeEndpointsDraggable"
-        :z-index="132"
-        :label="{
-          text: 'B',
-          color: '#ffffff',
-          fontWeight: 'bold',
-          fontSize: '12px'
-        }"
-        :icon="{
-          path: 0,
-          scale: 11,
-          fillColor: '#e57373',
-          fillOpacity: 1,
-          strokeColor: '#242424',
-          strokeWeight: 1
-        }"
-        @dragend="event => onRouteEndpointDrag('end', event)"
-      />
+    <GmapMarker
+      v-for="(stop, index) in routeStops"
+      :key="`route-${stop.id || index}`"
+      :position="{ lat: Number(stop.lat), lng: Number(stop.lng) }"
+      :z-index="120"
+      :label="{
+        text: String(index + 1),
+        color: '#242424',
+        fontWeight: 'bold',
+        fontSize: '12px'
+      }"
+      :icon="{
+        path: 0,
+        scale: 10,
+        fillColor: '#c99f67',
+        fillOpacity: 1,
+        strokeColor: '#242424',
+        strokeWeight: 1
+      }"
+      @click="() => select(stop)"
+    />
 
-      <GmapMarker
-        v-for="(stop, index) in routeStops"
-        :key="`route-${stop.id || index}`"
-        :position="{ lat: Number(stop.lat), lng: Number(stop.lng) }"
-        :z-index="120"
-        :label="{
-          text: String(index + 1),
-          color: '#242424',
-          fontWeight: 'bold',
-          fontSize: '12px'
-        }"
-        :icon="{
-          path: 0,
-          scale: 10,
-          fillColor: '#c99f67',
-          fillOpacity: 1,
-          strokeColor: '#242424',
-          strokeWeight: 1
-        }"
-        @click="() => select(stop)"
-      />
-
-      <div id="streak-button" class="control-button" @click="explainStreak">
-        <div
-          class="control-button__streak"
-          :class="{ 'no-streak': !showStreak }"
-        >
-          <Flame v-if="showStreak" />
-          <p class="control-button__streak__count">
-            {{ user.streak }}
-          </p>
-        </div>
+    <div id="streak-button" class="control-button" @click="explainStreak">
+      <div class="control-button__streak" :class="{ 'no-streak': !showStreak }">
+        <Flame v-if="showStreak" />
+        <p class="control-button__streak__count">
+          {{ user.streak }}
+        </p>
       </div>
+    </div>
 
-      <div id="position-button" class="control-button" @click="centerMapToUser">
+    <div id="position-button" class="control-button" @click="centerMapToUser">
+      <img
+        alt="My Location"
+        class="control-button__icon"
+        :src="require('@/assets/position-button.svg')"
+      />
+    </div>
+
+    <div
+      id="route-button"
+      class="control-button"
+      :class="{ active: routeOpen }"
+      @click="toggleRoutePlanner"
+    >
+      <i class="fas fa-route control-button__fa"></i>
+    </div>
+
+    <div id="compass-button" class="control-button" @click="resetHeading">
+      <div
+        class="control-button__inner"
+        :style="`transform: rotateX(-${mapTilt}deg)`"
+      >
         <img
-          alt="My Location"
+          :style="`transform: rotate(-${mapHeading}deg)`"
+          alt="Compass"
           class="control-button__icon"
-          :src="require('@/assets/position-button.svg')"
+          :src="require('@/assets/compass.svg')"
         />
       </div>
-
-      <div
-        id="route-button"
-        class="control-button"
-        :class="{ active: routeOpen }"
-        @click="toggleRoutePlanner"
-      >
-        <i class="fas fa-route control-button__fa"></i>
-      </div>
-
-      <div id="compass-button" class="control-button" @click="resetHeading">
-        <div
-          class="control-button__inner"
-          :style="`transform: rotateX(-${mapTilt}deg)`"
-        >
-          <img
-            :style="`transform: rotate(-${mapHeading}deg)`"
-            alt="Compass"
-            class="control-button__icon"
-            :src="require('@/assets/compass.svg')"
-          />
-        </div>
-      </div>
+    </div>
   </GmapMap>
 </template>
 
 <script>
 import Vue from "vue";
-import { mapState, mapMutations, mapActions } from "vuex";
+import { mapState, mapGetters, mapMutations, mapActions } from "vuex";
 import { EVENT_TYPE, QR_SPOT_MODE, QR_SPOT_PANEL } from "@/constants";
-import { api } from "@/utils";
+import { api } from "@/utils/api";
 import Flame from "@/components/Flame";
 import EventBus from "@/plugins/event-bus";
 import { now, parse } from "@/plugins/dayjs";
@@ -294,9 +287,14 @@ export default Vue.extend({
     ...mapState("user", ["user"]),
     ...mapState("route", {
       routeOpen: "open",
-      routePlan: "plan",
-      routeStart: "start",
-      routeEnd: "end"
+      routePlan: "plan"
+    }),
+    ...mapGetters("route", {
+      routePath: "routePath",
+      routeStartMarker: "effectiveStart",
+      routeEndMarker: "effectiveEnd",
+      routeEndpointsSame: "routeEndpointsSame",
+      routeEndpointsDraggable: "routeEndpointsDraggable"
     }),
     ...mapState({ userCoords: state => state.user.coords }),
     showStreak() {
@@ -316,39 +314,6 @@ export default Vue.extend({
     },
     routeStops() {
       return (this.routePlan && this.routePlan.stops) || [];
-    },
-    routeStartMarker() {
-      if (this.routePlan) return this.routePlan.start;
-      if (!this.routeOpen) return null;
-      if (this.routeStart) return this.routeStart;
-      return this.userCoords;
-    },
-    routeEndMarker() {
-      if (this.routePlan) return this.routePlan.end;
-      if (!this.routeOpen) return null;
-      if (this.routeEnd) return this.routeEnd;
-      return this.userCoords;
-    },
-    routeEndpointsDraggable() {
-      return this.routeOpen && !this.spotDetailsOpen;
-    },
-    routeEndpointsSame() {
-      const a = this.routeStartMarker;
-      const b = this.routeEndMarker;
-      if (!a || !b) return false;
-      return (
-        Math.abs(Number(a.lat) - Number(b.lat)) < 1e-7 &&
-        Math.abs(Number(a.lng) - Number(b.lng)) < 1e-7
-      );
-    },
-    routePath() {
-      if (!this.routePlan || !this.routePlan.stops.length) return [];
-      const { start, end, stops } = this.routePlan;
-      return [
-        start,
-        ...stops.map(s => ({ lat: Number(s.lat), lng: Number(s.lng) })),
-        end
-      ];
     }
   },
   watch: {
@@ -603,7 +568,7 @@ export default Vue.extend({
     transition: all 300ms 200ms;
 
     &.collapsed-map--spot {
-      height: 25%;
+      height: calc(100% - #{$qr-spot-panel-height});
 
       .gmnoprint,
       #streak-button,
@@ -615,7 +580,7 @@ export default Vue.extend({
     }
 
     &.collapsed-map--route {
-      height: 50%;
+      height: $route-planner-panel-height;
     }
   }
 

@@ -1,36 +1,54 @@
-import { ROUTE_PLAN_MODE } from "@/constants";
+import {
+  QR_SPOT_PANEL,
+  ROUTE_PLAN_COUNT,
+  ROUTE_PLAN_MODE,
+  ROUTE_PLAN_TIME
+} from "@/constants";
+import { clamp, range } from "@/utils/number";
+import { coordsEqual, Coords } from "@/utils/geo";
 import i18n from "@/plugins/i18n";
 import Snackbar from "@/plugins/snackbar";
 import {
   planRouteAlternativesByCount,
   planRouteAlternativesByTime,
   RoutePlan,
-  RouteSpot,
-  Coords
+  RouteSpot
 } from "@/routePlanner";
 
-type RouteMode = typeof ROUTE_PLAN_MODE[keyof typeof ROUTE_PLAN_MODE];
-function sameCoords(a: Coords | null, b: Coords | null): boolean {
-  if (!a || !b) return false;
-  return a.lat === b.lat && a.lng === b.lng;
+type RouteMode = "count" | "time";
+
+function userCoordsToPoint(
+  userCoords: { lat: number; lng: number } | null
+): Coords | null {
+  if (!userCoords) return null;
+  return { lat: userCoords.lat, lng: userCoords.lng };
+}
+
+function resolvePlanningEndpoints(
+  state: {
+    start: Coords | null;
+    end: Coords | null;
+  },
+  userCoords: Coords | null
+): { start: Coords | null; end: Coords | null } {
+  const start = state.start || userCoords;
+  const end = state.end || userCoords;
+  return { start, end };
 }
 
 export default {
   namespaced: true,
   state: () => ({
     open: false,
-    mode: ROUTE_PLAN_MODE.COUNT as RouteMode,
-    countValue: 5,
-    timeValue: 45,
-    plan: null as RoutePlan | null,
-    alternatives: [] as RoutePlan[],
+    mode: ROUTE_PLAN_MODE.COUNT,
+    countValue: ROUTE_PLAN_COUNT.default,
+    timeValue: ROUTE_PLAN_TIME.default,
+    plan: null,
+    alternatives: [],
     planIndex: 0,
-    warning: null as string | null,
-    /** null = use current GPS when planning */
-    start: null as Coords | null,
-    end: null as Coords | null,
-    startIsGps: true,
-    endIsGps: true
+    warning: null,
+    start: null,
+    end: null
   }),
   mutations: {
     setOpen(state, value: boolean) {
@@ -43,16 +61,14 @@ export default {
       state.mode = mode;
     },
     setInputValue(state, value: number) {
-      if (state.mode === ROUTE_PLAN_MODE.TIME) {
-        const raw = Number(value);
-        const next = Number.isFinite(raw) ? raw : 45;
-        const clamped = Math.min(120, Math.max(15, next));
-        state.timeValue = Math.round(clamped / 15) * 15;
-        return;
+      switch (state.mode) {
+        case ROUTE_PLAN_MODE.TIME:
+          state.timeValue = clamp(value, ROUTE_PLAN_TIME);
+          break;
+        case ROUTE_PLAN_MODE.COUNT:
+          state.countValue = clamp(value, ROUTE_PLAN_COUNT);
+          break;
       }
-      const raw = Number(value);
-      const next = Number.isFinite(raw) ? raw : 5;
-      state.countValue = Math.min(20, Math.max(1, Math.floor(next)));
     },
     setAlternatives(state, alternatives: RoutePlan[]) {
       state.alternatives = alternatives;
@@ -70,13 +86,11 @@ export default {
     setWarning(state, warning: string | null) {
       state.warning = warning;
     },
-    setStart(state, payload: { coords: Coords; isGps: boolean }) {
-      state.start = { ...payload.coords };
-      state.startIsGps = payload.isGps;
+    setStart(state, coords: Coords) {
+      state.start = { ...coords };
     },
-    setEnd(state, payload: { coords: Coords; isGps: boolean }) {
-      state.end = { ...payload.coords };
-      state.endIsGps = payload.isGps;
+    setEnd(state, coords: Coords) {
+      state.end = { ...coords };
     },
     clear(state) {
       state.plan = null;
@@ -105,13 +119,13 @@ export default {
       { state, commit },
       { userCoords }: { userCoords: Coords | null }
     ) {
-      if (!userCoords) return;
-      const coords = { lat: userCoords.lat, lng: userCoords.lng };
+      const coords = userCoordsToPoint(userCoords);
+      if (!coords) return;
       if (!state.start) {
-        commit("setStart", { coords, isGps: true });
+        commit("setStart", coords);
       }
       if (!state.end) {
-        commit("setEnd", { coords, isGps: true });
+        commit("setEnd", coords);
       }
     },
     setEndpoint(
@@ -125,9 +139,8 @@ export default {
       }
     ) {
       commit("clear");
-      const payload = { coords, isGps: false };
-      if (point === "start") commit("setStart", payload);
-      else commit("setEnd", payload);
+      if (point === "start") commit("setStart", coords);
+      else commit("setEnd", coords);
     },
     prevAlternative({ state, commit }) {
       commit("setPlanIndex", state.planIndex - 1);
@@ -142,22 +155,18 @@ export default {
         userCoords
       }: { markers: RouteSpot[]; userCoords: Coords | null }
     ) {
-      const start =
-        state.start ||
-        (userCoords ? { lat: userCoords.lat, lng: userCoords.lng } : null);
-      const end =
-        state.end ||
-        (userCoords ? { lat: userCoords.lat, lng: userCoords.lng } : null);
+      const gps = userCoordsToPoint(userCoords);
+      const { start, end } = resolvePlanningEndpoints(state, gps);
 
       if (!start || !end) {
         return;
       }
 
       if (!state.start) {
-        commit("setStart", { coords: start, isGps: true });
+        commit("setStart", start);
       }
       if (!state.end) {
-        commit("setEnd", { coords: end, isGps: true });
+        commit("setEnd", end);
       }
 
       const raw =
@@ -176,9 +185,9 @@ export default {
           commit("clear");
           return;
         }
-        if (alternatives[0].actualK < value) {
+        if (alternatives[0].stopCount < value) {
           warning = i18n.t("route-planner.partial-k", {
-            actual: alternatives[0].actualK,
+            actual: alternatives[0].stopCount,
             requested: value
           }) as string;
         }
@@ -198,7 +207,38 @@ export default {
   getters: {
     inputValue: state =>
       state.mode === ROUTE_PLAN_MODE.TIME ? state.timeValue : state.countValue,
-    isLoop: state =>
-      sameCoords(state.start, state.end) || (!state.start && !state.end)
+    countSelectOptions: () =>
+      range(ROUTE_PLAN_COUNT.min, ROUTE_PLAN_COUNT.max, ROUTE_PLAN_COUNT.step),
+    timeSelectOptions: () =>
+      range(ROUTE_PLAN_TIME.min, ROUTE_PLAN_TIME.max, ROUTE_PLAN_TIME.step),
+    selectOptions: (state, getters) =>
+      state.mode === ROUTE_PLAN_MODE.TIME
+        ? getters.timeSelectOptions
+        : getters.countSelectOptions,
+    effectiveStart: (state, _getters, rootState) => {
+      if (state.plan) return state.plan.start;
+      if (!state.open) return null;
+      if (state.start) return state.start;
+      return userCoordsToPoint(rootState.user.coords);
+    },
+    effectiveEnd: (state, _getters, rootState) => {
+      if (state.plan) return state.plan.end;
+      if (!state.open) return null;
+      if (state.end) return state.end;
+      return userCoordsToPoint(rootState.user.coords);
+    },
+    routeEndpointsSame: (_state, getters) =>
+      coordsEqual(getters.effectiveStart, getters.effectiveEnd),
+    routeEndpointsDraggable: (state, _getters, rootState) =>
+      state.open && rootState.qrSpot.panel !== QR_SPOT_PANEL.SHOW_DETAILS,
+    routePath: state => {
+      if (!state.plan || !state.plan.stops.length) return [];
+      const { start, end, stops } = state.plan;
+      return [
+        start,
+        ...stops.map(s => ({ lat: Number(s.lat), lng: Number(s.lng) })),
+        end
+      ];
+    }
   }
 };

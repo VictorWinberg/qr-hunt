@@ -84,7 +84,8 @@
 
 <script>
 import Vue from "vue";
-import { api, hashColor } from "@/utils";
+import { api } from "@/utils/api";
+import { hashColor } from "@/utils/color";
 import UserAchievements from "@/components/UserAchievements";
 import UserLeaderboard from "@/components/UserLeaderboard";
 import UserSettings from "@/components/UserSettings";

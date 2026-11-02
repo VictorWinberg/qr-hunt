@@ -1,5 +1,5 @@
 import { EVENT_TYPE, QR_SPOT_PANEL, QR_SPOT_MODE } from "@/constants";
-import { api } from "@/utils";
+import { api } from "@/utils/api";
 import Snackbar from "@/plugins/snackbar";
 import EventBus from "@/plugins/event-bus";
 

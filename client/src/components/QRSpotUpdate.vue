@@ -95,7 +95,7 @@
 import Vue from "vue";
 import { mapState, mapMutations, mapActions } from "vuex";
 import { QR_SPOT_MODE, QR_SPOT_PANEL, EVENT_TYPE } from "@/constants";
-import { api } from "@/utils";
+import { api } from "@/utils/api";
 import EventBus from "@/plugins/event-bus";
 
 export default Vue.extend({

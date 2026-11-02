@@ -36,7 +36,7 @@
 
 <script>
 import { mapState, mapMutations } from "vuex";
-import { api } from "@/utils";
+import { api } from "@/utils/api";
 import i18n from "@/plugins/i18n";
 import { languages } from "../locales";
 

@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import { hashColor } from "@/utils";
+import { hashColor } from "@/utils/color";
 
 export default {
   props: {

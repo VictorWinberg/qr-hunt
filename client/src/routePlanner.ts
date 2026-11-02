@@ -1,13 +1,8 @@
 import { now, parse } from "@/plugins/dayjs";
 import { MAX_COLLECT_DISTANCE } from "@/constants";
-import { calculateWalkingTime, distance } from "@/geo";
+import { calculateWalkingTime, distance, Coords } from "@/utils/geo";
 
 const DEFAULT_MAX_ALTERNATIVES = 5;
-
-export interface Coords {
-  lat: number;
-  lng: number;
-}
 
 export interface RouteSpot extends Coords {
   id?: number | string;
@@ -23,8 +18,8 @@ export interface RoutePlan {
   stops: RouteSpot[];
   totalMeters: number;
   totalMinutes: number;
-  requestedK?: number;
-  actualK: number;
+  stopTarget: number;
+  stopCount: number;
 }
 
 function isCollectedToday(collectedAt?: string | null): boolean {
@@ -152,7 +147,7 @@ function finalizePlan(
   start: Coords,
   end: Coords,
   rawStops: RouteSpot[],
-  requestedK?: number
+  stopTarget: number
 ): RoutePlan | null {
   if (rawStops.length === 0) return null;
   const stops = twoOptImprove(start, rawStops, end);
@@ -163,8 +158,8 @@ function finalizePlan(
     stops,
     totalMeters: meters,
     totalMinutes: calculateWalkingTime(meters),
-    requestedK,
-    actualK: stops.length
+    stopTarget,
+    stopCount: stops.length
   };
 }
 
@@ -173,13 +168,13 @@ function buildPlan(
   start: Coords,
   end: Coords,
   k: number,
-  requestedK?: number,
+  stopTarget: number,
   forcedFirst?: RouteSpot
 ): RoutePlan | null {
   if (k < 1 || pool.length === 0) return null;
-  const actualK = Math.min(k, pool.length);
-  const nnStops = nearestNeighborStops(pool, start, actualK, forcedFirst);
-  return finalizePlan(start, end, nnStops, requestedK);
+  const pickCount = Math.min(k, pool.length);
+  const nnStops = nearestNeighborStops(pool, start, pickCount, forcedFirst);
+  return finalizePlan(start, end, nnStops, stopTarget);
 }
 
 function sortedByDistanceFrom(origin: Coords, spots: RouteSpot[]): RouteSpot[] {
@@ -193,12 +188,12 @@ function collectAlternatives(
   start: Coords,
   end: Coords,
   k: number,
-  requestedK: number | undefined,
+  stopTarget: number,
   maxAlternatives: number,
   minutesBudget?: number
 ): RoutePlan[] {
-  const actualK = Math.min(k, pool.length);
-  if (actualK < 1) return [];
+  const pickCount = Math.min(k, pool.length);
+  if (pickCount < 1) return [];
 
   const candidates: RoutePlan[] = [];
   const push = (plan: RoutePlan | null) => {
@@ -207,18 +202,18 @@ function collectAlternatives(
     candidates.push(plan);
   };
 
-  push(buildPlan(pool, start, end, actualK, requestedK));
+  push(buildPlan(pool, start, end, pickCount, stopTarget));
 
   const nearStart = sortedByDistanceFrom(start, pool).slice(0, 12);
   for (const seed of nearStart) {
-    push(buildPlan(pool, start, end, actualK, requestedK, seed));
+    push(buildPlan(pool, start, end, pickCount, stopTarget, seed));
   }
 
-  const baseline = buildPlan(pool, start, end, actualK, requestedK);
-  if (baseline && pool.length > actualK) {
+  const baseline = buildPlan(pool, start, end, pickCount, stopTarget);
+  if (baseline && pool.length > pickCount) {
     for (const exclude of baseline.stops) {
       const reduced = pool.filter(s => spotKey(s) !== spotKey(exclude));
-      push(buildPlan(reduced, start, end, actualK, requestedK));
+      push(buildPlan(reduced, start, end, pickCount, stopTarget));
     }
   }
 
@@ -260,7 +255,7 @@ export function planRouteAlternativesByTime(
 
   let bestK = 0;
   for (let k = 1; k <= pool.length; k++) {
-    const plan = buildPlan(pool, start, end, k);
+    const plan = buildPlan(pool, start, end, k, k);
     if (!plan || plan.totalMinutes > minutesBudget) break;
     bestK = k;
   }
@@ -271,40 +266,8 @@ export function planRouteAlternativesByTime(
     start,
     end,
     bestK,
-    undefined,
+    bestK,
     maxAlternatives,
     minutesBudget
-  );
-}
-
-export function planRouteByCount(
-  spots: RouteSpot[],
-  start: Coords,
-  k: number,
-  end: Coords = start,
-  maxRadiusMeters: number = MAX_COLLECT_DISTANCE
-): RoutePlan | null {
-  return (
-    planRouteAlternativesByCount(spots, start, k, end, maxRadiusMeters, 1)[0] ||
-    null
-  );
-}
-
-export function planRouteByTime(
-  spots: RouteSpot[],
-  start: Coords,
-  minutesBudget: number,
-  end: Coords = start,
-  maxRadiusMeters: number = MAX_COLLECT_DISTANCE
-): RoutePlan | null {
-  return (
-    planRouteAlternativesByTime(
-      spots,
-      start,
-      minutesBudget,
-      end,
-      maxRadiusMeters,
-      1
-    )[0] || null
   );
 }

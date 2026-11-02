@@ -1,50 +1,4 @@
-import { EVENT_TYPE } from "@/constants";
-import CustomSnackbar from "@/plugins/snackbar";
-import EventBus from "@/plugins/event-bus";
-
-export function isJson(str): boolean {
-  try {
-    JSON.parse(str);
-  } catch (e) {
-    return false;
-  }
-  return true;
-}
-
-const apiFetch = (method?: string) => async (
-  input: RequestInfo,
-  init: RequestInit = {}
-): Promise<{ data; err }> => {
-  try {
-    const response = await fetch(input, {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      },
-      credentials: "include",
-      method,
-      ...init
-    });
-    if (method !== "GET") EventBus.$emit(EVENT_TYPE.API_REQUEST_UPDATE);
-    const data = await response.text();
-    if (!response.ok) {
-      throw new Error(`${response.status} - ${data || response.statusText}`);
-    }
-    return { data: isJson(data) ? JSON.parse(data) : data, err: false };
-  } catch (err) {
-    CustomSnackbar.err(err as string);
-    return { data: null, err };
-  }
-};
-
-export const api = {
-  get: apiFetch("GET"),
-  put: apiFetch("PUT"),
-  post: apiFetch("POST"),
-  delete: apiFetch("DELETE")
-};
-
-export function md5(str) {
+function md5(str) {
   const rotL = (lVal, iShift) => (lVal << iShift) | (lVal >>> (32 - iShift));
 
   const uInt = (lX, lY) => {
@@ -242,22 +196,4 @@ export function hashColor(str) {
     colour += ("00" + value.toString(16)).substr(-2);
   }
   return colour;
-}
-
-export { distance, calculateWalkingTime } from "./geo";
-
-export function findCamera(devices: MediaDeviceInfo[]) {
-  const cameras = devices.filter(device => device.kind === "videoinput");
-
-  // Find the 4 cameras with the shortest label, should be the main cameras
-  const lenghts = cameras
-    .map(item => item.label.length)
-    .sort((a, b) => a - b)
-    .slice(0, 4);
-  const length = lenghts.pop() || Infinity;
-
-  const mainCameras = cameras.filter(camera => camera.label.length <= length);
-
-  // Return the last camera in the list, should be the back camera
-  return mainCameras[mainCameras.length - 1];
 }

@@ -20,7 +20,7 @@ import { mapState, mapMutations, mapActions } from "vuex";
 import QRScanner from "qr-scanner";
 
 import { QR_SPOT_PANEL } from "@/constants";
-import { findCamera } from "@/utils";
+import { findCamera } from "@/utils/camera";
 
 // eslint-disable-next-line import/no-webpack-loader-syntax
 import QRScannerWorkerPath from "!!file-loader!../../node_modules/qr-scanner/qr-scanner-worker.min.js";
