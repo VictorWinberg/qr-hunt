@@ -5,6 +5,7 @@ import moduleUser from "./store-user";
 import moduleScan from "./store-scan";
 import modulePopup from "./store-popup";
 import moduleQRSpot from "./store-qr-spot";
+import moduleRoute from "./store-route";
 
 Vue.use(Vuex);
 
@@ -13,7 +14,8 @@ export default new Vuex.Store({
     user: moduleUser,
     scan: moduleScan,
     popup: modulePopup,
-    qrSpot: moduleQRSpot
+    qrSpot: moduleQRSpot,
+    route: moduleRoute
   },
   state: {},
   getters: {},

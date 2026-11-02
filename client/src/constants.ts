@@ -16,3 +16,11 @@ export const EVENT_TYPE = {
   API_REQUEST_UPDATE: "API_REQUEST_UPDATE",
   AUTH_CHANGE: "AUTH_CHANGE"
 };
+
+/** Mirrors server/src/user/user-route.js MAX_COLLECT_DISTANCE */
+export const MAX_COLLECT_DISTANCE = 10000;
+
+export const ROUTE_PLAN_MODE = {
+  COUNT: "count",
+  TIME: "time"
+} as const;
