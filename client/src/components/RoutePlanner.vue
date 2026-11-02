@@ -274,9 +274,9 @@ export default Vue.extend({
 
 .route-planner__input-row {
   display: flex;
+  gap: 1em;
   align-items: center;
   justify-content: space-between;
-  gap: 1em;
   max-width: 500px;
   margin: 0 auto 0.75em;
   font-size: 1rem;
@@ -338,9 +338,9 @@ export default Vue.extend({
 
 .route-planner__alts {
   display: flex;
+  gap: 0.75em;
   align-items: center;
   justify-content: center;
-  gap: 0.75em;
   margin-bottom: 0.5em;
   font-size: 1rem;
 }
@@ -371,8 +371,8 @@ export default Vue.extend({
 
 .route-planner__stop {
   display: flex;
-  align-items: center;
   gap: 0.75em;
+  align-items: center;
   padding: 0.55em 0.25em;
   cursor: pointer;
   border-bottom: 1px solid rgba($white, 0.08);
