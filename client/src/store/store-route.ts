@@ -46,8 +46,8 @@ export default {
       if (state.mode === ROUTE_PLAN_MODE.TIME) {
         const raw = Number(value);
         const next = Number.isFinite(raw) ? raw : 45;
-        const clamped = Math.min(120, Math.max(5, next));
-        state.timeValue = Math.round(clamped / 5) * 5;
+        const clamped = Math.min(120, Math.max(15, next));
+        state.timeValue = Math.round(clamped / 15) * 15;
         return;
       }
       const raw = Number(value);

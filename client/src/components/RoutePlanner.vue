@@ -152,7 +152,7 @@ export default Vue.extend({
         return Array.from({ length: 20 }, (_, i) => i + 1);
       }
       const minutes = [];
-      for (let m = 5; m <= 120; m += 5) minutes.push(m);
+      for (let m = 15; m <= 120; m += 15) minutes.push(m);
       return minutes;
     },
     selectedOptionValue() {
