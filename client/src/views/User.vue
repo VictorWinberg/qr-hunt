@@ -123,7 +123,7 @@ export default Vue.extend({
     },
     async fetchUser() {
       const { params } = this.$route;
-      var reset = setTimeout(() => (this.user = {}), 200);
+      const reset = setTimeout(() => (this.user = {}), 200);
 
       const user = params.id
         ? await api.get("/api/users/" + params.id)

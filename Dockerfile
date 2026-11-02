@@ -3,7 +3,7 @@ FROM --platform=$BUILDPLATFORM node:16.20.2 AS build-client
 WORKDIR /app/client
 
 COPY client/package.json client/package-lock.json ./
-RUN npm ci
+RUN npm ci --legacy-peer-deps
 
 COPY client/ ./
 ARG VUE_APP_GOOGLE_API_KEY

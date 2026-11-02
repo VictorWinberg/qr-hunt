@@ -5,7 +5,7 @@
 ## Prerequisite
 
 - Node v22 (for backend)
-- Node v14 (for frontend)
+- Node v16 (for frontend)
 - Postgres v11
 
 ## Environment variables
@@ -16,7 +16,7 @@ Create a root `.env` file for local development (backend runtime and frontend bu
 ### Credentials
 
 There is also a `credentials.json` file in the root dir.
-> You can download it from https://console.cloud.google.com/apis/credentials under "Service Accounts"
+> You can download it from <https://console.cloud.google.com/apis/credentials> under "Service Accounts"
 
 ## Server (Backend)
 
@@ -27,7 +27,9 @@ See [server/README.md](server/README.md).
 See [client/README.md](client/README.md).
 
 ## Swagger UI | API Documentation
+
 Visit `/api/docs`
 
 ## Sentry | Error Monitoring
+
 Visit `sentry.io` (ask for invite)
