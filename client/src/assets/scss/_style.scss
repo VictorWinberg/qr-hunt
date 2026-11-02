@@ -6,6 +6,15 @@ body {
   margin: 0;
   overflow: hidden;
   background-color: $primary-color;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+// iOS Safari zooms focused fields when font-size is below 16px.
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+select,
+textarea {
+  font-size: max(16px, 1rem);
 }
 
 li {

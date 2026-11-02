@@ -21,7 +21,7 @@ export default {
     open: false,
     mode: ROUTE_PLAN_MODE.COUNT as RouteMode,
     countValue: 5,
-    timeValue: 60,
+    timeValue: 45,
     plan: null as RoutePlan | null,
     alternatives: [] as RoutePlan[],
     planIndex: 0,
@@ -43,9 +43,16 @@ export default {
       state.mode = mode;
     },
     setInputValue(state, value: number) {
-      const next = Math.max(1, Number(value) || 1);
-      if (state.mode === ROUTE_PLAN_MODE.TIME) state.timeValue = next;
-      else state.countValue = next;
+      if (state.mode === ROUTE_PLAN_MODE.TIME) {
+        const raw = Number(value);
+        const next = Number.isFinite(raw) ? raw : 45;
+        const clamped = Math.min(120, Math.max(5, next));
+        state.timeValue = Math.round(clamped / 5) * 5;
+        return;
+      }
+      const raw = Number(value);
+      const next = Number.isFinite(raw) ? raw : 5;
+      state.countValue = Math.min(20, Math.max(1, Math.floor(next)));
     },
     setAlternatives(state, alternatives: RoutePlan[]) {
       state.alternatives = alternatives;
@@ -81,6 +88,9 @@ export default {
   actions: {
     toggleOpen({ commit }) {
       commit("toggleOpen");
+    },
+    close({ commit }) {
+      commit("setOpen", false);
     },
     setMode({ commit }, mode: RouteMode) {
       commit("setMode", mode);

@@ -14,15 +14,9 @@
         mapTypeControl: false,
         fullscreenControl: false,
         clickableIcons: false,
-        draggable: panel !== QR_SPOT_PANEL.SHOW_DETAILS
+        draggable: !spotDetailsOpen
       }"
-      :class="
-        panel === QR_SPOT_PANEL.SHOW_DETAILS
-          ? ['collapsed-map', 'collapsed-map--spot']
-          : routeOpen
-          ? ['collapsed-map', 'collapsed-map--route']
-          : ['expanded-map']
-      "
+      :class="mapContainerClass"
       @click="onMapClick"
       @dragend="handleDrag"
       @zoom_changed="handleZoom"
@@ -81,7 +75,7 @@
         v-for="(marker, index) in markers"
         :key="index"
         :position="{ lat: Number(marker.lat), lng: Number(marker.lng) }"
-        :clickable="panel !== QR_SPOT_PANEL.SHOW_DETAILS"
+        :clickable="!spotDetailsOpen"
         :icon="getIcon(marker)"
         @click="() => onMarkerClick(marker)"
       />
@@ -294,7 +288,6 @@ export default Vue.extend({
       mapHeading: 0,
       mapTilt: 0,
       QR_SPOT_MODE,
-      QR_SPOT_PANEL,
       markers: [],
       zoomChange: -1
     };
@@ -312,6 +305,18 @@ export default Vue.extend({
     showStreak() {
       return this.user.streak > 2;
     },
+    spotDetailsOpen() {
+      return this.panel === QR_SPOT_PANEL.SHOW_DETAILS;
+    },
+    mapContainerClass() {
+      if (this.spotDetailsOpen) {
+        return ["collapsed-map", "collapsed-map--spot"];
+      }
+      if (this.routeOpen) {
+        return ["collapsed-map", "collapsed-map--route"];
+      }
+      return ["expanded-map"];
+    },
     routeStops() {
       return (this.routePlan && this.routePlan.stops) || [];
     },
@@ -328,9 +333,7 @@ export default Vue.extend({
       return this.userCoords;
     },
     routeEndpointsDraggable() {
-      return (
-        this.routeOpen && this.panel !== this.QR_SPOT_PANEL.SHOW_DETAILS
-      );
+      return this.routeOpen && !this.spotDetailsOpen;
     },
     routeEndpointsSame() {
       const a = this.routeStartMarker;
@@ -359,7 +362,7 @@ export default Vue.extend({
       localStorage.setItem("mapZoom", newZoom);
     },
     panel() {
-      if (this.panel === QR_SPOT_PANEL.SHOW_DETAILS) {
+      if (this.spotDetailsOpen) {
         const position =
           this.mode === this.QR_SPOT_MODE.CREATE
             ? this.userCoords
@@ -391,11 +394,15 @@ export default Vue.extend({
     ...mapActions("qrSpot", ["select", "deselect"]),
     ...mapActions("route", {
       toggleRouteOpen: "toggleOpen",
+      closeRoutePlanner: "close",
       clearRoute: "clear",
       seedRouteEndpoints: "seedEndpoints",
       setRouteEndpoint: "setEndpoint"
     }),
     onMapClick() {
+      if (this.routeOpen) {
+        this.closeRoutePlanner();
+      }
       this.deselect();
     },
     onMarkerClick(marker) {
@@ -610,18 +617,18 @@ export default Vue.extend({
 
     &.collapsed-map--spot {
       height: 25%;
+
+      .gmnoprint,
+      #streak-button,
+      #position-button,
+      #route-button {
+        display: flex !important;
+        opacity: 0;
+      }
     }
 
     &.collapsed-map--route {
       height: 50%;
-    }
-
-    .gmnoprint,
-    #streak-button,
-    #position-button,
-    #route-button {
-      display: flex !important;
-      opacity: 0;
     }
   }
 

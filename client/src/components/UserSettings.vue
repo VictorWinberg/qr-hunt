@@ -100,7 +100,7 @@ export default {
   margin-bottom: 20px;
 }
 
-select {
+.select-language select {
   position: absolute;
   top: 0;
   left: 0;

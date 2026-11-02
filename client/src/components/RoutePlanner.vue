@@ -1,15 +1,6 @@
 <template>
   <div class="route-planner-wrapper" :class="{ open }">
     <div class="route-planner-container">
-      <button
-        type="button"
-        class="route-planner__close"
-        :aria-label="$t('route-planner.close')"
-        @click="toggleOpen"
-      >
-        <i class="fas fa-times"></i>
-      </button>
-
       <h2 class="route-planner__title">{{ $t("route-planner.title") }}</h2>
 
     <div class="route-planner__modes">
@@ -31,22 +22,29 @@
       </button>
     </div>
 
-    <label class="route-planner__input-row">
-      <span>
+    <div class="route-planner__input-row">
+      <span class="route-planner__input-label">
         {{
           mode === ROUTE_PLAN_MODE.COUNT
             ? $t("route-planner.input-count")
             : $t("route-planner.input-time")
         }}
       </span>
-      <input
-        :value="inputValue"
-        type="number"
-        min="1"
+      <select
+        :key="mode"
+        :value="selectedOptionValue"
         class="route-planner__input"
-        @input="onInput"
-      />
-    </label>
+        @change="onSelectChange"
+      >
+        <option
+          v-for="n in selectOptions"
+          :key="n"
+          :value="String(n)"
+        >
+          {{ n }}
+        </option>
+      </select>
+    </div>
 
     <div class="route-planner__actions">
       <button type="button" class="route-planner__btn primary" @click="onPlan">
@@ -148,11 +146,34 @@ export default Vue.extend({
       "warning"
     ]),
     ...mapGetters("route", ["inputValue"]),
-    ...mapState({ userCoords: state => state.user.coords })
+    ...mapState({ userCoords: state => state.user.coords }),
+    selectOptions() {
+      if (this.mode === ROUTE_PLAN_MODE.COUNT) {
+        return Array.from({ length: 20 }, (_, i) => i + 1);
+      }
+      const minutes = [];
+      for (let m = 5; m <= 120; m += 5) minutes.push(m);
+      return minutes;
+    },
+    selectedOptionValue() {
+      const options = this.selectOptions;
+      const current = Number(this.inputValue);
+      if (options.includes(current)) return String(current);
+      const fallback =
+        this.mode === ROUTE_PLAN_MODE.TIME ? 45 : 5;
+      return String(fallback);
+    }
+  },
+  watch: {
+    mode: {
+      immediate: true,
+      handler() {
+        this.syncInputToOptions();
+      }
+    }
   },
   methods: {
     ...mapActions("route", {
-      toggleOpen: "toggleOpen",
       setMode: "setMode",
       setInputValue: "setInputValue",
       planRoute: "plan",
@@ -161,8 +182,16 @@ export default Vue.extend({
       nextAlternative: "nextAlternative"
     }),
     ...mapActions("qrSpot", ["select"]),
-    onInput(event) {
+    onSelectChange(event) {
       this.setInputValue(Number(event.target.value));
+    },
+    syncInputToOptions() {
+      const options = this.selectOptions;
+      const current = Number(this.inputValue);
+      if (options.includes(current)) return;
+      this.setInputValue(
+        this.mode === ROUTE_PLAN_MODE.TIME ? 45 : 5
+      );
     },
     onPlan() {
       this.planRoute({ markers: this.markers, userCoords: this.userCoords });
@@ -224,21 +253,10 @@ export default Vue.extend({
 }
 
 .route-planner__title {
-  margin: 0 2em 0.75em;
+  margin: 0 0 0.75em;
   font-size: 1.25rem;
   font-weight: normal;
   transition: all 0.5s;
-}
-
-.route-planner__close {
-  position: absolute;
-  top: 1em;
-  right: 1em;
-  padding: 0.25em;
-  color: $text-color;
-  cursor: pointer;
-  background: transparent;
-  border: 0;
 }
 
 .route-planner__modes {
@@ -274,11 +292,21 @@ export default Vue.extend({
   font-size: 1rem;
 }
 
+.route-planner__input-label {
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+}
+
 .route-planner__input {
-  width: 5em;
-  padding: 0.4em;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  width: 5.5em;
+  padding: 0.4em 0.6em;
   color: $text-color;
   text-align: center;
+  text-align-last: center;
+  cursor: pointer;
   background: $primary-color;
   border: solid #bbb 1px;
   border-radius: 2px;
