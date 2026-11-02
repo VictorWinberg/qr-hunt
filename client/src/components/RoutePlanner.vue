@@ -127,12 +127,6 @@ import { distance } from "@/geo";
 
 export default Vue.extend({
   name: "RoutePlanner",
-  props: {
-    markers: {
-      type: Array,
-      default: () => []
-    }
-  },
   data() {
     return { ROUTE_PLAN_MODE };
   },
@@ -145,6 +139,7 @@ export default Vue.extend({
       "planIndex",
       "warning"
     ]),
+    ...mapState("qrSpot", ["markers"]),
     ...mapGetters("route", ["inputValue"]),
     ...mapState({ userCoords: state => state.user.coords }),
     selectOptions() {

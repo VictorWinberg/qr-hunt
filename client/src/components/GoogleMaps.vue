@@ -1,6 +1,5 @@
 <template>
-  <div class="google-maps">
-    <GmapMap
+  <GmapMap
       ref="mapRef"
       :center="mapCoords"
       :zoom="mapZoom"
@@ -252,10 +251,7 @@
           />
         </div>
       </div>
-    </GmapMap>
-
-    <RoutePlanner :markers="markers" />
-  </div>
+  </GmapMap>
 </template>
 
 <script>
@@ -264,14 +260,12 @@ import { mapState, mapMutations, mapActions } from "vuex";
 import { EVENT_TYPE, QR_SPOT_MODE, QR_SPOT_PANEL } from "@/constants";
 import { api } from "@/utils";
 import Flame from "@/components/Flame";
-import RoutePlanner from "@/components/RoutePlanner.vue";
 import EventBus from "@/plugins/event-bus";
 import { now, parse } from "@/plugins/dayjs";
 
 export default Vue.extend({
   components: {
-    Flame,
-    RoutePlanner
+    Flame
   },
   data() {
     const { mapCoords, mapZoom } = localStorage;
@@ -292,12 +286,11 @@ export default Vue.extend({
       mapHeading: 0,
       mapTilt: 0,
       QR_SPOT_MODE,
-      markers: [],
       zoomChange: -1
     };
   },
   computed: {
-    ...mapState("qrSpot", ["map", "qrSpot", "mode", "panel"]),
+    ...mapState("qrSpot", ["map", "qrSpot", "mode", "panel", "markers"]),
     ...mapState("user", ["user"]),
     ...mapState("route", {
       routeOpen: "open",
@@ -393,7 +386,7 @@ export default Vue.extend({
     this.createMapElements();
   },
   methods: {
-    ...mapMutations("qrSpot", ["setMap"]),
+    ...mapMutations("qrSpot", ["setMap", "setMarkers"]),
     ...mapMutations("user", ["setCoords"]),
     ...mapActions("qrSpot", ["select", "deselect"]),
     ...mapActions("route", {
@@ -424,7 +417,7 @@ export default Vue.extend({
     },
     async fetchQRSpots() {
       const qrspots = await api.get("/api/qrspots");
-      if (!qrspots.err) this.markers = qrspots.data;
+      if (!qrspots.err) this.setMarkers(qrspots.data);
     },
     onQRSpotsUpdate() {
       this.clearRoute();
@@ -554,15 +547,6 @@ export default Vue.extend({
 </script>
 
 <style lang="scss">
-.google-maps {
-  position: relative;
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  height: 100%;
-  overflow: hidden;
-}
-
 .control-button {
   display: flex;
   align-items: center;

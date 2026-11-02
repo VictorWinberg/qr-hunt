@@ -9,11 +9,15 @@ export default {
     map: null,
     qrSpot: {},
     mode: QR_SPOT_MODE.VIEW,
-    panel: QR_SPOT_PANEL.HIDE
+    panel: QR_SPOT_PANEL.HIDE,
+    markers: []
   }),
   mutations: {
     setMap(state, value) {
       state.map = value;
+    },
+    setMarkers(state, value) {
+      state.markers = value;
     },
     setQRSpot(state, value) {
       state.qrSpot = value;
