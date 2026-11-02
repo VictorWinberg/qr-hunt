@@ -1,3 +1,5 @@
+@use "variables" as *;
+
 html,
 body {
   width: 100vw;
@@ -17,24 +19,43 @@ a.disabled {
   cursor: default;
 }
 
-.snackbar-container {
+.Vue-Toastification__container.top-right,
+.Vue-Toastification__container.top-center,
+.Vue-Toastification__container.top-left {
+  top: 5rem;
+}
+
+.app-toast {
   z-index: 1;
   margin: 0;
   text-align: center;
 
-  .action {
+  .toast-action {
     color: $light-brand-color;
     outline: none;
   }
 }
 
-.snackbar-pos.top-center,
-.snackbar-pos.top-right,
-.snackbar-pos.top-left {
-  top: 5rem;
+.app-toast--error {
+  color: #ccc;
+  background-color: #d32f2f !important;
 }
 
-.achievement-popup {
+.app-toast--warn {
+  color: $black;
+  background-color: #ff9800 !important;
+}
+
+.app-toast--dark-text {
+  color: $black;
+}
+
+.app-toast--custom-bg.app-toast--dark-text {
+  color: $black;
+}
+
+.achievement-popup,
+.Vue-Toastification__toast.achievement-popup {
   top: 0;
   right: 0;
   bottom: 0;
@@ -55,7 +76,8 @@ a.disabled {
     border-radius: 12px;
   }
 
-  > .action {
+  > .action,
+  > .Vue-Toastification__close-button.toast-action {
     z-index: 1;
     padding: 0.5rem 3rem;
     margin: 0;

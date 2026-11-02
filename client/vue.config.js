@@ -7,7 +7,20 @@ require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
 const appVersion = process.env.VUE_APP_VERSION || "local";
 
 module.exports = {
+  productionSourceMap: false,
+  chainWebpack(config) {
+    if (process.env.NODE_ENV === "production") {
+      config.module.rules.delete("eslint");
+    }
+  },
   configureWebpack: {
+    performance: {
+      maxAssetSize: 400000,
+      maxEntrypointSize: 520000,
+      assetFilter(assetFilename) {
+        return !/fontawesome\/webfonts\//.test(assetFilename);
+      }
+    },
     plugins: [
       new webpack.DefinePlugin({
         APP_VERSION: JSON.stringify(appVersion)
@@ -28,7 +41,16 @@ module.exports = {
   css: {
     loaderOptions: {
       scss: {
-        prependData: `@import "~@/assets/scss/variables";`
+        additionalData: `@use "~@/assets/scss/variables" as *;`,
+        sassOptions: {
+          silenceDeprecations: ["legacy-js-api"]
+        }
+      },
+      sass: {
+        additionalData: `@use "~@/assets/scss/variables" as *;`,
+        sassOptions: {
+          silenceDeprecations: ["legacy-js-api"]
+        }
       }
     }
   },
