@@ -10,8 +10,6 @@ import {
 } from "@/routePlanner";
 
 type RouteMode = typeof ROUTE_PLAN_MODE[keyof typeof ROUTE_PLAN_MODE];
-type PickingPoint = null | "start" | "end";
-
 function sameCoords(a: Coords | null, b: Coords | null): boolean {
   if (!a || !b) return false;
   return a.lat === b.lat && a.lng === b.lng;
@@ -32,17 +30,14 @@ export default {
     start: null as Coords | null,
     end: null as Coords | null,
     startIsGps: true,
-    endIsGps: true,
-    picking: null as PickingPoint
+    endIsGps: true
   }),
   mutations: {
     setOpen(state, value: boolean) {
       state.open = value;
-      if (!value) state.picking = null;
     },
     toggleOpen(state) {
       state.open = !state.open;
-      if (!state.open) state.picking = null;
     },
     setMode(state, mode: RouteMode) {
       state.mode = mode;
@@ -76,9 +71,6 @@ export default {
       state.end = { ...payload.coords };
       state.endIsGps = payload.isGps;
     },
-    setPicking(state, picking: PickingPoint) {
-      state.picking = picking;
-    },
     clear(state) {
       state.plan = null;
       state.alternatives = [];
@@ -99,34 +91,33 @@ export default {
     clear({ commit }) {
       commit("clear");
     },
-    beginPick({ commit }, point: "start" | "end") {
-      commit("setPicking", point);
+    seedEndpoints(
+      { state, commit },
+      { userCoords }: { userCoords: Coords | null }
+    ) {
+      if (!userCoords) return;
+      const coords = { lat: userCoords.lat, lng: userCoords.lng };
+      if (!state.start) {
+        commit("setStart", { coords, isGps: true });
+      }
+      if (!state.end) {
+        commit("setEnd", { coords, isGps: true });
+      }
     },
-    cancelPick({ commit }) {
-      commit("setPicking", null);
-    },
-    useMyLocation(
+    setEndpoint(
       { commit },
       {
         point,
-        userCoords
-      }: { point: "start" | "end"; userCoords: Coords | null }
-    ) {
-      if (!userCoords) {
-        Snackbar.warn(i18n.t("route-planner.no-location") as string);
-        return;
+        coords
+      }: {
+        point: "start" | "end";
+        coords: Coords;
       }
-      const payload = { coords: userCoords, isGps: true };
+    ) {
+      commit("clear");
+      const payload = { coords, isGps: false };
       if (point === "start") commit("setStart", payload);
       else commit("setEnd", payload);
-      commit("setPicking", null);
-    },
-    pickOnMap({ state, commit }, coords: Coords) {
-      if (!state.picking) return;
-      const payload = { coords, isGps: false };
-      if (state.picking === "start") commit("setStart", payload);
-      else commit("setEnd", payload);
-      commit("setPicking", null);
     },
     prevAlternative({ state, commit }) {
       commit("setPlanIndex", state.planIndex - 1);

@@ -121,7 +121,7 @@
       />
 
       <GmapMarker
-        v-if="routeStartMarker && routeEndpointsSame"
+        v-if="routeStartMarker && routeEndpointsSame && !routeEndpointsDraggable"
         :position="routeStartMarker"
         :z-index="130"
         :label="{
@@ -141,9 +141,10 @@
       />
 
       <GmapMarker
-        v-if="routeStartMarker && !routeEndpointsSame"
+        v-if="routeStartMarker && (routeEndpointsDraggable || !routeEndpointsSame)"
         :position="routeStartMarker"
-        :z-index="130"
+        :draggable="routeEndpointsDraggable"
+        :z-index="131"
         :label="{
           text: 'A',
           color: '#ffffff',
@@ -158,12 +159,14 @@
           strokeColor: '#242424',
           strokeWeight: 1
         }"
+        @dragend="event => onRouteEndpointDrag('start', event)"
       />
 
       <GmapMarker
-        v-if="routeEndMarker && !routeEndpointsSame"
+        v-if="routeEndMarker && (routeEndpointsDraggable || !routeEndpointsSame)"
         :position="routeEndMarker"
-        :z-index="130"
+        :draggable="routeEndpointsDraggable"
+        :z-index="132"
         :label="{
           text: 'B',
           color: '#ffffff',
@@ -178,6 +181,7 @@
           strokeColor: '#242424',
           strokeWeight: 1
         }"
+        @dragend="event => onRouteEndpointDrag('end', event)"
       />
 
       <GmapMarker
@@ -298,8 +302,7 @@ export default Vue.extend({
       routeOpen: "open",
       routePlan: "plan",
       routeStart: "start",
-      routeEnd: "end",
-      routePicking: "picking"
+      routeEnd: "end"
     }),
     ...mapState({ userCoords: state => state.user.coords }),
     showStreak() {
@@ -310,13 +313,20 @@ export default Vue.extend({
     },
     routeStartMarker() {
       if (this.routePlan) return this.routePlan.start;
-      if (this.routeOpen && this.routeStart) return this.routeStart;
-      return null;
+      if (!this.routeOpen) return null;
+      if (this.routeStart) return this.routeStart;
+      return this.userCoords;
     },
     routeEndMarker() {
       if (this.routePlan) return this.routePlan.end;
-      if (this.routeOpen && this.routeEnd) return this.routeEnd;
-      return null;
+      if (!this.routeOpen) return null;
+      if (this.routeEnd) return this.routeEnd;
+      return this.userCoords;
+    },
+    routeEndpointsDraggable() {
+      return (
+        this.routeOpen && this.panel !== this.QR_SPOT_PANEL.SHOW_DETAILS
+      );
     },
     routeEndpointsSame() {
       const a = this.routeStartMarker;
@@ -378,27 +388,24 @@ export default Vue.extend({
     ...mapActions("route", {
       toggleRouteOpen: "toggleOpen",
       clearRoute: "clear",
-      pickOnMap: "pickOnMap"
+      seedRouteEndpoints: "seedEndpoints",
+      setRouteEndpoint: "setEndpoint"
     }),
-    onMapClick(event) {
-      if (this.routePicking && event && event.latLng) {
-        this.pickOnMap({
-          lat: event.latLng.lat(),
-          lng: event.latLng.lng()
-        });
-        return;
-      }
+    onMapClick() {
       this.deselect();
     },
     onMarkerClick(marker) {
-      if (this.routePicking) {
-        this.pickOnMap({
-          lat: Number(marker.lat),
-          lng: Number(marker.lng)
-        });
-        return;
-      }
       this.select(marker);
+    },
+    onRouteEndpointDrag(point, event) {
+      if (!event || !event.latLng) return;
+      this.setRouteEndpoint({
+        point,
+        coords: {
+          lat: event.latLng.lat(),
+          lng: event.latLng.lng()
+        }
+      });
     },
     async fetchQRSpots() {
       const qrspots = await api.get("/api/qrspots");
@@ -430,7 +437,11 @@ export default Vue.extend({
         Snackbar.warn(i18n.t("route-planner.no-location"));
         return;
       }
+      const wasOpen = this.routeOpen;
       this.toggleRouteOpen();
+      if (!wasOpen) {
+        this.seedRouteEndpoints({ userCoords: this.userCoords });
+      }
     },
     handleDrag() {
       if (!this.map) return;

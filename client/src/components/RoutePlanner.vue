@@ -12,83 +12,6 @@
       </button>
     </div>
 
-    <p v-if="picking" class="route-planner__picking">
-      {{
-        picking === "start"
-          ? $t("route-planner.tap-start")
-          : $t("route-planner.tap-end")
-      }}
-      <button type="button" class="route-planner__link" @click="cancelPick">
-        {{ $t("route-planner.cancel-pick") }}
-      </button>
-    </p>
-
-    <div class="route-planner__points">
-      <div class="route-planner__point">
-        <div class="route-planner__point-label">
-          <span class="route-planner__badge start">A</span>
-          <span>{{ $t("route-planner.start") }}</span>
-        </div>
-        <div class="route-planner__point-actions">
-          <button
-            type="button"
-            class="route-planner__icon-btn"
-            :class="{ active: picking === 'start' }"
-            :title="$t('route-planner.set-on-map')"
-            :aria-label="$t('route-planner.set-on-map')"
-            @click="beginPick('start')"
-          >
-            <i class="fas fa-map-marker-alt"></i>
-          </button>
-          <button
-            type="button"
-            class="route-planner__icon-btn"
-            :title="$t('route-planner.use-my-location')"
-            :aria-label="$t('route-planner.use-my-location')"
-            @click="resetToGps('start')"
-          >
-            <img
-              alt=""
-              class="route-planner__icon-img"
-              :src="require('@/assets/position-button.svg')"
-            />
-          </button>
-        </div>
-      </div>
-
-      <div class="route-planner__point">
-        <div class="route-planner__point-label">
-          <span class="route-planner__badge end">B</span>
-          <span>{{ $t("route-planner.end") }}</span>
-        </div>
-        <div class="route-planner__point-actions">
-          <button
-            type="button"
-            class="route-planner__icon-btn"
-            :class="{ active: picking === 'end' }"
-            :title="$t('route-planner.set-on-map')"
-            :aria-label="$t('route-planner.set-on-map')"
-            @click="beginPick('end')"
-          >
-            <i class="fas fa-map-marker-alt"></i>
-          </button>
-          <button
-            type="button"
-            class="route-planner__icon-btn"
-            :title="$t('route-planner.use-my-location')"
-            :aria-label="$t('route-planner.use-my-location')"
-            @click="resetToGps('end')"
-          >
-            <img
-              alt=""
-              class="route-planner__icon-img"
-              :src="require('@/assets/position-button.svg')"
-            />
-          </button>
-        </div>
-      </div>
-    </div>
-
     <div class="route-planner__modes">
       <button
         type="button"
@@ -221,8 +144,7 @@ export default Vue.extend({
       "plan",
       "alternatives",
       "planIndex",
-      "warning",
-      "picking"
+      "warning"
     ]),
     ...mapGetters("route", ["inputValue"]),
     ...mapState({ userCoords: state => state.user.coords })
@@ -234,9 +156,6 @@ export default Vue.extend({
       setInputValue: "setInputValue",
       planRoute: "plan",
       clearRoute: "clear",
-      beginPick: "beginPick",
-      cancelPick: "cancelPick",
-      useMyLocation: "useMyLocation",
       prevAlternative: "prevAlternative",
       nextAlternative: "nextAlternative"
     }),
@@ -249,9 +168,6 @@ export default Vue.extend({
     },
     clear() {
       this.clearRoute();
-    },
-    resetToGps(point) {
-      this.useMyLocation({ point, userCoords: this.userCoords });
     },
     selectStop(stop) {
       this.select(stop);
@@ -319,106 +235,6 @@ export default Vue.extend({
   cursor: pointer;
   background: transparent;
   border: 0;
-}
-
-.route-planner__picking {
-  padding: 0.6em 0.75em;
-  margin: 0 0 0.75em;
-  font-size: 0.9rem;
-  color: $primary-color;
-  background: $light-brand-color;
-  border-radius: 2px;
-}
-
-.route-planner__link {
-  margin-left: 0.5em;
-  color: $primary-color;
-  text-decoration: underline;
-  cursor: pointer;
-  background: transparent;
-  border: 0;
-}
-
-.route-planner__points {
-  display: flex;
-  flex-direction: row;
-  gap: 0.5em;
-  margin-bottom: 0.75em;
-}
-
-.route-planner__point {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  gap: 0.4em;
-  min-width: 0;
-  padding: 0.65em 0.5em;
-  text-align: left;
-  background: $primary-color;
-  border-radius: 2px;
-}
-
-.route-planner__point-label {
-  display: flex;
-  gap: 0.45em;
-  align-items: center;
-  font-size: 0.9rem;
-}
-
-.route-planner__badge {
-  display: flex;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
-  width: 1.5em;
-  height: 1.5em;
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: $primary-color;
-  border-radius: 50%;
-
-  &.start {
-    background: #4caf50;
-  }
-
-  &.end {
-    background: #e57373;
-  }
-}
-
-.route-planner__point-actions {
-  display: flex;
-  flex-direction: row;
-  gap: 0.35em;
-}
-
-.route-planner__icon-btn {
-  display: flex;
-  flex: 1;
-  align-items: center;
-  justify-content: center;
-  height: 2.25em;
-  color: $text-color;
-  cursor: pointer;
-  background: $secondary-color;
-  border: 1px solid $grey-800;
-  border-radius: 2px;
-
-  i {
-    font-size: 1rem;
-  }
-
-  &.active {
-    color: $primary-color;
-    background: $light-brand-color;
-    border-color: $light-brand-color;
-  }
-}
-
-.route-planner__icon-img {
-  width: 1.15rem;
-  height: 1.15rem;
-  filter: brightness(0) invert(1);
 }
 
 .route-planner__modes {
