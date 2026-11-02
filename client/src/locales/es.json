@@ -52,8 +52,6 @@
     "plan": "Planificar ruta",
     "clear": "Borrar ruta",
     "summary": "{count} lugares · {distance} · ~{minutes} min",
-    "untitled": "Lugar sin nombre",
-    "no-location": "Activa la ubicación para planificar una ruta",
     "empty-pool": "No hay lugares recolectables a menos de 10 km del inicio",
     "time-too-short": "Ninguna ruta cabe en ese tiempo",
     "partial-k": "Solo {actual} de {requested} lugares disponibles a menos de 10 km",

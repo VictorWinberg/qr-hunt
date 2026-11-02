@@ -3,118 +3,118 @@
     <div class="route-planner-container">
       <h2 class="route-planner__title">{{ $t("route-planner.title") }}</h2>
 
-    <div class="route-planner__modes">
-      <button
-        type="button"
-        class="route-planner__mode"
-        :class="{ active: mode === ROUTE_PLAN_MODE.COUNT }"
-        @click="setMode(ROUTE_PLAN_MODE.COUNT)"
-      >
-        {{ $t("route-planner.mode-count") }}
-      </button>
-      <button
-        type="button"
-        class="route-planner__mode"
-        :class="{ active: mode === ROUTE_PLAN_MODE.TIME }"
-        @click="setMode(ROUTE_PLAN_MODE.TIME)"
-      >
-        {{ $t("route-planner.mode-time") }}
-      </button>
-    </div>
-
-    <div class="route-planner__input-row">
-      <span class="route-planner__input-label">
-        {{
-          mode === ROUTE_PLAN_MODE.COUNT
-            ? $t("route-planner.input-count")
-            : $t("route-planner.input-time")
-        }}
-      </span>
-      <select
-        :key="mode"
-        :value="selectedOptionValue"
-        class="route-planner__input"
-        @change="onSelectChange"
-      >
-        <option
-          v-for="n in selectOptions"
-          :key="n"
-          :value="String(n)"
-        >
-          {{ n }}
-        </option>
-      </select>
-    </div>
-
-    <div class="route-planner__actions">
-      <button type="button" class="route-planner__btn primary" @click="onPlan">
-        {{ $t("route-planner.plan") }}
-      </button>
-      <button
-        v-if="plan"
-        type="button"
-        class="route-planner__btn"
-        @click="clear"
-      >
-        {{ $t("route-planner.clear") }}
-      </button>
-    </div>
-
-    <div v-if="plan" class="route-planner__summary">
-      <div v-if="alternatives.length > 1" class="route-planner__alts">
+      <div class="route-planner__modes">
         <button
           type="button"
-          class="route-planner__alt-btn"
-          :aria-label="$t('route-planner.prev-route')"
-          @click="prevAlternative"
+          class="route-planner__mode"
+          :class="{ active: mode === ROUTE_PLAN_MODE.COUNT }"
+          @click="setMode(ROUTE_PLAN_MODE.COUNT)"
         >
-          <i class="fas fa-chevron-left"></i>
+          {{ $t("route-planner.mode-count") }}
         </button>
-        <span>
-          {{
-            $t("route-planner.alternative", {
-              current: planIndex + 1,
-              total: alternatives.length
-            })
-          }}
-        </span>
         <button
           type="button"
-          class="route-planner__alt-btn"
-          :aria-label="$t('route-planner.next-route')"
-          @click="nextAlternative"
+          class="route-planner__mode"
+          :class="{ active: mode === ROUTE_PLAN_MODE.TIME }"
+          @click="setMode(ROUTE_PLAN_MODE.TIME)"
         >
-          <i class="fas fa-chevron-right"></i>
+          {{ $t("route-planner.mode-time") }}
         </button>
       </div>
-      <p>
-        {{
-          $t("route-planner.summary", {
-            count: plan.actualK,
-            distance: formatDistance(plan.totalMeters),
-            minutes: plan.totalMinutes
-          })
-        }}
-      </p>
-      <p v-if="warning" class="route-planner__warning">{{ warning }}</p>
-    </div>
 
-    <ol v-if="plan" class="route-planner__stops">
-      <li
-        v-for="(stop, index) in plan.stops"
-        :key="stop.id || index"
-        class="route-planner__stop"
-        @click="selectStop(stop)"
-      >
-        <span class="route-planner__stop-index">{{ index + 1 }}</span>
-        <span class="route-planner__stop-title">
-          {{ stop.title || $t("route-planner.untitled") }}
+      <div class="route-planner__input-row">
+        <span class="route-planner__input-label">
+          {{
+            mode === ROUTE_PLAN_MODE.COUNT
+              ? $t("route-planner.input-count")
+              : $t("route-planner.input-time")
+          }}
         </span>
-        <span class="route-planner__stop-distance">
-          {{ formatDistance(legDistance(index)) }}
-        </span>
-      </li>
-    </ol>
+        <select
+          :key="mode"
+          :value="selectedOptionValue"
+          class="route-planner__input"
+          @change="onSelectChange"
+        >
+          <option v-for="n in selectOptions" :key="n" :value="String(n)">
+            {{ n }}
+          </option>
+        </select>
+      </div>
+
+      <div class="route-planner__actions">
+        <button
+          type="button"
+          class="route-planner__btn primary"
+          @click="onPlan"
+        >
+          {{ $t("route-planner.plan") }}
+        </button>
+        <button
+          v-if="plan"
+          type="button"
+          class="route-planner__btn"
+          @click="clear"
+        >
+          {{ $t("route-planner.clear") }}
+        </button>
+      </div>
+
+      <div v-if="plan" class="route-planner__summary">
+        <div v-if="alternatives.length > 1" class="route-planner__alts">
+          <button
+            type="button"
+            class="route-planner__alt-btn"
+            :aria-label="$t('route-planner.prev-route')"
+            @click="prevAlternative"
+          >
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <span>
+            {{
+              $t("route-planner.alternative", {
+                current: planIndex + 1,
+                total: alternatives.length
+              })
+            }}
+          </span>
+          <button
+            type="button"
+            class="route-planner__alt-btn"
+            :aria-label="$t('route-planner.next-route')"
+            @click="nextAlternative"
+          >
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+        <p>
+          {{
+            $t("route-planner.summary", {
+              count: plan.actualK,
+              distance: formatDistance(plan.totalMeters),
+              minutes: plan.totalMinutes
+            })
+          }}
+        </p>
+        <p v-if="warning" class="route-planner__warning">{{ warning }}</p>
+      </div>
+
+      <ol v-if="plan" class="route-planner__stops">
+        <li
+          v-for="(stop, index) in plan.stops"
+          :key="stop.id || index"
+          class="route-planner__stop"
+          @click="selectStop(stop)"
+        >
+          <span class="route-planner__stop-index">{{ index + 1 }}</span>
+          <span class="route-planner__stop-title">
+            {{ stop.title }}
+          </span>
+          <span class="route-planner__stop-distance">
+            {{ formatDistance(legDistance(index)) }}
+          </span>
+        </li>
+      </ol>
     </div>
   </div>
 </template>
@@ -159,8 +159,7 @@ export default Vue.extend({
       const options = this.selectOptions;
       const current = Number(this.inputValue);
       if (options.includes(current)) return String(current);
-      const fallback =
-        this.mode === ROUTE_PLAN_MODE.TIME ? 45 : 5;
+      const fallback = this.mode === ROUTE_PLAN_MODE.TIME ? 45 : 5;
       return String(fallback);
     }
   },
@@ -189,9 +188,7 @@ export default Vue.extend({
       const options = this.selectOptions;
       const current = Number(this.inputValue);
       if (options.includes(current)) return;
-      this.setInputValue(
-        this.mode === ROUTE_PLAN_MODE.TIME ? 45 : 5
-      );
+      this.setInputValue(this.mode === ROUTE_PLAN_MODE.TIME ? 45 : 5);
     },
     onPlan() {
       this.planRoute({ markers: this.markers, userCoords: this.userCoords });

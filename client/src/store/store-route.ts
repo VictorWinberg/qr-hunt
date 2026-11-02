@@ -150,7 +150,6 @@ export default {
         (userCoords ? { lat: userCoords.lat, lng: userCoords.lng } : null);
 
       if (!start || !end) {
-        Snackbar.warn(i18n.t("route-planner.no-location") as string);
         return;
       }
 

@@ -207,17 +207,13 @@ function collectAlternatives(
     candidates.push(plan);
   };
 
-  // Default nearest-neighbor tour
   push(buildPlan(pool, start, end, actualK, requestedK));
 
-  // Seed first stop with each nearby spot (different paths / often different sets)
   const nearStart = sortedByDistanceFrom(start, pool).slice(0, 12);
   for (const seed of nearStart) {
     push(buildPlan(pool, start, end, actualK, requestedK, seed));
   }
 
-  // When pool is larger than K, drop one spot from the default set and replan
-  // to surface different subsets that still hit K stops.
   const baseline = buildPlan(pool, start, end, actualK, requestedK);
   if (baseline && pool.length > actualK) {
     for (const exclude of baseline.stops) {
@@ -226,7 +222,6 @@ function collectAlternatives(
     }
   }
 
-  // Prefer shorter routes; keep distinct stop sequences
   const seen = new Set<string>();
   return candidates
     .sort((a, b) => a.totalMeters - b.totalMeters)

@@ -52,8 +52,6 @@
     "plan": "Plan route",
     "clear": "Clear route",
     "summary": "{count} spots · {distance} · ~{minutes} min",
-    "untitled": "Untitled spot",
-    "no-location": "Enable location to plan a route",
     "empty-pool": "No collectable spots within 10 km of the start",
     "time-too-short": "No route fits in that time",
     "partial-k": "Only {actual} of {requested} spots available within 10 km",

@@ -119,7 +119,9 @@
       />
 
       <GmapMarker
-        v-if="routeStartMarker && routeEndpointsSame && !routeEndpointsDraggable"
+        v-if="
+          routeStartMarker && routeEndpointsSame && !routeEndpointsDraggable
+        "
         :position="routeStartMarker"
         :z-index="130"
         :label="{
@@ -139,7 +141,9 @@
       />
 
       <GmapMarker
-        v-if="routeStartMarker && (routeEndpointsDraggable || !routeEndpointsSame)"
+        v-if="
+          routeStartMarker && (routeEndpointsDraggable || !routeEndpointsSame)
+        "
         :position="routeStartMarker"
         :draggable="routeEndpointsDraggable"
         :z-index="131"
@@ -161,7 +165,9 @@
       />
 
       <GmapMarker
-        v-if="routeEndMarker && (routeEndpointsDraggable || !routeEndpointsSame)"
+        v-if="
+          routeEndMarker && (routeEndpointsDraggable || !routeEndpointsSame)
+        "
         :position="routeEndMarker"
         :draggable="routeEndpointsDraggable"
         :z-index="132"
@@ -260,8 +266,6 @@ import { api } from "@/utils";
 import Flame from "@/components/Flame";
 import RoutePlanner from "@/components/RoutePlanner.vue";
 import EventBus from "@/plugins/event-bus";
-import Snackbar from "@/plugins/snackbar";
-import i18n from "@/plugins/i18n";
 import { now, parse } from "@/plugins/dayjs";
 
 export default Vue.extend({
@@ -445,7 +449,6 @@ export default Vue.extend({
     },
     toggleRoutePlanner() {
       if (!this.userCoords) {
-        Snackbar.warn(i18n.t("route-planner.no-location"));
         return;
       }
       const wasOpen = this.routeOpen;

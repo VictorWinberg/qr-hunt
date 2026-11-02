@@ -52,8 +52,6 @@
     "plan": "Planera rutt",
     "clear": "Rensa rutt",
     "summary": "{count} platser · {distance} · ~{minutes} min",
-    "untitled": "Namnlös plats",
-    "no-location": "Aktivera plats för att planera en rutt",
     "empty-pool": "Inga samlingsbara platser inom 10 km från starten",
     "time-too-short": "Ingen rutt får plats på den tiden",
     "partial-k": "Bara {actual} av {requested} platser finns inom 10 km",
