@@ -43,8 +43,6 @@
   },
   "route-planner": {
     "title": "Planificador de ruta",
-    "close": "Cerrar",
-    "radius-hint": "Lugares a menos de 10 km del inicio que aún puedes recolectar hoy.",
     "mode-count": "Lugares",
     "mode-time": "Tiempo",
     "input-count": "¿Cuántos lugares?",
@@ -52,9 +50,9 @@
     "plan": "Planificar ruta",
     "clear": "Borrar ruta",
     "summary": "{count} lugares · {distance} · ~{minutes} min",
-    "empty-pool": "No hay lugares recolectables a menos de 10 km del inicio",
+    "empty-pool": "No hay lugares recolectables en esta ruta (10 km de inicio/fin o límite de desvío)",
     "time-too-short": "Ninguna ruta cabe en ese tiempo",
-    "partial-k": "Solo {actual} de {requested} lugares disponibles a menos de 10 km",
+    "partial-k": "Solo {actual} de {requested} lugares disponibles en esta ruta",
     "alternative": "Ruta {current} de {total}",
     "prev-route": "Ruta anterior",
     "next-route": "Ruta siguiente"

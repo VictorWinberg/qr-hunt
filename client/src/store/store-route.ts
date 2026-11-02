@@ -10,10 +10,9 @@ import i18n from "@/plugins/i18n";
 import Snackbar from "@/plugins/snackbar";
 import {
   planRouteAlternativesByCount,
-  planRouteAlternativesByTime,
-  RoutePlan,
-  RouteSpot
-} from "@/routePlanner";
+  planRouteAlternativesByTime
+} from "@/route-planning/alternatives";
+import { RoutePlan, RouteSpot } from "@/route-planning/types";
 
 type RouteMode = "count" | "time";
 

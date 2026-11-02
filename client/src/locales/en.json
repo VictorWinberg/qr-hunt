@@ -43,8 +43,6 @@
   },
   "route-planner": {
     "title": "Route planner",
-    "close": "Close",
-    "radius-hint": "Spots within 10 km of the start that you can still collect today.",
     "mode-count": "Spots",
     "mode-time": "Time",
     "input-count": "How many spots?",
@@ -52,9 +50,9 @@
     "plan": "Plan route",
     "clear": "Clear route",
     "summary": "{count} spots · {distance} · ~{minutes} min",
-    "empty-pool": "No collectable spots within 10 km of the start",
+    "empty-pool": "No collectable spots along this route (10 km of start/end or detour limit)",
     "time-too-short": "No route fits in that time",
-    "partial-k": "Only {actual} of {requested} spots available within 10 km",
+    "partial-k": "Only {actual} of {requested} spots available on this route",
     "alternative": "Route {current} of {total}",
     "prev-route": "Previous route",
     "next-route": "Next route"
