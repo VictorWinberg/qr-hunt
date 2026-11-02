@@ -1,13 +1,7 @@
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
-import timezone from "dayjs/plugin/timezone";
+import { now, parse } from "@/plugins/dayjs";
 import { MAX_COLLECT_DISTANCE } from "@/constants";
 import { calculateWalkingTime, distance } from "@/geo";
 
-dayjs.extend(utc);
-dayjs.extend(timezone);
-
-const TZ = "Europe/Stockholm";
 const DEFAULT_MAX_ALTERNATIVES = 5;
 
 export interface Coords {
@@ -35,9 +29,7 @@ export interface RoutePlan {
 
 function isCollectedToday(collectedAt?: string | null): boolean {
   if (!collectedAt) return false;
-  return dayjs()
-    .tz(TZ)
-    .isSame(dayjs(collectedAt).tz(TZ), "day");
+  return now().isSame(parse(collectedAt), "day");
 }
 
 function toCoords(spot: RouteSpot): Coords {

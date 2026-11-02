@@ -1,7 +1,6 @@
 <template>
-  <div class="route-planner" :class="{ open }">
-    <div class="route-planner__header">
-      <h2 class="route-planner__title">{{ $t("route-planner.title") }}</h2>
+  <div class="route-planner-wrapper" :class="{ open }">
+    <div class="route-planner-container">
       <button
         type="button"
         class="route-planner__close"
@@ -10,7 +9,8 @@
       >
         <i class="fas fa-times"></i>
       </button>
-    </div>
+
+      <h2 class="route-planner__title">{{ $t("route-planner.title") }}</h2>
 
     <div class="route-planner__modes">
       <button
@@ -117,6 +117,7 @@
         </span>
       </li>
     </ol>
+    </div>
   </div>
 </template>
 
@@ -192,45 +193,48 @@ export default Vue.extend({
 </script>
 
 <style lang="scss">
-.route-planner {
+.route-planner-wrapper {
   position: absolute;
   right: 0;
   bottom: 0;
   left: 0;
   z-index: 5;
-  max-height: 55%;
-  padding: 1em 1em 1.25em;
-  overflow: auto;
-  color: $text-color;
+  height: 0;
+  overflow: hidden;
   pointer-events: none;
-  background-color: $secondary-color;
-  border-radius: 8px 8px 0 0;
   box-shadow: 0 -2px 6px 0 rgba($black, 0.2);
-  opacity: 0;
-  transform: translateY(110%);
-  transition: transform 300ms ease, opacity 200ms ease;
+  transition: all 200ms 0ms, height 500ms;
 
   &.open {
+    height: 50%;
     pointer-events: auto;
-    opacity: 1;
-    transform: translateY(0);
   }
 }
 
-.route-planner__header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 0.5em;
+.route-planner-container {
+  position: relative;
+  box-sizing: border-box;
+  height: 100%;
+  padding: 1em 1em 3em;
+  overflow: scroll;
+  color: $text-color;
+  background-color: $secondary-color;
+  border-radius: 2px;
+  box-shadow: $shadow-color;
 }
 
 .route-planner__title {
-  margin: 0;
+  margin: 0 2em 0.75em;
   font-size: 1.25rem;
+  font-weight: normal;
+  transition: all 0.5s;
 }
 
 .route-planner__close {
-  padding: 0.25em 0.5em;
+  position: absolute;
+  top: 1em;
+  right: 1em;
+  padding: 0.25em;
   color: $text-color;
   cursor: pointer;
   background: transparent;
@@ -240,7 +244,8 @@ export default Vue.extend({
 .route-planner__modes {
   display: flex;
   gap: 0.5em;
-  margin-bottom: 0.75em;
+  max-width: 500px;
+  margin: 0 auto 0.75em;
 }
 
 .route-planner__mode {
@@ -249,7 +254,7 @@ export default Vue.extend({
   color: $text-color;
   cursor: pointer;
   background: $primary-color;
-  border: 1px solid $grey-800;
+  border: solid #bbb 1px;
   border-radius: 2px;
 
   &.active {
@@ -264,8 +269,9 @@ export default Vue.extend({
   align-items: center;
   justify-content: space-between;
   gap: 1em;
-  margin-bottom: 0.75em;
-  font-size: 0.95rem;
+  max-width: 500px;
+  margin: 0 auto 0.75em;
+  font-size: 1rem;
 }
 
 .route-planner__input {
@@ -274,23 +280,25 @@ export default Vue.extend({
   color: $text-color;
   text-align: center;
   background: $primary-color;
-  border: 1px solid $grey-800;
+  border: solid #bbb 1px;
   border-radius: 2px;
 }
 
 .route-planner__actions {
   display: flex;
   gap: 0.5em;
-  margin-bottom: 0.75em;
+  max-width: 500px;
+  margin: 0 auto 0.75em;
 }
 
 .route-planner__btn {
   flex: 1;
+  height: 3em;
   padding: 0.6em;
   color: $text-color;
   cursor: pointer;
   background: $primary-color;
-  border: 1px solid $grey-800;
+  border: solid #bbb 1px;
   border-radius: 2px;
 
   &.primary {
@@ -301,8 +309,9 @@ export default Vue.extend({
 }
 
 .route-planner__summary {
-  margin-bottom: 0.75em;
-  font-size: 0.95rem;
+  max-width: 500px;
+  margin: 0 auto 0.75em;
+  font-size: 1rem;
 
   p {
     margin: 0.25em 0;
@@ -315,7 +324,7 @@ export default Vue.extend({
   justify-content: center;
   gap: 0.75em;
   margin-bottom: 0.5em;
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 
 .route-planner__alt-btn {
@@ -327,7 +336,7 @@ export default Vue.extend({
   color: $text-color;
   cursor: pointer;
   background: $primary-color;
-  border: 1px solid $grey-800;
+  border: solid #bbb 1px;
   border-radius: 2px;
 }
 
@@ -336,8 +345,9 @@ export default Vue.extend({
 }
 
 .route-planner__stops {
+  max-width: 500px;
   padding: 0;
-  margin: 0;
+  margin: 0 auto;
   list-style: none;
 }
 
@@ -378,7 +388,7 @@ export default Vue.extend({
 
 .route-planner__stop-distance {
   flex-shrink: 0;
-  font-size: 0.85rem;
+  font-size: 1rem;
   color: $grey-200;
 }
 </style>

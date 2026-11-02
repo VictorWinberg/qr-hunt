@@ -17,7 +17,11 @@
         draggable: panel !== QR_SPOT_PANEL.SHOW_DETAILS
       }"
       :class="
-        panel == QR_SPOT_PANEL.SHOW_DETAILS ? 'collapsed-map' : 'expanded-map'
+        panel === QR_SPOT_PANEL.SHOW_DETAILS
+          ? ['collapsed-map', 'collapsed-map--spot']
+          : routeOpen
+          ? ['collapsed-map', 'collapsed-map--route']
+          : ['expanded-map']
       "
       @click="onMapClick"
       @dragend="handleDrag"
@@ -602,8 +606,15 @@ export default Vue.extend({
 
 .vue-map-container {
   &.collapsed-map {
-    height: 25%;
     transition: all 300ms 200ms;
+
+    &.collapsed-map--spot {
+      height: 25%;
+    }
+
+    &.collapsed-map--route {
+      height: 50%;
+    }
 
     .gmnoprint,
     #streak-button,
