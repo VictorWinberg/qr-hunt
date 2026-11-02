@@ -1,5 +1,5 @@
 import dayjs, { now } from "@/plugins/dayjs";
-import Snackbar from "node-snackbar";
+import Snackbar from "@/plugins/snackbar";
 import { EVENT_TYPE } from "@/constants";
 import EventBus from "./event-bus";
 
@@ -44,7 +44,6 @@ const welcome = () => {
     pos: undefined,
     customClass: "achievement-popup",
     onActionClick: async () => {
-      // @ts-ignore
       Snackbar.close();
 
       localStorage.setItem("latestWelcome", now().toJSON());
