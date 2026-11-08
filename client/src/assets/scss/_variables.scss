@@ -27,3 +27,10 @@ $qr-spot-panel-height: 75%;
 $qr-spot-compact-inset-x: 60px;
 $qr-spot-info-bottom: 24px;
 $qr-spot-info-height: 90px;
+
+// Color literals: keep in sync with src/theme/tokens.ts (injected on :root in main.ts).
+$control-border: #bbb;
+$map-collected: #4caf50;
+$map-route-end: #e57373;
+$map-user-accuracy-fill: #0042ff;
+$map-marker-brown: #54341f;

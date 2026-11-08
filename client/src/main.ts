@@ -4,6 +4,7 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store/store";
 import i18n from "./plugins/i18n";
+import { applyCssTheme } from "./theme/tokens";
 import "./plugins/achievements";
 import "./plugins/google-maps";
 import "./plugins/intro";
@@ -12,6 +13,7 @@ import "./plugins/welcome";
 import "./registerServiceWorker";
 
 import "./assets/scss/app.scss";
+applyCssTheme();
 
 Vue.config.productionTip = false;
 

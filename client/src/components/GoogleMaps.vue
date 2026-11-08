@@ -48,11 +48,7 @@
         anchor: { x: 50, y: 50 },
         scaledSize: { width: 100, height: 100 }
       }"
-      :label="{
-        text: 'Please enable location access',
-        fontSize: '1rem',
-        color: '#242424'
-      }"
+      :label="locationDisabledLabel"
       @click="centerMapToUser"
     />
 
@@ -60,14 +56,7 @@
       v-if="userCoords"
       :center="userCoords"
       :radius="20"
-      :options="{
-        clickable: false,
-        fillColor: '#0042FF',
-        fillOpacity: '0.15',
-        strokeColor: '#FFFFFF',
-        strokeOpacity: '0.5',
-        strokeWeight: '2'
-      }"
+      :options="userAccuracyCircleOptions"
     />
 
     <GmapMarker
@@ -84,14 +73,7 @@
       :key="`${index}-c`"
       :center="{ lat: Number(marker.lat), lng: Number(marker.lng) }"
       :radius="15"
-      :options="{
-        clickable: false,
-        fillColor: '#54341f',
-        fillOpacity: '0.2',
-        strokeColor: '#54341f',
-        strokeOpacity: '0.5',
-        strokeWeight: '2'
-      }"
+      :options="qrSpotCircleOptions"
     />
 
     <GmapMarker
@@ -109,32 +91,15 @@
     <GmapPolyline
       v-if="routePath.length"
       :path="routePath"
-      :options="{
-        clickable: false,
-        strokeColor: '#c99f67',
-        strokeOpacity: 0.9,
-        strokeWeight: 4
-      }"
+      :options="routePolylineOptions"
     />
 
     <GmapMarker
       v-if="routeStartMarker && routeEndpointsSame && !routeEndpointsDraggable"
       :position="routeStartMarker"
       :z-index="130"
-      :label="{
-        text: 'A/B',
-        color: '#ffffff',
-        fontWeight: 'bold',
-        fontSize: '10px'
-      }"
-      :icon="{
-        path: 0,
-        scale: 14,
-        fillColor: '#c99f67',
-        fillOpacity: 1,
-        strokeColor: '#242424',
-        strokeWeight: 1
-      }"
+      :label="routeEndpointLabel('A/B', '10px')"
+      :icon="routeEndpointIcon('brand', 14)"
     />
 
     <GmapMarker
@@ -144,20 +109,8 @@
       :position="routeStartMarker"
       :draggable="routeEndpointsDraggable"
       :z-index="131"
-      :label="{
-        text: 'A',
-        color: '#ffffff',
-        fontWeight: 'bold',
-        fontSize: '12px'
-      }"
-      :icon="{
-        path: 0,
-        scale: 11,
-        fillColor: '#4caf50',
-        fillOpacity: 1,
-        strokeColor: '#242424',
-        strokeWeight: 1
-      }"
+      :label="routeEndpointLabel('A')"
+      :icon="routeEndpointIcon('start', 11)"
       @dragend="event => onRouteEndpointDrag('start', event)"
     />
 
@@ -166,20 +119,8 @@
       :position="routeEndMarker"
       :draggable="routeEndpointsDraggable"
       :z-index="132"
-      :label="{
-        text: 'B',
-        color: '#ffffff',
-        fontWeight: 'bold',
-        fontSize: '12px'
-      }"
-      :icon="{
-        path: 0,
-        scale: 11,
-        fillColor: '#e57373',
-        fillOpacity: 1,
-        strokeColor: '#242424',
-        strokeWeight: 1
-      }"
+      :label="routeEndpointLabel('B')"
+      :icon="routeEndpointIcon('end', 11)"
       @dragend="event => onRouteEndpointDrag('end', event)"
     />
 
@@ -188,20 +129,8 @@
       :key="`route-${stop.id || index}`"
       :position="{ lat: Number(stop.lat), lng: Number(stop.lng) }"
       :z-index="120"
-      :label="{
-        text: String(index + 1),
-        color: '#242424',
-        fontWeight: 'bold',
-        fontSize: '12px'
-      }"
-      :icon="{
-        path: 0,
-        scale: 10,
-        fillColor: '#c99f67',
-        fillOpacity: 1,
-        strokeColor: '#242424',
-        strokeWeight: 1
-      }"
+      :label="routeStopLabel(stop, index)"
+      :icon="routeStopIcon(stop)"
       @click="() => select(stop)"
     />
 
@@ -255,6 +184,8 @@ import { api } from "@/utils/api";
 import Flame from "@/components/Flame";
 import EventBus from "@/plugins/event-bus";
 import { now, parse } from "@/plugins/dayjs";
+import { mapTheme } from "@/theme/tokens";
+import { isRouteStopCollectedToday } from "@/route-planning/spotCollection";
 
 export default Vue.extend({
   components: {
@@ -314,6 +245,41 @@ export default Vue.extend({
     },
     routeStops() {
       return (this.routePlan && this.routePlan.stops) || [];
+    },
+    locationDisabledLabel() {
+      return {
+        text: "Please enable location access",
+        fontSize: "1rem",
+        color: mapTheme.primary
+      };
+    },
+    userAccuracyCircleOptions() {
+      return {
+        clickable: false,
+        fillColor: mapTheme.userAccuracyFill,
+        fillOpacity: "0.15",
+        strokeColor: mapTheme.white,
+        strokeOpacity: "0.5",
+        strokeWeight: "2"
+      };
+    },
+    qrSpotCircleOptions() {
+      return {
+        clickable: false,
+        fillColor: mapTheme.markerBrown,
+        fillOpacity: "0.2",
+        strokeColor: mapTheme.markerBrown,
+        strokeOpacity: "0.5",
+        strokeWeight: "2"
+      };
+    },
+    routePolylineOptions() {
+      return {
+        clickable: false,
+        strokeColor: mapTheme.brandLight,
+        strokeOpacity: 0.9,
+        strokeWeight: 4
+      };
     }
   },
   watch: {
@@ -357,7 +323,6 @@ export default Vue.extend({
     ...mapActions("route", {
       toggleRouteOpen: "toggleOpen",
       closeRoutePlanner: "close",
-      clearRoute: "clear",
       seedRouteEndpoints: "seedEndpoints",
       setRouteEndpoint: "setEndpoint"
     }),
@@ -385,7 +350,6 @@ export default Vue.extend({
       if (!qrspots.err) this.setMarkers(qrspots.data);
     },
     onQRSpotsUpdate() {
-      this.clearRoute();
       this.fetchQRSpots();
     },
     createMapElements() {
@@ -454,6 +418,52 @@ export default Vue.extend({
       return now()
         .subtract(6, "month")
         .isAfter(parse(lastVisitedAt));
+    },
+    routeStopCollectedToday(stop) {
+      return isRouteStopCollectedToday(stop, this.markers);
+    },
+    routeEndpointLabel(text, fontSize = "12px") {
+      return {
+        text,
+        color: mapTheme.white,
+        fontWeight: "bold",
+        fontSize
+      };
+    },
+    routeEndpointIcon(kind, scale) {
+      const fillByKind = {
+        brand: mapTheme.brandLight,
+        start: mapTheme.collected,
+        end: mapTheme.routeEnd
+      };
+      return {
+        path: 0,
+        scale,
+        fillColor: fillByKind[kind],
+        fillOpacity: 1,
+        strokeColor: mapTheme.primary,
+        strokeWeight: 1
+      };
+    },
+    routeStopLabel(stop, index) {
+      const collected = this.routeStopCollectedToday(stop);
+      return {
+        text: String(index + 1),
+        color: collected ? mapTheme.white : mapTheme.primary,
+        fontWeight: "bold",
+        fontSize: "12px"
+      };
+    },
+    routeStopIcon(stop) {
+      const collected = this.routeStopCollectedToday(stop);
+      return {
+        path: 0,
+        scale: 10,
+        fillColor: collected ? mapTheme.collected : mapTheme.brandLight,
+        fillOpacity: 1,
+        strokeColor: mapTheme.primary,
+        strokeWeight: 1
+      };
     },
     getIcon({ missing, collectedAt, lastVisitedAt }) {
       if (missing) {
@@ -560,7 +570,7 @@ export default Vue.extend({
   font-size: 300%;
   line-height: 1;
   color: $primary-color;
-  text-shadow: -1px -1px 1px #24242485;
+  text-shadow: -1px -1px 1px var(--color-primary-muted);
 }
 
 .vue-map-container {

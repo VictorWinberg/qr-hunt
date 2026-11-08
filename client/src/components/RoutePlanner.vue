@@ -106,7 +106,14 @@
           class="route-planner__stop"
           @click="selectStop(stop)"
         >
-          <span class="route-planner__stop-index">{{ index + 1 }}</span>
+          <span
+            class="route-planner__stop-index"
+            :class="{
+              'route-planner__stop-index--collected': stopCollectedToday(stop)
+            }"
+          >
+            {{ index + 1 }}
+          </span>
           <span class="route-planner__stop-title">
             {{ stop.title }}
           </span>
@@ -128,6 +135,7 @@ import {
   ROUTE_PLAN_TIME
 } from "@/constants";
 import { distance, formatDistance } from "@/utils/geo";
+import { isRouteStopCollectedToday } from "@/route-planning/spotCollection";
 
 export default Vue.extend({
   name: "RoutePlanner",
@@ -197,6 +205,9 @@ export default Vue.extend({
     selectStop(stop) {
       this.select(stop);
     },
+    stopCollectedToday(stop) {
+      return isRouteStopCollectedToday(stop, this.markers);
+    },
     formatDistance,
     legDistance(index) {
       if (!this.plan) return 0;
@@ -249,6 +260,14 @@ export default Vue.extend({
   transition: all 0.5s;
 }
 
+@mixin route-control {
+  color: $text-color;
+  cursor: pointer;
+  background: $primary-color;
+  border: solid var(--color-border-control) 1px;
+  border-radius: 2px;
+}
+
 .route-planner__modes {
   display: flex;
   gap: 0.5em;
@@ -257,13 +276,9 @@ export default Vue.extend({
 }
 
 .route-planner__mode {
+  @include route-control;
   flex: 1;
   padding: 0.5em;
-  color: $text-color;
-  cursor: pointer;
-  background: $primary-color;
-  border: solid #bbb 1px;
-  border-radius: 2px;
 
   &.active {
     color: $primary-color;
@@ -289,17 +304,13 @@ export default Vue.extend({
 }
 
 .route-planner__input {
+  @include route-control;
   box-sizing: border-box;
   flex-shrink: 0;
   width: 5.5em;
   padding: 0.4em 0.6em;
-  color: $text-color;
   text-align: center;
   text-align-last: center;
-  cursor: pointer;
-  background: $primary-color;
-  border: solid #bbb 1px;
-  border-radius: 2px;
 }
 
 .route-planner__actions {
@@ -310,14 +321,10 @@ export default Vue.extend({
 }
 
 .route-planner__btn {
+  @include route-control;
   flex: 1;
   height: 3em;
   padding: 0.6em;
-  color: $text-color;
-  cursor: pointer;
-  background: $primary-color;
-  border: solid #bbb 1px;
-  border-radius: 2px;
 
   &.primary {
     color: $primary-color;
@@ -346,16 +353,12 @@ export default Vue.extend({
 }
 
 .route-planner__alt-btn {
+  @include route-control;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 2em;
   height: 2em;
-  color: $text-color;
-  cursor: pointer;
-  background: $primary-color;
-  border: solid #bbb 1px;
-  border-radius: 2px;
 }
 
 .route-planner__warning {
@@ -394,6 +397,11 @@ export default Vue.extend({
   color: $primary-color;
   background: $light-brand-color;
   border-radius: 50%;
+
+  &--collected {
+    color: $white;
+    background: var(--color-map-collected);
+  }
 }
 
 .route-planner__stop-title {
