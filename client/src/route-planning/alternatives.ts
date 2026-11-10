@@ -2,7 +2,6 @@
  * Diversify a primary route into distinct alternatives:
  * seeded / swapped / dropped variants, sorted shortest first.
  */
-import { now, parse } from "@/plugins/dayjs";
 import { MAX_COLLECT_DISTANCE } from "@/constants";
 import { distance, Coords } from "@/utils/geo";
 import {
@@ -16,14 +15,10 @@ import {
   insertionSearchPoolSize,
   sortedByCorridor
 } from "./selectStops";
+import { isCollectedToday } from "./spotCollection";
 import { RoutePlan, RouteSpot } from "./types";
 
 const DEFAULT_MAX_ALTERNATIVES = 5;
-
-function isCollectedToday(collectedAt?: string | null): boolean {
-  if (!collectedAt) return false;
-  return now().isSame(parse(collectedAt), "day");
-}
 
 function filterRouteCandidates(
   spots: RouteSpot[],
