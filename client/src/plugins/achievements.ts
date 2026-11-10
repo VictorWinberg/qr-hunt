@@ -1,4 +1,4 @@
-import Snackbar from "node-snackbar";
+import Snackbar from "@/plugins/snackbar";
 import { EVENT_TYPE } from "@/constants";
 import { api } from "@/utils/api";
 import EventBus from "./event-bus";
@@ -44,7 +44,6 @@ export const newAchievements = async () => {
           body: JSON.stringify({ name })
         });
 
-        // @ts-ignore
         Snackbar.close();
 
         clearTimeout(timeout);
